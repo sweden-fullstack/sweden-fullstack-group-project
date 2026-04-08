@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react"
+import reactLogo from "./assets/react.svg"
+import viteLogo from "./assets/vite.svg"
+import heroImg from "./assets/hero.png"
+import "./App.css"
 
 function App() {
 	const [count, setCount] = useState(0)
@@ -28,7 +28,7 @@ function App() {
 				<div>
 					<h1>Get started</h1>
 					<p>
-						Edit <code>src/App.tsx</code> and save to test{' '}
+						Edit <code>src/App.tsx</code> and save to test{" "}
 						<code>HMR</code>
 					</p>
 				</div>
@@ -55,21 +55,21 @@ function App() {
 					<p>Your questions, answered</p>
 					<ul>
 						<li>
-							<a 
-                        href="https://vite.dev/" 
-                        target="_blank"
-                        rel='noreferrer'
-                     >
+							<a
+								href="https://vite.dev/"
+								target="_blank"
+								rel="noreferrer"
+							>
 								<img className="logo" src={viteLogo} alt="" />
 								Explore Vite
 							</a>
 						</li>
 						<li>
-							<a 
-                        href="https://react.dev/" 
-                        target="_blank"
-                        rel='noreferrer'
-                     >
+							<a
+								href="https://react.dev/"
+								target="_blank"
+								rel="noreferrer"
+							>
 								<img
 									className="button-icon"
 									src={reactLogo}
@@ -95,7 +95,7 @@ function App() {
 							<a
 								href="https://github.com/vitejs/vite"
 								target="_blank"
-                        rel='noreferrer'
+								rel="noreferrer"
 							>
 								<svg
 									className="button-icon"
@@ -108,11 +108,11 @@ function App() {
 							</a>
 						</li>
 						<li>
-							<a 
-                        href="https://chat.vite.dev/" 
-                        target="_blank"
-                        rel='noreferrer'
-                     >
+							<a
+								href="https://chat.vite.dev/"
+								target="_blank"
+								rel="noreferrer"
+							>
 								<svg
 									className="button-icon"
 									role="presentation"
@@ -124,11 +124,11 @@ function App() {
 							</a>
 						</li>
 						<li>
-							<a 
-                        href="https://x.com/vite_js" 
-                        target="_blank"
-                        rel='noreferrer'
-                     >
+							<a
+								href="https://x.com/vite_js"
+								target="_blank"
+								rel="noreferrer"
+							>
 								<svg
 									className="button-icon"
 									role="presentation"
@@ -142,7 +142,8 @@ function App() {
 						<li>
 							<a
 								href="https://bsky.app/profile/vite.dev"
-								target="_blank" rel="noreferrer"
+								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									className="button-icon"

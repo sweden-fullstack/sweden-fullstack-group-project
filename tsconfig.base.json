@@ -1,5 +1,5 @@
 {
-   "compilerOptions": {
+	"compilerOptions": {
 		"target": "esnext",
 		"module": "esnext",
 		"skipLibCheck": true,
@@ -16,5 +16,5 @@
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": true,
 		"noFallthroughCasesInSwitch": true
-   }
+	}
 }
