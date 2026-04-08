@@ -26,7 +26,11 @@ backend/dist
 *.sln
 *.sw?
 /target/**
-/src/app/plugins/js/**
-/vendor/packages/
+*/src/app/plugins/js/**
+*/vendor/packages/
 frontend/target/**
 backend/target/**
+*/.idea
+*/.vscode/*
+.idea/
+.vscode/

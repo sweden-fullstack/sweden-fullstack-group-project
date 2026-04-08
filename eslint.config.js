@@ -32,5 +32,8 @@ export default defineConfig([
 				version: "detect",
 			},
 		},
+		linterOptions: {
+			reportUnusedDisableDirectives: "error",
+		},
 	},
 ])
