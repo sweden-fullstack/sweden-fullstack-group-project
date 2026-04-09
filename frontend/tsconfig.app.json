@@ -6,7 +6,13 @@
 		"types": ["vite/client"],
 
 		/* Bundler mode */
-		"jsx": "react-jsx"
+		"jsx": "react-jsx",
+
+		/* imports with @ */
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
 	},
 	"include": ["src"]
 }
