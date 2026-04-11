@@ -8,7 +8,7 @@
 	"main": "index.js",
 	"keywords": [],
 	"scripts": {
-		"dev": "ts-node index.ts"
+		"dev": "tsx index.ts"
 	},
 	"dependencies": {
 		"express": "^5.2.1",
@@ -17,6 +17,6 @@
 	},
 	"devDependencies": {
 		"@types/express": "^5.0.6",
-		"ts-node": "^10.9.2"
+		"tsx": "^4.21.0"
 	}
 }
