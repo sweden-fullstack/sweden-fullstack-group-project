@@ -14,9 +14,9 @@ async function getFlywayMigrations() {
 
 	const migrations = []
 	for (const file of files) {
-		let match = file.match(/^V?(\d+)__(.+)\.sql$/)
+		let match = file.match(/^V(\d+)__(.+)\.sql$/)
 		if (!match) {
-			match = file.match(/^V?(\d+)_(.+)\.sql$/)
+			match = file.match(/^V(\d+)_(.+)\.sql$/)
 		}
 		if (!match) continue
 
