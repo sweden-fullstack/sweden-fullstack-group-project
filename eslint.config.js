@@ -12,7 +12,6 @@ export default defineConfig([
 	eslintConfigPrettier,
 	{
 		files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-		ignores: ["frontend/components/ui"],
 		extends: [
 			pluginJs.configs.recommended,
 			tseslint.configs.recommended,
