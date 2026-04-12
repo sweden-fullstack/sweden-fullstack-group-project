@@ -11,6 +11,7 @@
 				"transform": "typia/lib/transform"
 			}
 		],
+		"rootDirs": [".", "../shared/"],
 		"outDir": "./dist",
 		"skipLibCheck": true,
 		"strictNullChecks": true,

@@ -10,6 +10,7 @@
 	"scripts": {
 		"dev": "nodemon --exec tsx src/index.ts",
 		"dev:no-restart": "tsc src/index.ts",
+		"dev:test": "node dist/backend/src/index.js",
 		"prepare": "ts-patch install"
 	},
 	"dependencies": {
@@ -23,6 +24,8 @@
 		"@types/express": "^5.0.6",
 		"nodemon": "^3.1.14",
 		"ts-patch": "^3.3.0",
+		"tsc-alias": "^1.8.16",
+		"tsconfig-paths": "^4.2.0",
 		"tsx": "^4.21.0",
 		"typescript": "~5.9.3"
 	}
