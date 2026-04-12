@@ -5,11 +5,13 @@
 		"skipLibCheck": true,
 
 		/* Bundler mode */
-		"moduleResolution": "bundler",
+		"moduleResolution": "node",
 		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": false,
 		"moduleDetection": "force",
 		"noEmit": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
 
 		/* Linting */
 		"noUnusedLocals": true,
