@@ -1,15 +1,27 @@
 // migrate.js
-import { Umzug, SequelizeStorage } from "umzug"
-import { Sequelize } from "sequelize"
+import {
+	Umzug,
+	SequelizeStorage,
+	RunnableMigration,
+	MigrationParams,
+} from "umzug"
+import { Options, Sequelize } from "sequelize"
 import fs from "fs/promises"
 import path from "path"
-import { config } from "@/config/database"
+
+export const config: Options = {
+	host: "localhost",
+	username: "sweden-fullstack-group-project",
+	password: "sweden-fullstack-group-project",
+	database: "sweden-fullstack-group-project",
+	dialect: "mysql",
+}
 
 const sequelize = new Sequelize(config)
 
 // Read all SQL files, parse version, sort ascending
 async function getFlywayMigrations() {
-	const migrationsDir = path.join(process.cwd(), "migrations")
+	const migrationsDir = path.join(process.cwd(), "src", "migrations")
 	const files = await fs.readdir(migrationsDir)
 
 	const migrations = []
@@ -39,13 +51,21 @@ async function getFlywayMigrations() {
 
 const flywayMigrations = await getFlywayMigrations()
 
-const umzug = new Umzug({
-	migrations: flywayMigrations.map((m) => ({
-		name: m.name,
-		up: async ({ context }) => {
-			await context.sequelize.query(m.sql)
+type MigrationContext = {
+	sequelize: Sequelize
+}
+
+const migrations: RunnableMigration<MigrationContext>[] = flywayMigrations.map(
+	(o) => ({
+		name: o.name,
+		up: async ({ context }: MigrationParams<MigrationContext>) => {
+			await context.sequelize.query(o.sql)
 		},
-	})),
+	}),
+)
+
+const umzug = new Umzug({
+	migrations: migrations,
 	context: { sequelize },
 	storage: new SequelizeStorage({
 		sequelize,
@@ -54,4 +74,4 @@ const umzug = new Umzug({
 	logger: console,
 })
 
-await umzug.up()
+export default umzug

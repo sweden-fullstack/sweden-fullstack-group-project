@@ -1,9 +1,13 @@
 import express from "express"
 import usersRouter from "@/modules/user/user.routes"
 import db from "@/config/database"
+import umzug from "./libs/umzugMigrations"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
+
+// Run db migrations
+await umzug.up()
 
 const app = express()
 
