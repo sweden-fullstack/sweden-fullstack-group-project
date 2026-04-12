@@ -9,10 +9,10 @@
 		"jsx": "react-jsx",
 
 		/* imports with @ */
-		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@/shared/*": ["../shared/*"]
 		}
 	},
-	"include": ["src"]
+	"include": ["src", "../shared"]
 }

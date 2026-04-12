@@ -2,10 +2,10 @@
 	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
 		/* imports with @ */
-		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@/shared/*": ["../shared/*"]
 		}
 	},
-	"include": ["src"]
+	"include": ["src", "../shared"]
 }
