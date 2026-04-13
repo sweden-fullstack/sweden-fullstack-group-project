@@ -1,0 +1,30 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"description": "",
+	"license": "ISC",
+	"author": "",
+	"type": "module",
+	"main": "index.js",
+	"keywords": [],
+	"scripts": {
+		"dev": "npm run build && node ./dist/backend/src/index.js",
+		"build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
+		"prepare": "ts-patch install"
+	},
+	"dependencies": {
+		"cors": "^2.8.6",
+		"express": "^5.2.1",
+		"mysql2": "^3.22.0",
+		"sequelize": "^6.37.8",
+		"typia": "^12.0.2",
+		"umzug": "^3.8.2"
+	},
+	"devDependencies": {
+		"@types/cors": "^2.8.19",
+		"@types/express": "^5.0.6",
+		"ts-patch": "^3.3.0",
+		"tsc-alias": "^1.8.16",
+		"tsx": "^4.21.0"
+	}
+}

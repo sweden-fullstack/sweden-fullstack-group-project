@@ -1,0 +1,22 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		/* imports with @ */
+		"paths": {
+			"@/*": ["./src/*"],
+			"@/shared/*": ["../shared/*"]
+		},
+		"plugins": [
+			{
+				"transform": "typia/lib/transform"
+			}
+		],
+		"rootDirs": [".", "../shared/"],
+		"rootDir": "..",
+		"outDir": "./dist",
+		"skipLibCheck": true,
+		"strictNullChecks": true,
+		"strict": true
+	},
+	"include": ["src", "../shared"]
+}
