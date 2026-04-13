@@ -69,7 +69,7 @@ export default function WelcomePage() {
 					>
 						Test Zustand (press go back)
 					</Button>
-					<h1>First user username</h1>
+					<b>All the users we know, there are not many</b>
 					{users.map((user) => (
 						<p key={user.username}>
 							{user.username} - {user.gmail}
