@@ -8,9 +8,8 @@
 	"main": "index.js",
 	"keywords": [],
 	"scripts": {
-		"dev": "nodemon --exec tsx src/index.ts",
-		"dev:no-restart": "tsc src/index.ts",
-		"dev:test": "node dist/backend/src/index.js",
+		"dev": "npm run build && node ./dist/backend/src/index.js",
+		"build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
 		"prepare": "ts-patch install"
 	},
 	"dependencies": {
@@ -25,7 +24,6 @@
 		"nodemon": "^3.1.14",
 		"ts-patch": "^3.3.0",
 		"tsc-alias": "^1.8.16",
-		"tsconfig-paths": "^4.2.0",
 		"tsx": "^4.21.0",
 		"typescript": "~5.9.3"
 	}
