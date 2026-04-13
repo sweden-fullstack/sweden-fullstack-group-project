@@ -32,7 +32,7 @@ class UserController {
 	async create(req: Request, res: Response) {
 		try {
 			// Validate and cast request body using Typia
-			const body = typia.assert<UserCreate>(req.body)
+			const body = typia.misc.assertPrune<UserCreate>(req.body)
 			const newUsername = await userService.createUser(body)
 
 			const newUser = await userService.getUserByUsername(newUsername)
@@ -46,10 +46,10 @@ class UserController {
 	async update(req: Request, res: Response) {
 		try {
 			const username = req.params.username as string
-			const body = typia.assert<UserUpdate>(req.body)
+			const body = typia.misc.assertPrune<UserUpdate>(req.body)
 
 			await userService.updateUser(username, body)
-			const newUser = await userService.getUserByUsername(username)
+			const newUser = await userService.getUserByUsername(body.username)
 			return res.status(200).json(newUser)
 		} catch (error) {
 			console.error(error)

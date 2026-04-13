@@ -12,7 +12,9 @@ class UserRepository {
 		const [rows] = await db.query<RowDataPacket[]>(
 			`SELECT * FROM ${tableName}`,
 		)
-		return rows.map((row) => typia.assert<UserEntity>(row))
+		return rows.map((row) =>
+			typia.misc.assertPrune<UserEntity>(row as unknown as UserEntity),
+		)
 	}
 
 	async findByUsername(username: string): Promise<UserEntity | null> {
@@ -21,22 +23,33 @@ class UserRepository {
 			[username],
 		)
 
+		console.log(`USERNAME ${username}`)
+
+		console.log("FOUND ")
+		console.log("TEST" + rows)
+
 		if (rows.length === 0) return null
-		return typia.assert<UserEntity>(rows[0])
+		return typia.misc.assertPrune<UserEntity>(
+			rows[0] as unknown as UserEntity,
+		)
 	}
 
 	async create(user: UserCreate) {
-		await db.query<ResultSetHeader>(`INSERT INTO ${tableName} SET ?`, user)
+		await db.query<ResultSetHeader>(`INSERT INTO ${tableName} SET ?`, [
+			user,
+		])
 
 		return user.username
 	}
 
 	async update(username: string, user: UserUpdate) {
+		console.log(`USERNAME ${username}`)
 		const [result] = await db.query<ResultSetHeader>(
-			`UPDATE ${tableName} SET ? WHERE id username = ?`,
+			`UPDATE ${tableName} SET ? WHERE username = ?`,
 			[user, username],
 		)
 
+		console.log(`USERNAME 2${username}`)
 		return result.affectedRows > 0
 	}
 

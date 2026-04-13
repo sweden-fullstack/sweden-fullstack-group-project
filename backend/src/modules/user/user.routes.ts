@@ -4,9 +4,9 @@ import userController from "./user.controller"
 const router = Router()
 
 router.get("/", userController.getAll)
-router.get("/:id", userController.getByUsername)
+router.get("/:username", userController.getByUsername)
 router.post("/", userController.create)
-router.put("/:id", userController.update)
-router.delete("/:id", userController.delete)
+router.put("/:username", userController.update)
+router.delete("/:username", userController.delete)
 
 export default router

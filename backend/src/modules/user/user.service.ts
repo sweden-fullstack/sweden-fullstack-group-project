@@ -7,18 +7,16 @@ import UserUpdate from "@/shared/types/user/user.update"
 class UserService {
 	async getAllUsers(): Promise<UserDto[]> {
 		return (await userRepository.findAll()).map((o) =>
-			typia.assert<UserDto>(o),
+			typia.misc.assertPrune<UserDto>(o),
 		)
 	}
 
 	async getUserByUsername(username: string): Promise<UserDto> {
-		const user = typia.assert<UserDto>(
-			await userRepository.findByUsername(username),
-		)
+		const user = await userRepository.findByUsername(username)
 		if (!user) {
 			throw new Error("User not found")
 		}
-		return user
+		return typia.misc.assertPrune<UserDto>(user)
 	}
 
 	async createUser(user: UserCreate): Promise<string> {
