@@ -6,6 +6,7 @@ import config from "@/config/chakraConfig"
 
 const system = createSystem(defaultConfig, config)
 
+// this is a comment
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<ChakraProvider value={system}>
