@@ -5,7 +5,7 @@ entity user {
     email: string
     first_name: string
     last_name: string
-    room_number: string
+    room_number: int
     major: string
     stay_period_start: date
     stay_period_end: date
@@ -86,12 +86,11 @@ end note
 
 entity house_rule {
     id: int <<PK>>
-    house_rule_category: id
     building_id: int
     title: string
     body: string (md)
     sort_order: number
-    update_at: date
+    updated_at: date
 }
 
 note left of house_rule
@@ -116,8 +115,8 @@ entity house_rule_category {
 
 user "1" -- "1" section_user
 user "1" -- "*" user_interest
-user_role "*" -- "1" section_user
-section_user "1" -- "*" section
+user_role "1" -- "*" section_user
+section_user "*" -- "1" section
 section "1" -- "*" section_event
 section "*" -- "1" building
 section_event "*" -- "1" event_type
