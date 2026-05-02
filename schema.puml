@@ -37,7 +37,6 @@ entity section_user {
 entity building {
     id: int <<PK>>
     name: string
-    building: string
     description: string (md)
 }
 
@@ -70,7 +69,7 @@ note left of section_event
    from section_id
 end note
 
-entity event_id {
+entity event_type {
     id: int <<PK>>
     name: string
 }
@@ -121,7 +120,7 @@ user_role "*" -- "1" section_user
 section_user "1" -- "*" section
 section "1" -- "*" section_event
 section "*" -- "1" building
-section_event "*" -- "1" event_id
+section_event "*" -- "1" event_type
 building "1" -- "*" announcement
 building "1" -- "*" house_rule
 house_rule "1" -- "*" house_rule_category_map
