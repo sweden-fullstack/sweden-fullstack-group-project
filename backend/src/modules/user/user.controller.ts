@@ -1,76 +1,41 @@
-// controllers/user.controller.ts
 import { Request, Response } from "express"
-import typia from "typia"
 import userService from "./user.service"
-import UserCreate from "@/shared/types/user/user.create"
 import UserUpdate from "@/shared/types/user/user.update"
-import NotFoundError from "@/errors/NotFoundError"
-import AppError from "@/errors/AppError"
+import UserCreate from "@/shared/types/user/user.create"
 
-// Too lazy to write template for errors, just create custom error class and catch it by it's unique message or status code
 class UserController {
 	async getAll(_req: Request, res: Response) {
-		try {
-			const users = await userService.getAll()
-			res.json(users)
-		} catch (error) {
-			console.error(error)
-			res.status(500).json(error)
-		}
+		const users = await userService.getAll()
+		res.json(users)
 	}
 
 	async getById(req: Request, res: Response) {
-		try {
-			const id = parseInt(req.params.id as string)
+		const id = parseInt(req.params.id as string)
 
-			const user = await userService.getById(id)
-			res.json(user)
-		} catch (error) {
-			console.error(error)
-			if (error instanceof AppError) {
-				res.status(error.statusCode).json({ message: error.message })
-				return
-			}
-			res.status(500).json({ error: "Internal server error" })
-		}
+		const user = await userService.getById(id)
+		res.json(user)
 	}
 
 	async create(req: Request, res: Response) {
-		try {
-			// Validate and cast request body using Typia
-			const body = typia.misc.assertPrune<UserCreate>(req.body)
-			const newUser = await userService.create(body)
+		const body = req.body as UserCreate
+		const newUser = await userService.create(body)
 
-			res.status(201).json(newUser)
-		} catch (error) {
-			console.error(error)
-			res.status(400).json({ error: "Internal server error" })
-		}
+		res.status(201).json(newUser)
 	}
 
 	async update(req: Request, res: Response) {
-		try {
-			const username = req.params.username as string
-			const body = typia.misc.assertPrune<UserUpdate>(req.body)
+		const id = parseInt(req.params.id as string)
+		const body = req.body as UserUpdate
 
-			const newUser = await userService.update(username, body)
-			return res.status(200).json(newUser)
-		} catch (error) {
-			console.error(error)
-			return res.status(500).json({ error: "Internal server error" })
-		}
+		const newUser = await userService.update(id, body)
+		return res.status(200).json(newUser)
 	}
 
 	async delete(req: Request, res: Response) {
-		try {
-			const username = req.params.username as string
+		const id = parseInt(req.params.id as string)
 
-			await userService.delete(username)
-			return res.status(204).send()
-		} catch (error) {
-			console.error(error)
-			return res.status(500).json({ error: "Internal server error" })
-		}
+		await userService.delete(id)
+		return res.status(204).send()
 	}
 }
 
