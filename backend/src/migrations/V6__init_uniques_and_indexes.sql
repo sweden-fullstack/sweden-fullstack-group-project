@@ -12,8 +12,3 @@ ALTER TABLE house_rule_category
 
 ALTER TABLE section
     ADD CONSTRAINT uq_section_building_name UNIQUE (building_id, name);
-
-CREATE INDEX idx_section_event_section_start_time ON
-    section_event(section_id, start_time);
-CREATE INDEX idx_house_rule_building_sort_order ON
-    house_rule(building_id, sort_order);
