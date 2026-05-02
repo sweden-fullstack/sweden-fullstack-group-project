@@ -16,8 +16,8 @@ ALTER TABLE section_event
     ADD CONSTRAINT fk_section_event_section
     FOREIGN KEY (section_id) REFERENCES section(id)
     ON DELETE CASCADE,
-    ADD CONSTRAINT fk_section_event_event_id
-    FOREIGN KEY (event_id) REFERENCES event_type(id)
+    ADD CONSTRAINT fk_section_event_event_typep_id
+    FOREIGN KEY (event_type_id) REFERENCES event_type(id)
     ON DELETE RESTRICT;
 
 ALTER TABLE section_user

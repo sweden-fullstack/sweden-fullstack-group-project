@@ -58,7 +58,7 @@ CREATE TABLE house_rule (
 CREATE TABLE section_event (
     id INT AUTO_INCREMENT PRIMARY KEY,
     section_id INT NOT NULL,
-    event_id INT NOT NULL,
+    event_type_id INT NOT NULL,
     description TEXT NULL,
     start_time TIMESTAMP NOT NULL,
     end_time TIMESTAMP NOT NULL
