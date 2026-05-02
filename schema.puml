@@ -1,0 +1,129 @@
+@startuml
+
+entity user {
+    id: int <<PK>>
+    email: string
+    first_name: string
+    last_name: string
+    room_number: int
+    major: string
+    stay_period_start: date
+    stay_period_end: date
+    profile_picture_url?: string
+    ---
+    <<unique>>
+    email
+}
+' Perhaps move room_number, stay_period_start and stay_period_end 
+' to section_user since it makes more sense there?
+
+entity user_interest {
+   user_id: int
+   interest: string
+   ---
+   <<PK>>
+   (user_id, interest)
+}
+
+entity section_user {
+    user_id: int
+    section_id: int
+    role_id: int
+    ---
+    <<PK>>
+    (user_id, section_id, role_id)
+}
+
+entity building {
+    id: int <<PK>>
+    name: string
+    description: string (md)
+}
+
+entity section {
+    id: int <<PK>>
+    building_id: int
+    name: string
+    description: string (md)
+}
+
+entity announcement {
+    id: int <<PK>>
+    building_id: int
+    title: string
+    meta: string
+    body: string (md)
+}
+
+entity section_event {
+    id: int <<PK>>
+    section_id: int
+    event_id: int
+    description?: string (md)
+    start_time: timestamp
+    end_time: timestamp
+}
+
+note left of section_event
+   location derived 
+   from section_id
+end note
+
+entity event_type {
+    id: int <<PK>>
+    name: string
+}
+
+entity user_role {
+   id: int <<PK>>
+   name: string
+}
+
+note left of user_role
+   Initial roles: student, 
+   landlord, admin, section_admin
+end note
+
+entity house_rule {
+    id: int <<PK>>
+    building_id: int
+    title: string
+    body: string (md)
+    sort_order: number
+    updated_at: date
+}
+
+note left of house_rule
+   there should be (sort_order, building_id) unique
+   constraint but I don't recommend putting it
+   since mysql uses transaction-level validation.
+   You have been warned
+end note
+
+entity house_rule_category_map {
+   house_rule_id: int
+   house_rule_category_id: int
+   ---
+   <<PK>>
+   (house_rule_id, house_rule_category_id)
+}
+
+entity house_rule_category {
+    id: number <<PK>>
+    name: string
+}
+
+user "1" -- "1" section_user
+user "1" -- "*" user_interest
+user_role "1" -- "*" section_user
+section_user "*" -- "1" section
+section "1" -- "*" section_event
+section "*" -- "1" building
+section_event "*" -- "1" event_type
+building "1" -- "*" announcement
+building "1" -- "*" house_rule
+house_rule "1" -- "*" house_rule_category_map
+house_rule_category "1" -- "*" house_rule_category_map
+
+@enduml
+
