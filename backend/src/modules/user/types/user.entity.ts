@@ -3,8 +3,8 @@
  * @see UserDto
  */
 type UserEntity = {
-	username: string
-	gmail: string
+	id: number
+	email: string
 }
 
 export default UserEntity

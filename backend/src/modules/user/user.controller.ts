@@ -4,12 +4,14 @@ import typia from "typia"
 import userService from "./user.service"
 import UserCreate from "@/shared/types/user/user.create"
 import UserUpdate from "@/shared/types/user/user.update"
+import NotFoundError from "@/errors/NotFoundError"
+import AppError from "@/errors/AppError"
 
 // Too lazy to write template for errors, just create custom error class and catch it by it's unique message or status code
 class UserController {
 	async getAll(_req: Request, res: Response) {
 		try {
-			const users = await userService.getAllUsers()
+			const users = await userService.getAll()
 			res.json(users)
 		} catch (error) {
 			console.error(error)
@@ -17,14 +19,18 @@ class UserController {
 		}
 	}
 
-	async getByUsername(req: Request, res: Response) {
+	async getById(req: Request, res: Response) {
 		try {
-			const username = req.params.username as string
+			const id = parseInt(req.params.id as string)
 
-			const user = await userService.getUserByUsername(username)
+			const user = await userService.getById(id)
 			res.json(user)
 		} catch (error) {
 			console.error(error)
+			if (error instanceof AppError) {
+				res.status(error.statusCode).json({ message: error.message })
+				return
+			}
 			res.status(500).json({ error: "Internal server error" })
 		}
 	}
@@ -33,7 +39,7 @@ class UserController {
 		try {
 			// Validate and cast request body using Typia
 			const body = typia.misc.assertPrune<UserCreate>(req.body)
-			const newUser = await userService.createUser(body)
+			const newUser = await userService.create(body)
 
 			res.status(201).json(newUser)
 		} catch (error) {
@@ -47,7 +53,7 @@ class UserController {
 			const username = req.params.username as string
 			const body = typia.misc.assertPrune<UserUpdate>(req.body)
 
-			const newUser = await userService.updateUser(username, body)
+			const newUser = await userService.update(username, body)
 			return res.status(200).json(newUser)
 		} catch (error) {
 			console.error(error)
@@ -59,7 +65,7 @@ class UserController {
 		try {
 			const username = req.params.username as string
 
-			await userService.deleteUser(username)
+			await userService.delete(username)
 			return res.status(204).send()
 		} catch (error) {
 			console.error(error)
