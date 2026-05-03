@@ -2,11 +2,11 @@ import AppError from "@/errors/AppError"
 import { NextFunction, Request, Response } from "express"
 
 export default class ErrorHandler {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	static handle(
 		err: unknown,
 		_req: Request,
 		res: Response,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_next: NextFunction,
 	) {
 		if (err instanceof Error) {
