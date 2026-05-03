@@ -4,7 +4,7 @@ import UserCreate from "@/shared/types/user/user.create"
 import UserUpdate from "@/shared/types/user/user.update"
 import UserMapper from "./types/user.mapper"
 import NotFoundError from "@/errors/NotFoundError"
-import { Transaction } from "@/lib/transaction"
+import { Transaction } from "@/utils/transaction"
 
 class UserService {
 	async getAll(): Promise<UserDto[]> {
