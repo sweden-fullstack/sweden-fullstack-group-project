@@ -12,9 +12,9 @@ export class Transaction {
 	}
 
 	/**
-	 * Runs queries as a database transaction
-	 * Supports nested transactions (uses the same connection for nested calls)
-	 * Only the outermost transaction begins/commits/rollbacks
+	 * Simplifies the running of database transactions and supports running of
+	 * "nested" transactions by recognising that a transaction is nested and
+	 * reusing the old context instead of creating new one and breaking everything
 	 */
 	static async run<T>(
 		callback: (conn: mysql.PoolConnection) => Promise<T>,
