@@ -1,0 +1,8 @@
+{
+	"verbose": true,
+	"watch": ["src", "../shared"],
+	"ext": "*",
+	"exec": "npm run dev:no-restart",
+	"pollingInterval": 100,
+	"legacyWatch": true
+}
