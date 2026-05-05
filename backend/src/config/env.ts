@@ -21,6 +21,11 @@ const envConfig = {
 	password: process.env.DB_PASSWORD
 		? process.env.DB_PASSWORD
 		: "sweden-backend",
+	oauthClientId: process.env.OAUTH_CLIENT_ID!,
+	oauthClientSecret: process.env.OAUTH_CLIENT_SECRET!,
+	frontendServer: process.env.FRONTEND_SERVER
+		? process.env.FRONTEND_SERVER
+		: "http://localhost:5173/",
 }
 
 export default envConfig

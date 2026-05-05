@@ -1,0 +1,21 @@
+import passport from "passport"
+import { Router } from "express"
+import authController from "./auth.controller"
+
+const router = Router()
+
+router.get(
+	"/",
+	passport.authenticate("google", {
+		scope: ["profile", "email"],
+		prompt: "select_account",
+	}),
+)
+
+router.get(
+	"/callback",
+	passport.authenticate("google", { session: false }),
+	authController.callback,
+)
+
+export default router

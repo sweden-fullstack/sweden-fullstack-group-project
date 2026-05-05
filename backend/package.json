@@ -12,9 +12,13 @@
 		"dev:no-restart": "tsx --tsconfig tsconfig.json src/index.ts"
 	},
 	"dependencies": {
+		"@types/passport": "^1.0.17",
+		"@types/passport-google-oauth20": "^2.0.17",
 		"cors": "^2.8.6",
 		"express": "^5.2.1",
 		"mysql2": "^3.22.0",
+		"passport": "^0.7.0",
+		"passport-google-oauth20": "^2.0.0",
 		"sequelize": "^6.37.8",
 		"umzug": "^3.8.2"
 	},
