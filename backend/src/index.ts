@@ -4,6 +4,7 @@ import db from "@/config/database"
 import umzug from "./lib/umzugMigrations"
 import envConfig from "./config/env"
 import cors from "cors"
+import ErrorHandler from "./middlewares/errorHandler"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
@@ -21,5 +22,7 @@ app.listen(envConfig.port, () =>
 )
 
 app.use("/user", usersRouter)
+
+app.use(ErrorHandler.handle)
 
 export default app

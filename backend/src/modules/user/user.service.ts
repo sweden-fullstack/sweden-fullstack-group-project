@@ -1,42 +1,44 @@
-import typia from "typia"
 import userRepository from "./user.repository"
 import UserDto from "@/shared/types/user/user.dto"
 import UserCreate from "@/shared/types/user/user.create"
 import UserUpdate from "@/shared/types/user/user.update"
+import UserMapper from "./types/user.mapper"
+import NotFoundError from "@/errors/NotFoundError"
+import { Transaction } from "@/utils/transaction"
 
 class UserService {
-	async getAllUsers(): Promise<UserDto[]> {
-		return (await userRepository.findAll()).map((o) =>
-			typia.misc.assertPrune<UserDto>(o),
-		)
+	async getAll(): Promise<UserDto[]> {
+		return (await userRepository.findAll()).map((o) => UserMapper.toDto(o))
 	}
 
-	async getUserByUsername(username: string): Promise<UserDto> {
-		const user = await userRepository.findByUsername(username)
+	async getById(id: number): Promise<UserDto> {
+		const user = await userRepository.findById(id)
+
 		if (!user) {
-			throw new Error("User not found")
-		}
-		return typia.misc.assertPrune<UserDto>(user)
-	}
-
-	async createUser(user: UserCreate): Promise<UserDto> {
-		const newUsername = await userRepository.create(user)
-		return await this.getUserByUsername(newUsername)
-	}
-
-	async updateUser(username: string, user: UserUpdate): Promise<UserDto> {
-		const updated = await userRepository.update(username, user)
-		if (!updated) {
-			throw new Error("User not found or no changes applied")
+			throw new NotFoundError("User not found")
 		}
 
-		return await this.getUserByUsername(user.username)
+		return UserMapper.toDto(user)
 	}
 
-	async deleteUser(username: string): Promise<void> {
-		const deleted = await userRepository.delete(username)
+	async create(user: UserCreate): Promise<UserDto> {
+		return Transaction.run(async () => {
+			const id = await userRepository.create(user)
+			return await this.getById(id)
+		})
+	}
+
+	async update(id: number, user: UserUpdate): Promise<UserDto> {
+		return Transaction.run(async () => {
+			await userRepository.update(id, user)
+			return await this.getById(id)
+		})
+	}
+
+	async delete(id: number): Promise<void> {
+		const deleted = await userRepository.delete(id)
 		if (!deleted) {
-			throw new Error("User not found")
+			throw new NotFoundError("User not found")
 		}
 	}
 }

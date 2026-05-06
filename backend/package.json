@@ -10,7 +10,8 @@
 	"scripts": {
 		"dev": "npm run build && node ./dist/backend/src/index.js",
 		"build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
-		"prepare": "ts-patch install"
+		"prepare": "ts-patch install",
+		"seed": "tsx src/seed/seed.ts"
 	},
 	"dependencies": {
 		"cors": "^2.8.6",

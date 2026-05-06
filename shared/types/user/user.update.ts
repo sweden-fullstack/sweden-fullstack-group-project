@@ -2,7 +2,7 @@
  * User object for updating users
  */
 type UserUpdate = {
-	username: string
+	email: string
 }
 
 export default UserUpdate
