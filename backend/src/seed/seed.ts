@@ -27,6 +27,6 @@ async function seedDB() {
 }
 
 seedDB().catch((err) => {
-	console.error("Seeding failed:", err.message)
+	console.error("Seeding failed:", err)
 	process.exitCode = 1
 })
