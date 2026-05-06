@@ -8,9 +8,8 @@
 	"main": "index.js",
 	"keywords": [],
 	"scripts": {
-		"dev": "npm run build && node ./dist/backend/src/index.js",
-		"build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
-		"prepare": "ts-patch install",
+		"dev": "nodemon",
+		"dev:no-restart": "tsx --tsconfig tsconfig.json src/index.ts",
 		"seed": "tsx src/seed/seed.ts"
 	},
 	"dependencies": {
