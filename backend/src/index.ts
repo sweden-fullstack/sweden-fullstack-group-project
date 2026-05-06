@@ -6,9 +6,13 @@ import umzug from "./lib/umzugMigrations"
 import envConfig from "./config/env"
 import cors from "cors"
 import ErrorHandler from "./middlewares/errorHandler"
+import { JWT } from "./utils/jtw"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
+
+const jwt = JWT.generate("", "student")
+JWT.verify(jwt, "")
 
 // Run db migrations
 await umzug.up()
