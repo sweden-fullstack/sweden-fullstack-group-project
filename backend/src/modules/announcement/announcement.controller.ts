@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import announcementService from "./announcement.service"
 import AnnouncementUpdate from "@/shared/types/announcement/announcement.update"
 import AnnouncementCreate from "@/shared/types/announcement/announcement.create"
+import typia from "typia"
 
 class AnnouncementController {
 	async getAll(_req: Request, res: Response) {
@@ -25,7 +26,7 @@ class AnnouncementController {
 	}
 
 	async create(req: Request, res: Response) {
-		const body = req.body as AnnouncementCreate
+		const body = typia.assert<AnnouncementCreate>(req.body)
 		const newAnnouncement = await announcementService.create(body)
 
 		res.status(201).json(newAnnouncement)
@@ -33,7 +34,7 @@ class AnnouncementController {
 
 	async update(req: Request, res: Response) {
 		const id = parseInt(req.params.id as string)
-		const body = req.body as AnnouncementUpdate
+		const body = typia.assert<AnnouncementUpdate>(req.body)
 
 		const updatedAnnouncement = await announcementService.update(id, body)
 		return res.status(200).json(updatedAnnouncement)
