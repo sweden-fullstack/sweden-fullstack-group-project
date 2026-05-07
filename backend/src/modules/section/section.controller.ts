@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import SectionService from "./section.service"
 import SectionUpdate from "@/shared/types/section/section.update"
 import SectionCreate from "@/shared/types/section/section.create"
+import typia from "typia"
 
 class SectionController {
 	async getAll(_req: Request, res: Response) {
@@ -17,7 +18,7 @@ class SectionController {
 	}
 
 	async create(req: Request, res: Response) {
-		const body = req.body as SectionCreate
+		const body = typia.assert<SectionCreate>(req.body)
 		const newSection = await SectionService.create(body)
 
 		res.status(201).json(newSection)
@@ -25,7 +26,7 @@ class SectionController {
 
 	async update(req: Request, res: Response) {
 		const id = parseInt(req.params.id as string)
-		const body = req.body as SectionUpdate
+		const body = typia.assert<SectionUpdate>(req.body)
 
 		const newSection = await SectionService.update(id, body)
 		return res.status(200).json(newSection)
