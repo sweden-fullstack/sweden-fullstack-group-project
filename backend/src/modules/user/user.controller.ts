@@ -18,7 +18,7 @@ class UserController {
 	}
 
 	async create(req: Request, res: Response) {
-		const body = typia.misc.assertPrune<UserCreate>(req.body)
+		const body = typia.assertEquals<UserCreate>(req.body)
 		const newUser = await userService.create(body)
 
 		res.status(201).json(newUser)
@@ -26,7 +26,7 @@ class UserController {
 
 	async update(req: Request, res: Response) {
 		const id = parseInt(req.params.id as string)
-		const body = typia.misc.assertPrune<UserUpdate>(req.body)
+		const body = typia.assertEquals<UserUpdate>(req.body)
 
 		const newUser = await userService.update(id, body)
 		return res.status(200).json(newUser)
