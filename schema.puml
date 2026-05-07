@@ -113,13 +113,23 @@ entity house_rule_category {
     name: string
 }
 
+entity section_event_assignee {
+   user_id: int
+   section_event_id: int
+   ---
+   <<PK>>
+   (user_id, section_event_id)
+}
+
 user "1" -- "1" section_user
 user "1" -- "*" user_interest
+user "1" -- "*" section_event_assignee
 user_role "1" -- "*" section_user
 section_user "*" -- "1" section
 section "1" -- "*" section_event
 section "*" -- "1" building
 section_event "*" -- "1" event_type
+section_event "1" -- "*" section_event_assignee
 building "1" -- "*" announcement
 building "1" -- "*" house_rule
 house_rule "1" -- "*" house_rule_category_map
