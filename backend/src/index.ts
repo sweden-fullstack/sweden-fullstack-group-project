@@ -1,5 +1,6 @@
 import express from "express"
 import usersRouter from "@/modules/user/user.routes"
+import cleaningRouter from "@/modules/cleaning/cleaning.routes"
 import db from "@/config/database"
 import umzug from "./lib/umzugMigrations"
 import envConfig from "./config/env"
@@ -22,6 +23,7 @@ app.listen(envConfig.port, () =>
 )
 
 app.use("/user", usersRouter)
+app.use("/cleaning", cleaningRouter)
 
 app.use(ErrorHandler.handle)
 
