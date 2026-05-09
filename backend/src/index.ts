@@ -11,8 +11,8 @@ import { JWT } from "./utils/jtw"
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
 
-const jwt = JWT.generate("", "student")
-JWT.verify(jwt, "")
+const jwt = JWT.generate("test@ee", "student")
+JWT.verify(jwt, "test@ee")
 
 // Run db migrations
 await umzug.up()
