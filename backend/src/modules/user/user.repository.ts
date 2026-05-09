@@ -24,6 +24,16 @@ class UserRepository {
 		return rows[0] as unknown as UserEntity
 	}
 
+	async findByEmail(email: string): Promise<UserEntity | null> {
+		const [rows] = await db.query<RowDataPacket[]>(
+			`SELECT * FROM ${tableName} WHERE email = ?`,
+			[email],
+		)
+
+		if (rows.length === 0) return null
+		return rows[0] as unknown as UserEntity
+	}
+
 	async create(user: UserCreate) {
 		const [result] = await db.query<ResultSetHeader>(
 			`INSERT INTO ${tableName} SET ?`,
