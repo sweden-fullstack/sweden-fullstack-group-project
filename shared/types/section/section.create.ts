@@ -2,7 +2,7 @@
  * Section object for creating sections
  */
 type SectionCreate = {
-	building_id: number
+	buildingId: number
 	name: string
 	description: string
 }

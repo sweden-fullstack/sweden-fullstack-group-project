@@ -2,7 +2,7 @@ type SectionDto = {
 	id: number
 	buildingId: number
 	name: string
-	description: string | null
+	description?: string
 }
 
 export default SectionDto
