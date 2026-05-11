@@ -1,5 +1,7 @@
 .calendar {
 	width: 100% !important;
+	max-width: 420px;
+	margin: 0 auto;
 	border: none !important;
 	background: transparent !important;
 	font-family: inherit !important;
@@ -43,19 +45,26 @@
 }
 
 .calendar :global(.react-calendar__tile) {
+	box-sizing: border-box !important;
+	border: 2px solid transparent !important;
 	border-radius: 999px !important;
 	color: #3d6288 !important;
-	height: 46px !important;
-	max-width: 46px !important;
-	margin: 2px auto !important;
+	width: 100% !important;
+	aspect-ratio: 1 / 1 !important;
+	min-height: 36px !important;
+	padding: 0 !important;
+	margin: 2px 0 !important;
 	display: flex !important;
-	flex-direction: column !important;
 	align-items: center !important;
 	justify-content: center !important;
 	position: relative !important;
-	gap: 2px !important;
 	transition: all 0.18s ease !important;
 	font-weight: 500 !important;
+}
+
+.calendar :global(.react-calendar__tile abbr) {
+	line-height: 1 !important;
+	transform: translateY(-4px) !important;
 }
 
 .calendar :global(.react-calendar__tile--now) {
@@ -86,16 +95,23 @@
 	opacity: 0.7 !important;
 }
 
-.myDutyCircle {
-	border: 2px solid #6f98bf !important;
+.calendar
+	:global(.react-calendar__tile).myDutyCircle:not(
+		:global(.react-calendar__tile--active)
+	) {
+	border-color: #6f98bf !important;
 	background: #e8f3ff !important;
 	font-weight: 700 !important;
 }
 
 .dutyDot {
-	width: 6px !important;
-	height: 6px !important;
+	position: absolute !important;
+	bottom: clamp(1px, 8%, 4px) !important;
+	left: 50% !important;
+	transform: translateX(-50%) !important;
+	width: 5px !important;
+	height: 5px !important;
 	border-radius: 999px !important;
 	background: #6f98bf !important;
-	display: inline-block !important;
+	pointer-events: none !important;
 }

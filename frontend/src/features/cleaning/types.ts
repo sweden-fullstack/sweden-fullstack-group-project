@@ -3,11 +3,6 @@ export type Resident = {
 	name: string
 }
 
-export type CleaningTask = {
-	name: string
-	assigneeId: number | null
-}
-
 export type ViewMode = "section" | "mine"
 
 export type NextMyDuty = {
@@ -21,15 +16,7 @@ export type MyDutyEntry = {
 }
 
 export type SelectedDayRow = {
+	eventId: number | null
 	name: string
-	assigneeId: number | null
-}
-
-export type CleaningStateDto = {
-	sectionId: number
-	currentUserId: number
-	residents: Resident[]
-	dutyTemplate: string[]
-	daysWithoutCleaning: string[]
-	schedule: Record<string, CleaningTask[]>
+	assigneeIds: number[]
 }

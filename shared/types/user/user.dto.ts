@@ -4,6 +4,9 @@
 type UserDto = {
 	id: number
 	email: string
+	firstName: string
+	lastName: string
+	sectionId: number
 }
 
 export default UserDto

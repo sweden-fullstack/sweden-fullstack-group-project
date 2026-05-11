@@ -20,6 +20,9 @@ export default class UserMapper {
 		return {
 			id: entity.id,
 			email: entity.email,
+			firstName: "",
+			lastName: "",
+			sectionId: 0,
 		}
 	}
 }

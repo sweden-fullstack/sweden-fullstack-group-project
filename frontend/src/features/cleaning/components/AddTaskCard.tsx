@@ -1,16 +1,27 @@
 import { Button, Heading, HStack, Input, Box } from "@chakra-ui/react"
+import { useState } from "react"
 
 type Props = {
-	newTaskName: string
-	onChangeTaskName: (value: string) => void
-	onAddTask: () => void
+	onAddTask: (taskName: string) => boolean | Promise<boolean>
 }
 
-export default function AddTaskCard({
-	newTaskName,
-	onChangeTaskName,
-	onAddTask,
-}: Props) {
+export default function AddTaskCard({ onAddTask }: Props) {
+	const [newTaskName, setNewTaskName] = useState("")
+	const [isSubmitting, setIsSubmitting] = useState(false)
+
+	async function handleAdd() {
+		if (isSubmitting) return
+		setIsSubmitting(true)
+		try {
+			const success = await onAddTask(newTaskName)
+			if (success) {
+				setNewTaskName("")
+			}
+		} finally {
+			setIsSubmitting(false)
+		}
+	}
+
 	return (
 		<Box
 			bg="rgba(255,255,255,0.92)"
@@ -25,7 +36,7 @@ export default function AddTaskCard({
 			<HStack align="stretch" flexWrap="wrap" gap={2}>
 				<Input
 					value={newTaskName}
-					onChange={(event) => onChangeTaskName(event.target.value)}
+					onChange={(event) => setNewTaskName(event.target.value)}
 					placeholder="e.g. Toilet B, hallway, recycling"
 					flex="1"
 					minW="200px"
@@ -34,7 +45,8 @@ export default function AddTaskCard({
 					bg="#d8ebff"
 					color="#123a5f"
 					_hover={{ bg: "#c8e2ff" }}
-					onClick={onAddTask}
+					onClick={handleAdd}
+					disabled={isSubmitting}
 				>
 					Add task
 				</Button>
