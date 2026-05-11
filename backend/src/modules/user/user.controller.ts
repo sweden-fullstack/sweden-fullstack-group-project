@@ -3,6 +3,7 @@ import userService from "./user.service"
 import UserUpdate from "@/shared/types/user/user.update"
 import UserCreate from "@/shared/types/user/user.create"
 import typia from "typia"
+import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 
 class UserController {
 	async getAll(_req: Request, res: Response) {
@@ -14,6 +15,13 @@ class UserController {
 		const id = parseInt(req.params.id as string)
 
 		const user = await userService.getById(id)
+		res.json(user)
+	}
+
+	async getByAuthentication(req: Request, res: Response) {
+		const jwt = req.user as JwtPayloadExtended
+
+		const user = await userService.getById(jwt.userId)
 		res.json(user)
 	}
 

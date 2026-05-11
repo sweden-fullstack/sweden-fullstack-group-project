@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken"
 import UserRole from "../user-roles/userRole"
 
-interface TokenPayload extends jwt.JwtPayload {
-	sub: string
+interface JwtPayloadExtended extends jwt.JwtPayload {
+	userId: number
 	exp: number
 	sectionId: number
 	userRole: UserRole
 }
 
-export default TokenPayload
+export default JwtPayloadExtended

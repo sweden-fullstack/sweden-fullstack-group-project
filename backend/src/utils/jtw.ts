@@ -19,10 +19,10 @@ export class JWT {
 			{
 				sectionId: sectionId,
 				userRole: userRole,
+				userId: userId,
 			},
 			this.secret,
 			{
-				subject: `${userId}`,
 				expiresIn: this.expirationSeconds,
 			},
 		)
@@ -44,7 +44,7 @@ export class JWT {
 			subject: `${userId}`,
 		}) as TokenPayload
 
-		if (parseInt(decoded.sub) !== userId) {
+		if (decoded.userId !== userId) {
 			throw new jwt.JsonWebTokenError("Subject doesn't match")
 		}
 
