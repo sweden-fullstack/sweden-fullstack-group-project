@@ -27,4 +27,6 @@ app.use("/auth", authRouter)
 
 app.use(ErrorHandler.handle)
 
+app.use(ErrorHandler.handle)
+
 export default app

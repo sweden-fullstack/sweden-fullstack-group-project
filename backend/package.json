@@ -9,7 +9,10 @@
 	"keywords": [],
 	"scripts": {
 		"dev": "nodemon",
-		"dev:no-restart": "tsx --tsconfig tsconfig.json src/index.ts"
+		"dev:no-restart": "npm run build && node ./dist/backend/src/index.js",
+		"build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
+		"seed": "tsx src/seed/seed.ts",
+		"prepare": "ts-patch install"
 	},
 	"dependencies": {
 		"@types/passport": "^1.0.17",
@@ -28,6 +31,8 @@
 		"@types/express": "^5.0.6",
 		"@types/jsonwebtoken": "^9.0.10",
 		"nodemon": "^3.1.14",
+		"ts-patch": "^3.3.0",
+		"tsc-alias": "^1.8.16",
 		"tsx": "^4.21.0"
 	}
 }
