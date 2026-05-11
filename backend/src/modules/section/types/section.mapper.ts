@@ -9,8 +9,8 @@ export default class SectionMapper {
 			entity.id = dto.id
 		}
 
-		if (dto.building_id !== undefined) {
-			entity.building_id = dto.building_id
+		if (dto.buildingId !== undefined) {
+			entity.building_id = dto.buildingId
 		}
 
 		if (dto.name !== undefined) {
@@ -27,7 +27,7 @@ export default class SectionMapper {
 	static toDto(entity: SectionEntity): SectionDto {
 		return {
 			id: entity.id,
-			building_id: entity.building_id,
+			buildingId: entity.building_id,
 			name: entity.name,
 			description: entity.description,
 		}

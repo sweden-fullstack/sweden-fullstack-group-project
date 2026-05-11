@@ -18,7 +18,7 @@ class SectionController {
 	}
 
 	async create(req: Request, res: Response) {
-		const body = typia.assert<SectionCreate>(req.body)
+		const body = typia.assertEquals<SectionCreate>(req.body)
 		const newSection = await SectionService.create(body)
 
 		res.status(201).json(newSection)
@@ -26,7 +26,7 @@ class SectionController {
 
 	async update(req: Request, res: Response) {
 		const id = parseInt(req.params.id as string)
-		const body = typia.assert<SectionUpdate>(req.body)
+		const body = typia.assertEquals<SectionUpdate>(req.body)
 
 		const newSection = await SectionService.update(id, body)
 		return res.status(200).json(newSection)

@@ -1,6 +1,6 @@
 type SectionDto = {
 	id: number
-	building_id: number
+	buildingId: number
 	name: string
 	description: string
 }
