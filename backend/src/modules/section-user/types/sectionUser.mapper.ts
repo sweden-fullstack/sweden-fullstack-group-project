@@ -23,6 +23,7 @@ export default class SectionUserMapper {
 	static toDto(entity: SectionUserEntity): SectionUserDto {
 		return {
 			roleId: entity.role_id,
+			role: "",
 			sectionId: entity.section_id,
 			userId: entity.user_id,
 		}

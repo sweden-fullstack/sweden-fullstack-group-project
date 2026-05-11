@@ -1,5 +1,5 @@
 import envConfig from "@/config/env"
-import TokenPayload from "@/shared/types/jwt/tokenPayload"
+import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 import UserRole from "@/shared/types/user-roles/userRole"
 import jwt from "jsonwebtoken"
 
@@ -42,7 +42,7 @@ export class JWT {
 	) {
 		const decoded = jwt.verify(token, this.secret, {
 			subject: `${userId}`,
-		}) as TokenPayload
+		}) as JwtPayloadExtended
 
 		if (decoded.userId !== userId) {
 			throw new jwt.JsonWebTokenError("Subject doesn't match")

@@ -9,8 +9,8 @@ router.get("/", userController.getAll)
 router.get("/:id", userController.getById)
 router.get(
 	"/selfAuthenticated",
-	(req, _res, next) => AuthHandler.handle(req, next, getAllUserRoles),
-	userController.getUsingAuth,
+	AuthHandler.handle(getAllUserRoles),
+	userController.getByAuthentication,
 )
 router.post("/", userController.create)
 router.put("/:id", userController.update)

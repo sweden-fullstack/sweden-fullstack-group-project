@@ -1,7 +1,7 @@
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import sectionUserRepository from "./sectionUser.repository"
 import NotFoundError from "@/errors/NotFoundError"
-import SectionUserMapper from "./types/sectionUser.mapper"
+// import SectionUserMapper from "./types/sectionUser.mapper"
 
 class SectionUserService {
 	async getByUserIdAndSectionId(
@@ -17,7 +17,9 @@ class SectionUserService {
 			throw new NotFoundError("Section user not found")
 		}
 
-		return SectionUserMapper.toDto(user)
+		throw new Error("")
+
+		// return SectionUserMapper.toDto(user)
 	}
 }
 
