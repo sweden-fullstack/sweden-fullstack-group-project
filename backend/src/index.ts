@@ -6,6 +6,7 @@ import umzug from "./lib/umzugMigrations"
 import envConfig from "./config/env"
 import cors from "cors"
 import ErrorHandler from "./middlewares/errorHandler"
+import eventTypeRouter from "./modules/cleaning/cleaning.routes"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
@@ -23,6 +24,7 @@ app.listen(envConfig.port, () =>
 )
 
 app.use("/user", usersRouter)
+app.use("/eventType", eventTypeRouter)
 app.use("/section", sectionRouter)
 
 app.use(ErrorHandler.handle)

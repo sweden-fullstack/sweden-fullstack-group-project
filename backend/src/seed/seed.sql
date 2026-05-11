@@ -1,6 +1,7 @@
  SET FOREIGN_KEY_CHECKS = 0;
 
 TRUNCATE TABLE house_rule_category_map;
+TRUNCATE TABLE section_event_assignee;
 TRUNCATE TABLE section_event;
 TRUNCATE TABLE section_user;
 TRUNCATE TABLE user_interest;
@@ -90,3 +91,10 @@ INSERT INTO section_event (
       (1, 1, 1, 'Bring snacks and a movie suggestion!', '2026-05-10 19:00:00', '2026-05-10 22:00:00'),
       (2, 2, 2, 'Help clean common areas.',           '2026-05-11 10:00:00', '2026-05-11 12:00:00'),
       (3, 3, 3, NULL,                                 '2026-05-12 09:00:00', '2026-05-12 11:00:00');
+
+INSERT INTO section_event_assignee (user_id, section_event_id) VALUES
+    (1, 1),
+    (4, 1),
+    (2, 2),
+    (3, 3),
+    (4, 3);

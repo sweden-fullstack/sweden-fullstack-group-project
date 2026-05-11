@@ -12,6 +12,15 @@ export default class UserMapper {
 		if (dto.email !== undefined) {
 			entity.email = dto.email
 		}
+		if (dto.firstName !== undefined) {
+			entity.firstName = dto.firstName
+		}
+		if (dto.lastName !== undefined) {
+			entity.lastName = dto.lastName
+		}
+		if (dto.sectionId !== undefined) {
+			entity.sectionId = dto.sectionId
+		}
 
 		return entity
 	}
@@ -20,9 +29,9 @@ export default class UserMapper {
 		return {
 			id: entity.id,
 			email: entity.email,
-			firstName: "",
-			lastName: "",
-			sectionId: 0,
+			firstName: entity.firstName,
+			lastName: entity.lastName,
+			sectionId: entity.sectionId,
 		}
 	}
 }
