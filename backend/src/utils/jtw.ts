@@ -10,7 +10,11 @@ export class JWT {
 	 * Defines how long tokens last, currently 90 days
 	 */
 	private static expirationSeconds = 3 * 30 * 24 * 60 * 60
-	static generate(userId: number, sectionId: number, userRole: UserRole) {
+
+	/**
+	 * Generates JWT token
+	 */
+	static generate(userId: number, userRole: UserRole, sectionId: number) {
 		return jwt.sign(
 			{
 				sectionId: sectionId,
@@ -26,14 +30,15 @@ export class JWT {
 
 	/**
 	 * @param token the input token
-	 * @param userId the email to validate against
+	 * @param userId the userId to validate against
+	 * @param sectionId If defined will check whether user belongs to given section
 	 * @param validRoles if the role in the token doesn't match any of the roles here it will fail
 	 */
 	static async verify(
 		token: string,
 		userId: number,
-		sectionId?: number,
 		validRoles: UserRole[] = ["student"],
+		sectionId?: number,
 	) {
 		const decoded = jwt.verify(token, this.secret, {
 			subject: `${userId}`,

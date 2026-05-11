@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken"
 import { Request } from "express"
 
 export default class AuthHandler {
+	static hello() {}
+
 	static handle(
 		req: Request,
 		next: NextFunction,

@@ -5,6 +5,7 @@ const router = Router()
 
 router.get("/", userController.getAll)
 router.get("/:id", userController.getById)
+router.get("/selfAuthenticated", AuthHandler)
 router.post("/", userController.create)
 router.put("/:id", userController.update)
 router.delete("/:id", userController.delete)
