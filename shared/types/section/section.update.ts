@@ -3,7 +3,7 @@
  */
 type SectionUpdate = {
 	name: string
-	description: string
+	description: string | null
 }
 
 export default SectionUpdate
