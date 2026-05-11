@@ -23,6 +23,7 @@ const envConfig = {
 		: "sweden-backend",
 	oauthClientId: process.env.OAUTH_CLIENT_ID!,
 	oauthClientSecret: process.env.OAUTH_CLIENT_SECRET!,
+	jwtSecret: process.env.JWT_SECRET!,
 	frontendServer: process.env.FRONTEND_SERVER
 		? process.env.FRONTEND_SERVER
 		: "http://localhost:5173/",

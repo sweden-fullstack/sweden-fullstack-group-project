@@ -1,10 +1,10 @@
+import envConfig from "@/config/env"
 import TokenPayload from "@/shared/types/jwt/tokenPayload"
 import UserRole from "@/shared/types/user-roles/userRole"
 import jwt from "jsonwebtoken"
 
 export class JWT {
-	private static secret =
-		"4e9215ffe52a8669405206db72d8d9fae89a899f75f58c1e0e00c934c6ce028f"
+	private static secret = envConfig.jwtSecret
 
 	/**
 	 * Defines how long tokens last, currently 90 days
