@@ -319,9 +319,12 @@ export default function CleaningPage() {
 							<CleaningCalendar
 								selectedDate={selectedDate}
 								onSelectedDateChange={setSelectedDate}
-								daysWithAssignedDuty={daysWithAssignedDuty}
 								viewMode={viewMode}
-								myDutyDateSet={myDutyDateSet}
+								dutyDateSet={
+									viewMode === "mine"
+										? myDutyDateSet
+										: daysWithAssignedDuty
+								}
 							/>
 						</Box>
 					</Grid>

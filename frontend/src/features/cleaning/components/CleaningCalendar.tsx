@@ -6,17 +6,15 @@ import { toDateKey } from "../utils/date"
 type Props = {
 	selectedDate: Date
 	onSelectedDateChange: (date: Date) => void
-	daysWithAssignedDuty: Set<string>
+	dutyDateSet: Set<string>
 	viewMode: "section" | "mine"
-	myDutyDateSet: Set<string>
 }
 
 export default function CleaningCalendar({
 	selectedDate,
 	onSelectedDateChange,
-	daysWithAssignedDuty,
+	dutyDateSet,
 	viewMode,
-	myDutyDateSet,
 }: Props) {
 	return (
 		<Box
@@ -43,7 +41,7 @@ export default function CleaningCalendar({
 					}
 					const dateKey = toDateKey(date)
 					const classes: string[] = []
-					if (viewMode === "mine" && myDutyDateSet.has(dateKey)) {
+					if (viewMode === "mine" && dutyDateSet.has(dateKey)) {
 						classes.push(styles.myDutyCircle)
 					}
 					return classes.join(" ")
@@ -56,7 +54,7 @@ export default function CleaningCalendar({
 						return null
 					}
 					const dateKey = toDateKey(date)
-					if (!daysWithAssignedDuty.has(dateKey)) {
+					if (!dutyDateSet.has(dateKey)) {
 						return null
 					}
 					return <span className={styles.dutyDot} />
