@@ -4,7 +4,7 @@
 type SectionCreate = {
 	buildingId: number
 	name: string
-	description: string
+	description?: string
 }
 
 export default SectionCreate
