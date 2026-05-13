@@ -1,8 +1,11 @@
 import { Router } from "express"
-import eventTypeController from "./cleaning.controller"
+import cleaningController from "./cleaning.controller"
 
 const router = Router()
 
-router.get("/", eventTypeController.getCleaningData)
+router.get("/:sectionId", cleaningController.getBySection)
+router.post("/", cleaningController.create)
+router.put("/:sectionEventId/assignees", cleaningController.update)
+router.delete("/:eventId", cleaningController.delete)
 
 export default router
