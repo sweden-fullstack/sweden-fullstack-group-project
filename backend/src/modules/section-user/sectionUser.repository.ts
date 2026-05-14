@@ -2,14 +2,14 @@ import db from "@/config/database"
 import { RowDataPacket } from "mysql2"
 import SectionUserEntity from "./types/sectionUser.entity"
 
-const tableName = "section_user"
+export const tableName = "section_user"
 
 class SectionUserRepository {
-	async findByUserIdAndSectionId(userId: number, sectionId: number) {
+	async findByUserId(userId: number) {
 		const [rows] = await db.query<RowDataPacket[]>(
 			`SELECT * FROM ${tableName}
-         WHERE user_id = ? AND section_id = ?`,
-			[userId, sectionId],
+         WHERE user_id = ?`,
+			[userId],
 		)
 
 		if (rows.length === 0) return null

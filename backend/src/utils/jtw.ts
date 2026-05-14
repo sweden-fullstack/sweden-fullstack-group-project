@@ -1,6 +1,6 @@
 import envConfig from "@/config/env"
 import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
-import UserRole from "@/shared/types/user-roles/userRole"
+import UserRole from "@/shared/types/user-role/userRole"
 import jwt from "jsonwebtoken"
 
 export class JWT {
@@ -14,12 +14,18 @@ export class JWT {
 	/**
 	 * Generates JWT token
 	 */
-	static generate(userId: number, userRole: UserRole, sectionId: number) {
+	static generate(
+		userRole: UserRole,
+		userId: number,
+		sectionId: number,
+		buildingId: number,
+	) {
 		return jwt.sign(
 			{
-				sectionId: sectionId,
 				userRole: userRole,
 				userId: userId,
+				sectionId: sectionId,
+				buildingId: buildingId,
 			},
 			this.secret,
 			{
@@ -30,21 +36,26 @@ export class JWT {
 
 	/**
 	 * @param token the input token
+	 * @param validRoles If empty (length 0) will skip check, if there is one or more role will try to validate that the token contains one of the roles
 	 * @param userId the userId to validate against
 	 * @param sectionId If defined will check whether user belongs to given section
-	 * @param validRoles if the role in the token doesn't match any of the roles here it will fail
+	 * @param buildingId If defined will check whether user belongs to given building
+	 * @returns decoded token
 	 */
-	static async verify(
+	static verify(
 		token: string,
-		userId: number,
 		validRoles: UserRole[] = ["student"],
+		userId?: number,
 		sectionId?: number,
+		buildingId?: number,
 	) {
-		const decoded = jwt.verify(token, this.secret, {
-			subject: `${userId}`,
-		}) as JwtPayloadExtended
+		const decoded = jwt.verify(token, this.secret) as JwtPayloadExtended
 
-		if (decoded.userId !== userId) {
+		if (validRoles.length > 0 && !validRoles.includes(decoded.userRole)) {
+			throw new jwt.JsonWebTokenError("User Role missing")
+		}
+
+		if (userId && decoded.userId !== userId) {
 			throw new jwt.JsonWebTokenError("Subject doesn't match")
 		}
 
@@ -52,8 +63,8 @@ export class JWT {
 			throw new jwt.JsonWebTokenError("Section id doesn't match")
 		}
 
-		if (!validRoles.includes(decoded.userRole)) {
-			throw new jwt.JsonWebTokenError("User Role missing")
+		if (buildingId && decoded.buildingId !== buildingId) {
+			throw new jwt.JsonWebTokenError("Building id doesn't match")
 		}
 
 		if (Math.floor(Date.now() / 1000) > decoded.exp) {
@@ -62,5 +73,7 @@ export class JWT {
 				new Date(decoded.exp),
 			)
 		}
+
+		return decoded
 	}
 }

@@ -5,6 +5,19 @@
 type UserEntity = {
 	id: number
 	email: string
+	first_name: string
+	last_name: string
+	room_number: number
+	major: string
+	stay_period_start: Date
+	stay_period_end: Date
+	profile_picture_url?: string
+
+	// From joins
+	section_id?: number
+	role_id?: number
+	building_id?: number
+	role?: string
 }
 
 export default UserEntity

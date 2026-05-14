@@ -1,36 +1,42 @@
-import { Strategy as GoogleStrategy } from "passport-google-oauth20"
-import passport from "passport"
-import { Request, Response } from "express"
-import OAuthUser from "./types/user.oauth"
 import envConfig from "@/config/env"
-
-export const passportConfigured = passport.use(
-	new GoogleStrategy(
-		{
-			clientID: envConfig.oauthClientId,
-			clientSecret: envConfig.oauthClientSecret,
-			callbackURL: "/auth/callback",
-		},
-		async (_accessToken, _refreshToken, profile, done) => {
-			const user: OAuthUser = {
-				googleId: profile.id,
-				email: profile.emails![0].value,
-				name: profile.displayName,
-				firstName: profile.name?.familyName,
-				lastName: profile.name?.givenName,
-				picture: profile.photos?.[0].value,
-			}
-
-			return done(null, user)
-		},
-	),
-)
+import passport, { Profile } from "passport"
+import {
+	Strategy as GoogleStrategy,
+	VerifyCallback,
+} from "passport-google-oauth20"
+import authService from "./auth.service"
+import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
+import { Request, Response } from "express"
 
 class AuthController {
-	async callback(req: Request, res: Response) {
-		const user = req.user! as OAuthUser
-		console.log(user)
+	passportConfigured = passport.use(
+		new GoogleStrategy(
+			{
+				clientID: envConfig.oauthClientId,
+				clientSecret: envConfig.oauthClientSecret,
+				callbackURL: "/auth/callback",
+			},
+			this.googleStrategy,
+		),
+	)
 
+	configurePassport() {
+		return this.passportConfigured
+	}
+
+	async googleStrategy(
+		_accessToken: string,
+		_refreshToken: string,
+		profile: Profile,
+		done: VerifyCallback,
+	) {
+		const token = authService.googleStrategy(profile)
+		return done(null, token)
+	}
+
+	async callback(req: Request, res: Response) {
+		const user = req.user! as JwtPayloadExtended
+		console.log(user)
 		res.redirect(envConfig.frontendServer)
 	}
 }

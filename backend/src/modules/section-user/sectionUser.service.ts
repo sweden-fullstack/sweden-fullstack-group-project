@@ -1,25 +1,17 @@
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import sectionUserRepository from "./sectionUser.repository"
 import NotFoundError from "@/errors/NotFoundError"
-// import SectionUserMapper from "./types/sectionUser.mapper"
+import SectionUserMapper from "./types/sectionUser.mapper"
 
 class SectionUserService {
-	async getByUserIdAndSectionId(
-		userId: number,
-		sectionId: number,
-	): Promise<SectionUserDto> {
-		const user = await sectionUserRepository.findByUserIdAndSectionId(
-			userId,
-			sectionId,
-		)
+	async getByUserId(userId: number): Promise<SectionUserDto> {
+		const user = await sectionUserRepository.findByUserId(userId)
 
 		if (!user) {
 			throw new NotFoundError("Section user not found")
 		}
 
-		throw new Error("")
-
-		// return SectionUserMapper.toDto(user)
+		return SectionUserMapper.toDto(user)
 	}
 }
 

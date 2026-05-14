@@ -12,6 +12,7 @@ class UserService {
 	}
 
 	async getById(id: number): Promise<UserDto> {
+		console.error(`SEARCHING WITH ID ${id}`)
 		const user = await userRepository.findById(id)
 
 		if (!user) {
