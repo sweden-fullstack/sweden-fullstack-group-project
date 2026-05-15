@@ -29,7 +29,7 @@ type Filter = "all" | "building" | "section"
 type Props = {
 	sectionId: number
 	events: SectionCalendarEvent[]
-	// With onUpdate and onCreate since we coded backend like that ;_;
+	// TODO With onUpdate and onCreate since we coded backend like that ;_;
 	onUpsert: (e: SectionCalendarEvent) => void
 	onRemove: (id: number) => void
 }
@@ -242,6 +242,8 @@ export default function SectionEventCalendar({
 														>
 															{ev.title}{" "}
 															<Box
+																// TODO move to separate component
+
 																as="span"
 																opacity={0.88}
 															>
@@ -351,6 +353,8 @@ function FlexHeader({
 						›
 					</Button>
 					<Button
+						// TODO move to separate compoennt
+
 						size="sm"
 						bg="#90d5ff"
 						color="#163447"
