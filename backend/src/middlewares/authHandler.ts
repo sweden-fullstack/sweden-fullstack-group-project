@@ -17,10 +17,9 @@ export default class AuthHandler {
 		buildingId?: number,
 	) {
 		return (req: Request, _res: Response, next: NextFunction) => {
-			const token = req.headers["authorization"] as string
-			const bearerToken = token.replace("Bearer ", "")
+			const token = req.cookies.token
 			const decoded = JWT.verify(
-				bearerToken,
+				token,
 				validRoles,
 				userId,
 				sectionId,

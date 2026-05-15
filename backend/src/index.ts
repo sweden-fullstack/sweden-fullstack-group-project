@@ -6,6 +6,7 @@ import umzug from "./lib/umzugMigrations"
 import envConfig from "./config/env"
 import cors from "cors"
 import ErrorHandler from "./middlewares/errorHandler"
+import cookieParser from "cookie-parser"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
@@ -15,7 +16,14 @@ await umzug.up()
 
 const app = express()
 
-app.use(cors())
+app.use(
+	cors({
+		origin: envConfig.frontendServer.slice(0, -1),
+		credentials: true,
+	}),
+)
+
+app.use(cookieParser())
 app.use(express.json())
 
 app.listen(envConfig.port, () =>

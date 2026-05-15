@@ -1,5 +1,3 @@
-import UserRole from "@/shared/types/user-role/userRole"
-import { JWT } from "@/utils/jtw"
 import { Profile } from "passport"
 import userService from "../user/user.service"
 import OAuthUser from "./types/user.oauth"
@@ -16,17 +14,7 @@ class AuthService {
 		}
 
 		const user = await userService.getByEmail(oauthUser.email)
-		const token = JWT.generate(
-			user.role! as UserRole,
-			user.id,
-			user.sectionId!,
-			user.buildingId!,
-		)
-
-		console.log("GENERATED TOKEN below")
-		console.log(token)
-
-		return JWT.verify(token)
+		return user
 	}
 }
 

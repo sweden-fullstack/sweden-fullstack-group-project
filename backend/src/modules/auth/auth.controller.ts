@@ -5,8 +5,10 @@ import {
 	VerifyCallback,
 } from "passport-google-oauth20"
 import authService from "./auth.service"
-import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 import { Request, Response } from "express"
+import { JWT } from "@/utils/jtw"
+import UserDto from "@/shared/types/user/user.dto"
+import UserRole from "@/shared/types/user-role/userRole"
 
 class AuthController {
 	passportConfigured = passport.use(
@@ -14,7 +16,7 @@ class AuthController {
 			{
 				clientID: envConfig.oauthClientId,
 				clientSecret: envConfig.oauthClientSecret,
-				callbackURL: "/auth/callback",
+				callbackURL: "/auth/callback", // sometimes I wonder what kind of drugs google developers were on when developing oauth, if this is removed everything breaks
 			},
 			this.googleStrategy,
 		),
@@ -30,13 +32,26 @@ class AuthController {
 		profile: Profile,
 		done: VerifyCallback,
 	) {
-		const token = authService.googleStrategy(profile)
+		const token = await authService.googleStrategy(profile)
 		return done(null, token)
 	}
 
 	async callback(req: Request, res: Response) {
-		const user = req.user! as JwtPayloadExtended
-		console.log(user)
+		const user = req.user! as UserDto
+
+		const token = JWT.generate(
+			user.role! as UserRole,
+			user.id,
+			user.sectionId!,
+			user.buildingId!,
+		)
+		res.cookie("token", token, {
+			domain: "localhost",
+			httpOnly: false, // Should be changed if this becomes real app, but easier to debug like this
+			secure: false,
+			sameSite: "lax",
+		})
+
 		res.redirect(envConfig.frontendServer)
 	}
 }
