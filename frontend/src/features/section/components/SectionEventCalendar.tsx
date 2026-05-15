@@ -37,6 +37,7 @@ type Props = {
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 const maxPills = 3
 
+// TODO ehhhh you are not supposted to set ID from the frontend!
 function nextNewId(list: SectionCalendarEvent[]) {
 	return Math.min(0, ...list.map((e) => e.id), 0) - 1
 }
@@ -242,8 +243,6 @@ export default function SectionEventCalendar({
 														>
 															{ev.title}{" "}
 															<Box
-																// TODO move to separate component
-
 																as="span"
 																opacity={0.88}
 															>
@@ -297,6 +296,7 @@ export default function SectionEventCalendar({
 	)
 }
 
+// TODO move to separate component
 function FlexHeader({
 	month,
 	onPrev,
@@ -353,8 +353,6 @@ function FlexHeader({
 						›
 					</Button>
 					<Button
-						// TODO move to separate compoennt
-
 						size="sm"
 						bg="#90d5ff"
 						color="#163447"
@@ -408,6 +406,7 @@ function FlexHeader({
 	)
 }
 
+// TODO move to separate component
 function FilterBtn({
 	active,
 	onClick,

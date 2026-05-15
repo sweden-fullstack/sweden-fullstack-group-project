@@ -23,6 +23,7 @@ export default function SectionPage() {
 	const { getUserSelf } = useUserStore()
 	const [currentUserId, setCurrentUserId] = useState<number | null>(null)
 
+	// TODO perhaps store in zustand store and set the seed there? will require separate commit to merge changes with backend if left like this
 	const seed = useMemo(
 		() => section?.calendarEvents ?? [],
 		[section?.calendarEvents],
