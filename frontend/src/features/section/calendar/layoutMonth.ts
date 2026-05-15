@@ -1,3 +1,5 @@
+// TODO move all scripts here to components folder except this one, move this to utils folder and maybe name it dateUtils?
+
 export type MonthCell = {
 	date: Date
 	inCurrentMonth: boolean

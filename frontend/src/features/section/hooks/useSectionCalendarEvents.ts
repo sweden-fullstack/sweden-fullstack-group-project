@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import type { SectionCalendarEvent } from "../types"
 
+// TODO maybe use zustand store? and convert upsert to update and create
 export function useSectionCalendarEvents(
 	sectionId: number | null,
 	seed: SectionCalendarEvent[],

@@ -57,7 +57,8 @@ entity announcement {
 
 entity section_event {
     id: int <<PK>>
-    section_id: int
+    building_id: int
+    section_id?: int
     event_id: int
     description?: string (md)
     start_time: timestamp
@@ -129,6 +130,7 @@ section_user "*" -- "1" section
 section "1" -- "*" section_event
 section "*" -- "1" building
 section_event "*" -- "1" event_type
+section_event "*" -- "1" building
 section_event "1" -- "*" section_event_assignee
 building "1" -- "*" announcement
 building "1" -- "*" house_rule
@@ -136,4 +138,3 @@ house_rule "1" -- "*" house_rule_category_map
 house_rule_category "1" -- "*" house_rule_category_map
 
 @enduml
-

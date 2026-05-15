@@ -1,5 +1,6 @@
 import type SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 
+// TODO just use SectionEventDto
 export type SectionCalendarEvent = Omit<
 	SectionEventDto,
 	"startTime" | "endTime"
@@ -9,5 +10,5 @@ export type SectionCalendarEvent = Omit<
 	// Use date instead
 	endTime: string
 	title: string
-	visibility: "building" | "section"
+	visibility: "building" | "section" // TODO if sectionId defined
 }

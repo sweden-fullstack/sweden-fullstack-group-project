@@ -1,5 +1,7 @@
 const LOCALE = "en-US" as const
 
+// TODO There are 7 ways to make dates please reduce ;_;/
+
 export function formatTimeRange(start: Date, end: Date) {
 	const opts: Intl.DateTimeFormatOptions = {
 		month: "short",
