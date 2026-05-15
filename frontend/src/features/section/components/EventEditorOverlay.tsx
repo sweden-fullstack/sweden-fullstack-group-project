@@ -38,6 +38,7 @@ export default function EventEditorOverlay({
 	onDelete,
 }: Props) {
 	const [title, setTitle] = useState("")
+	// TODO maybe create a type from "building" | "section", if you use something more than once have one source of truth!
 	const [visibility, setVisibility] = useState<"building" | "section">(
 		"section",
 	)
@@ -66,6 +67,7 @@ export default function EventEditorOverlay({
 		}
 		const start = new Date(startLocal)
 		const end = new Date(endLocal)
+		// TODO If you use Date instead of string you don't have to worry about this! just use dates instead, startLocal and endLocal as date instead of string
 		if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
 			setError("Fix the dates.")
 			return
@@ -130,6 +132,7 @@ export default function EventEditorOverlay({
 							value={visibility}
 							onChange={(e: ChangeEvent<HTMLSelectElement>) =>
 								setVisibility(
+									// TODO when I say one source of truth I mean this here as the second source of truth
 									e.target.value as "building" | "section",
 								)
 							}

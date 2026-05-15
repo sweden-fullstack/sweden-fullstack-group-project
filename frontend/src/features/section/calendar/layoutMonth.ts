@@ -13,6 +13,7 @@ export function endOfMonth(d: Date) {
 	return new Date(d.getFullYear(), d.getMonth() + 1, 0)
 }
 
+// TODO ummmmmmmm gets date and returns string, this already exists in formatTimes!
 export function toDateKey(d: Date) {
 	const y = d.getFullYear()
 	const m = String(d.getMonth() + 1).padStart(2, "0")
@@ -24,6 +25,7 @@ export function addMonths(d: Date, delta: number) {
 	return new Date(d.getFullYear(), d.getMonth() + delta, 1)
 }
 
+// TODO move this to another script along with MonthCell and keep it in calendar folder!
 export function buildMonthGrid(visibleMonth: Date): MonthCell[][] {
 	const y = visibleMonth.getFullYear()
 	const m = visibleMonth.getMonth()
@@ -32,7 +34,7 @@ export function buildMonthGrid(visibleMonth: Date): MonthCell[][] {
 	const gridStart = new Date(y, m, 1 - mondayOffset)
 
 	const weeks: MonthCell[][] = []
-	let cursor = new Date(gridStart)
+	const cursor = new Date(gridStart)
 
 	for (let w = 0; w < 6; w++) {
 		const row: MonthCell[] = []
@@ -49,40 +51,48 @@ export function buildMonthGrid(visibleMonth: Date): MonthCell[][] {
 }
 
 export function sameCalendarDay(a: Date, b: Date) {
-	return (
-		a.getFullYear() === b.getFullYear() &&
-		a.getMonth() === b.getMonth() &&
-		a.getDate() === b.getDate()
-	)
+	// TODO I reworked it like this, should be the same behaviour, revert if broken
+	return a.toDateString() === b.toDateString()
+	// return (
+	// 	a.getFullYear() === b.getFullYear() &&
+	// 	a.getMonth() === b.getMonth() &&
+	// 	a.getDate() === b.getDate()
+	// )
 }
 
 export function isDayBetween(day: Date, start: Date, end: Date) {
-	const d = new Date(
-		day.getFullYear(),
-		day.getMonth(),
-		day.getDate(),
-		12,
-		0,
-		0,
-		0,
-	).getTime()
-	const s = new Date(
-		start.getFullYear(),
-		start.getMonth(),
-		start.getDate(),
-		0,
-		0,
-		0,
-		0,
-	).getTime()
-	const e = new Date(
-		end.getFullYear(),
-		end.getMonth(),
-		end.getDate(),
-		23,
-		59,
-		59,
-		999,
-	).getTime()
-	return d >= s && d <= e
+	// TODO I reworked it like this, should be the same behaviour, revert if broken
+	const dayStr = day.toDateString()
+	const startStr = start.toDateString()
+	const endStr = end.toDateString()
+
+	return dayStr >= startStr && dayStr <= endStr
+	// const d = new Date(
+	// 	day.getFullYear(),
+	// 	day.getMonth(),
+	// 	day.getDate(),
+	// 	12,
+	// 	0,
+	// 	0,
+	// 	0,
+	// ).getTime()
+	// const s = new Date(
+	// 	start.getFullYear(),
+	// 	start.getMonth(),
+	// 	start.getDate(),
+	// 	0,
+	// 	0,
+	// 	0,
+	// 	0,
+	// ).getTime()
+	// const e = new Date(
+	// 	end.getFullYear(),
+	// 	end.getMonth(),
+	// 	end.getDate(),
+	// 	23,
+	// 	59,
+	// 	59,
+	// 	999,
+	// ).getTime()
+	// return d >= s && d <= e
 }
