@@ -9,6 +9,8 @@ import sectionService from "../section/section.service"
 
 class SectionUserController {
 	async getByBuildingId(req: Request, res: Response) {
+		console.log({ test: new Date("2026-01-01") })
+
 		const jwt = req.user as JwtPayloadExtended
 		const buildingId = parseInt(req.params.buildingId as string)
 

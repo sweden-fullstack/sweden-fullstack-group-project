@@ -25,7 +25,30 @@ app.use(
 )
 
 app.use(cookieParser())
-app.use(express.json())
+app.use(
+	express.json({
+		reviver: (_key, value) => {
+			if (typeof value !== "string") return value
+
+			// YYYY-MM-DD format (2026-01-01)
+			const isSimpleDate = /^\d{4}-\d{2}-\d{2}$/.test(value)
+
+			// ISO format (2026-01-01T00:00:00.000Z)
+			const isISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/.test(
+				value,
+			)
+
+			if (isSimpleDate || isISO) {
+				const date = new Date(value)
+				if (!isNaN(date.getTime())) {
+					return date
+				}
+			}
+
+			return value
+		},
+	}),
+)
 
 app.listen(envConfig.port, () =>
 	console.log(`Server running on: localhost:${envConfig.port}`),
