@@ -1,7 +1,6 @@
 import { Request, Response } from "express"
 import userService from "./user.service"
 import UserUpdate from "@/shared/types/user/user.update"
-import UserCreate from "@/shared/types/user/user.create"
 import typia from "typia"
 import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 
@@ -11,25 +10,11 @@ class UserController {
 		res.json(users)
 	}
 
-	async getById(req: Request, res: Response) {
-		const id = parseInt(req.params.id as string)
-
-		const user = await userService.getById(id)
-		res.json(user)
-	}
-
 	async getByAuthentication(req: Request, res: Response) {
 		const jwt = req.user as JwtPayloadExtended
 
 		const user = await userService.getById(jwt.userId)
 		res.json(user)
-	}
-
-	async create(req: Request, res: Response) {
-		const body = typia.assertEquals<UserCreate>(req.body)
-		const newUser = await userService.create(body)
-
-		res.status(201).json(newUser)
 	}
 
 	async update(req: Request, res: Response) {
@@ -38,13 +23,6 @@ class UserController {
 
 		const newUser = await userService.update(id, body)
 		return res.status(200).json(newUser)
-	}
-
-	async delete(req: Request, res: Response) {
-		const id = parseInt(req.params.id as string)
-
-		await userService.delete(id)
-		return res.status(204).send()
 	}
 }
 
