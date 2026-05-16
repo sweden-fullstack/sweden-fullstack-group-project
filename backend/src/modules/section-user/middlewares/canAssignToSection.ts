@@ -21,8 +21,10 @@ const canAssignToSection = () => {
 			throw new ForbiddenError()
 		}
 
-		const sectionId = body.sectionId
-		const section = await sectionService.getById(sectionId)
+		const sectionId = req.params.sectionId ?? body.sectionId
+		const section = await sectionService.getById(
+			parseInt(sectionId as string),
+		)
 
 		if (jwt.buildingId === section.buildingId) {
 			return next()

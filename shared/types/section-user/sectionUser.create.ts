@@ -1,8 +1,6 @@
 import UserRole from "../user-role/userRole"
 
 type SectionUserCreate = {
-	sectionId: number
-
 	// Alternative representation (still join)
 	/**
 	 * If landlord only student and section_admin is permitted, otherwise throw error

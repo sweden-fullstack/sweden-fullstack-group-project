@@ -10,6 +10,6 @@ router.get(
 	authHandler(),
 	userController.getByAuthentication,
 )
-router.put("/:id", authHandler(["admin"]), userController.update)
+router.put("/:id", authHandler(), userController.update)
 
 export default router

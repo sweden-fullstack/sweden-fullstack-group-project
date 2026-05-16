@@ -10,10 +10,18 @@ import userService from "../user/user.service"
 import UserCreate from "@/shared/types/user/user.create"
 import UserUpdate from "@/shared/types/user/user.update"
 import SectionUserUpdate from "@/shared/types/section-user/sectionUser.update"
+import SectionUserEntity from "./types/sectionUser.entity"
+import userRepository from "../user/user.repository"
 
 class SectionUserService {
-	async getByUserId(userId: number): Promise<SectionUserDto> {
-		const user = await sectionUserRepository.findByUserId(userId)
+	async getBySectionIdAndUserId(
+		sectionId: number,
+		userId: number,
+	): Promise<SectionUserDto> {
+		const user = await sectionUserRepository.findBySectionIdAndUserId(
+			sectionId,
+			userId,
+		)
 
 		if (!user) {
 			throw new NotFoundError("Section user not found")
@@ -22,9 +30,10 @@ class SectionUserService {
 		return SectionUserMapper.toDto(user)
 	}
 
-	async create(user: SectionUserCreate) {
+	async create(sectionId: number, user: SectionUserCreate) {
 		return Transaction.run(async () => {
 			const sectionUserAsDto = user as SectionUserDto
+			sectionUserAsDto.sectionId = sectionId
 			sectionUserAsDto.roleId = (await userRoleRepository.findAll()).find(
 				(o) => o.name === sectionUserAsDto.role,
 			)!.id
@@ -37,17 +46,20 @@ class SectionUserService {
 			sectionUserAsDto.userId = insertedUserData.id
 
 			const insertedSectionData = await sectionUserRepository.create(
-				SectionUserMapper.toEntity(sectionUserAsDto),
+				SectionUserMapper.toEntity(
+					sectionUserAsDto,
+				) as SectionUserEntity,
 			)
 
 			return SectionUserMapper.toDto(insertedSectionData)
 		})
 	}
 
-	async update(userId: number, user: SectionUserUpdate) {
+	async update(sectionId: number, userId: number, user: SectionUserUpdate) {
 		return Transaction.run(async () => {
 			const sectionUserAsDto = user as SectionUserDto
 			sectionUserAsDto.userId = userId
+			sectionUserAsDto.sectionId = sectionId
 			sectionUserAsDto.roleId = (await userRoleRepository.findAll()).find(
 				(o) => o.name === sectionUserAsDto.role,
 			)!.id
@@ -59,11 +71,34 @@ class SectionUserService {
 				) as UserUpdate,
 			)
 
-			const insertedSectionData = await sectionUserRepository.create(
+			await sectionUserRepository.update(
+				sectionId,
+				userId,
 				SectionUserMapper.toEntity(sectionUserAsDto),
 			)
 
-			return SectionUserMapper.toEntity(insertedSectionData)
+			const updatedUser = await this.getBySectionIdAndUserId(
+				sectionUserAsDto.sectionId,
+				userId,
+			)
+			return SectionUserMapper.toEntity(updatedUser)
+		})
+	}
+
+	async delete(sectionId: number, userId: number) {
+		return Transaction.run(async () => {
+			const sectionUserDeleted = await sectionUserRepository.delete(
+				sectionId,
+				userId,
+			)
+			if (!sectionUserDeleted) {
+				throw new NotFoundError("")
+			}
+
+			const userDeleted = await userRepository.delete(userId)
+			if (!userDeleted) {
+				throw new NotFoundError("")
+			}
 		})
 	}
 }
