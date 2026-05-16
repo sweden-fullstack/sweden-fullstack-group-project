@@ -14,19 +14,19 @@ router.get(
 router.get("/:id", userController.getById)
 router.post(
 	"/",
-	authHandler(["admin", "landlord"]),
+	authHandler(["admin"]),
 	isLandlordOfUser(),
 	userController.create,
 )
 router.put(
 	"/:id",
-	authHandler(["admin", "landlord"]),
+	authHandler(["admin"]),
 	isLandlordOfUser(),
 	userController.update,
 )
 router.delete(
 	"/:id",
-	authHandler(["admin", "landlord"]),
+	authHandler(["admin"]),
 	isLandlordOfUser(),
 	userController.delete,
 )
