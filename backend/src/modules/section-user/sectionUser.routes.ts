@@ -12,4 +12,11 @@ router.post(
 	sectionUserController.create,
 )
 
+router.post(
+	"/userToSection/:userId",
+	authHandler(["admin", "landlord"]),
+	canAssignToSection(),
+	sectionUserController.create,
+)
+
 export default router

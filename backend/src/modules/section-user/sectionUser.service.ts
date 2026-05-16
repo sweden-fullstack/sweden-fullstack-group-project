@@ -7,6 +7,9 @@ import { Transaction } from "@/utils/transaction"
 import userRoleRepository from "../user-role/userRole.repository"
 import UserMapper from "../user/types/user.mapper"
 import userService from "../user/user.service"
+import UserCreate from "@/shared/types/user/user.create"
+import UserUpdate from "@/shared/types/user/user.update"
+import SectionUserUpdate from "@/shared/types/section-user/sectionUser.update"
 
 class SectionUserService {
 	async getByUserId(userId: number): Promise<SectionUserDto> {
@@ -27,7 +30,9 @@ class SectionUserService {
 			)!.id
 
 			const insertedUserData = await userService.create(
-				UserMapper.toCreateFromSectionUserDto(sectionUserAsDto),
+				UserMapper.toDtoFromSectionUserDto(
+					sectionUserAsDto,
+				) as UserCreate,
 			)
 			sectionUserAsDto.userId = insertedUserData.id
 
@@ -36,6 +41,29 @@ class SectionUserService {
 			)
 
 			return SectionUserMapper.toDto(insertedSectionData)
+		})
+	}
+
+	async update(userId: number, user: SectionUserUpdate) {
+		return Transaction.run(async () => {
+			const sectionUserAsDto = user as SectionUserDto
+			sectionUserAsDto.userId = userId
+			sectionUserAsDto.roleId = (await userRoleRepository.findAll()).find(
+				(o) => o.name === sectionUserAsDto.role,
+			)!.id
+
+			await userService.update(
+				userId,
+				UserMapper.toDtoFromSectionUserDto(
+					sectionUserAsDto,
+				) as UserUpdate,
+			)
+
+			const insertedSectionData = await sectionUserRepository.create(
+				SectionUserMapper.toEntity(sectionUserAsDto),
+			)
+
+			return SectionUserMapper.toEntity(insertedSectionData)
 		})
 	}
 }

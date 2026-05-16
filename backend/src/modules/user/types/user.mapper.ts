@@ -1,7 +1,6 @@
 import UserDto from "@/shared/types/user/user.dto"
 import UserEntity from "./user.entity"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
-import UserCreate from "@/shared/types/user/user.create"
 
 export default class UserMapper {
 	static toEntity(dto: Partial<UserDto>): Partial<UserEntity> {
@@ -37,7 +36,7 @@ export default class UserMapper {
 		}
 	}
 
-	static toCreateFromSectionUserDto(dto: SectionUserDto): UserCreate {
+	static toDtoFromSectionUserDto(dto: SectionUserDto): Partial<UserDto> {
 		return {
 			email: dto.email!,
 			firstName: dto.firstName!,
@@ -46,21 +45,6 @@ export default class UserMapper {
 			major: dto.major!,
 			stayPeriodStart: dto.stayPeriodStart!,
 			stayPeriodEnd: dto.stayPeriodEnd!,
-		}
-	}
-
-	static toEntityFromSectionUserDto(
-		dto: Partial<SectionUserDto>,
-	): Partial<UserEntity> {
-		return {
-			id: dto.userId,
-			email: dto.email,
-			first_name: dto.firstName,
-			last_name: dto.lastName,
-			room_number: dto.roomNumber,
-			major: dto.major,
-			stay_period_start: dto.stayPeriodStart,
-			stay_period_end: dto.stayPeriodEnd,
 		}
 	}
 }
