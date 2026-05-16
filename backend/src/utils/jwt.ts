@@ -2,6 +2,7 @@ import envConfig from "@/config/env"
 import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 import UserRole from "@/shared/types/user-role/userRole"
 import jwt from "jsonwebtoken"
+import { decode } from "node:punycode"
 
 export class JWT {
 	private static secret = envConfig.jwtSecret
@@ -51,6 +52,17 @@ export class JWT {
 	) {
 		const decoded = jwt.verify(token, this.secret) as JwtPayloadExtended
 
+		if (Math.floor(Date.now() / 1000) > decoded.exp) {
+			throw new jwt.TokenExpiredError(
+				"Token expired",
+				new Date(decoded.exp),
+			)
+		}
+
+		if (decoded.userRole === "admin") {
+			return decoded
+		}
+
 		if (validRoles.length > 0 && !validRoles.includes(decoded.userRole)) {
 			throw new jwt.JsonWebTokenError("User Role missing")
 		}
@@ -65,13 +77,6 @@ export class JWT {
 
 		if (buildingId && decoded.buildingId !== buildingId) {
 			throw new jwt.JsonWebTokenError("Building id doesn't match")
-		}
-
-		if (Math.floor(Date.now() / 1000) > decoded.exp) {
-			throw new jwt.TokenExpiredError(
-				"Token expired",
-				new Date(decoded.exp),
-			)
 		}
 
 		return decoded
