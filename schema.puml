@@ -26,7 +26,7 @@ entity user_interest {
 }
 
 entity section_user {
-    user_id: int <<PK>>
+    user_id: int 
     section_id: int
     role_id: int
     ---
