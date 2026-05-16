@@ -1,5 +1,5 @@
 import UserRole from "@/shared/types/user-role/userRole"
-import { JWT } from "@/utils/jtw"
+import { JWT } from "@/utils/jwt"
 import { NextFunction } from "express"
 import { Request, Response } from "express"
 

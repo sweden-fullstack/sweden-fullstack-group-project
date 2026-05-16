@@ -17,3 +17,5 @@ user
 / GET -- Get all users \* Perhaps only for admins?
 / PUT -- Update self data for user \* User must be authenticated and only if admin or self user
 / DELETE -- User deletes themselves? Priority 3
+
+Redirects?
