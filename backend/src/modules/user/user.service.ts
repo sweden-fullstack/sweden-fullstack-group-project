@@ -12,7 +12,6 @@ class UserService {
 	}
 
 	async getById(id: number): Promise<UserDto> {
-		console.error(`SEARCHING WITH ID ${id}`)
 		const user = await userRepository.findById(id)
 
 		if (!user) {
@@ -34,14 +33,14 @@ class UserService {
 
 	async create(user: UserCreate): Promise<UserDto> {
 		return Transaction.run(async () => {
-			const id = await userRepository.create(user)
+			const id = await userRepository.create(UserMapper.toEntity(user))
 			return await this.getById(id)
 		})
 	}
 
 	async update(id: number, user: UserUpdate): Promise<UserDto> {
 		return Transaction.run(async () => {
-			await userRepository.update(id, user)
+			await userRepository.update(id, UserMapper.toEntity(user))
 			return await this.getById(id)
 		})
 	}

@@ -1,8 +1,6 @@
 import db from "@/config/database"
 import UserEntity from "./types/user.entity"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
-import UserCreate from "@/shared/types/user/user.create"
-import UserUpdate from "@/shared/types/user/user.update"
 import { tableName as sectionUserTableName } from "@/modules/section-user/sectionUser.repository"
 import { tableName as userRoleTableName } from "@/modules/user-role/userRole.repository"
 import { tableName as sectionTableName } from "@/modules/section/section.repository"
@@ -41,7 +39,7 @@ class UserRepository {
 		return rows[0] as unknown as UserEntity
 	}
 
-	async create(user: UserCreate) {
+	async create(user: Partial<UserEntity>) {
 		const [result] = await db.query<ResultSetHeader>(
 			`INSERT INTO ${tableName} SET ?`,
 			[user],
@@ -50,7 +48,7 @@ class UserRepository {
 		return result.insertId
 	}
 
-	async update(id: number, user: UserUpdate) {
+	async update(id: number, user: Partial<UserEntity>) {
 		const [result] = await db.query<ResultSetHeader>(
 			`UPDATE ${tableName} SET ? WHERE id = ?`,
 			[user, id],

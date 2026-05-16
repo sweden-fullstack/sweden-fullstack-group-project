@@ -2,7 +2,6 @@
  * User object for creating users
  */
 type UserCreate = {
-	id: number
 	email: string
 	firstName: string
 	lastName: string

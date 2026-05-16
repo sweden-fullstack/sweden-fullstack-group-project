@@ -1,4 +1,6 @@
+import UserRole from "./userRole"
+
 export type UserRoleDto = {
 	id: number
-	name: string
+	name: UserRole
 }

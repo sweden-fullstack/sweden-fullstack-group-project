@@ -13,7 +13,16 @@ class SectionUserRepository {
 		)
 
 		if (rows.length === 0) return null
-		return rows[0] as unknown as SectionUserEntity
+		return rows[0] as SectionUserEntity
+	}
+
+	async create(user: Partial<SectionUserEntity>) {
+		const [rows] = await db.query<RowDataPacket[]>(
+			`INSERT INTO ${tableName} SET ?`,
+			[user],
+		)
+
+		return rows[0] as SectionUserEntity
 	}
 }
 
