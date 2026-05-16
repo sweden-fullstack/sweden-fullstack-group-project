@@ -1,28 +1,20 @@
 import db from "@/config/database"
 import UserEntity from "./types/user.entity"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
-import {
-	sectionTableName,
-	sectionUserTableName,
-	userRoleTableName,
-	userTableName,
-} from "@/utils/tableNames"
+import { userTableName } from "@/utils/tableNames"
 
 class UserRepository {
-	selectQueryBase = `SELECT u.*, su.section_id, su.role_id, s.building_id, ur.name as role FROM ${userTableName} u 
-               LEFT JOIN ${sectionUserTableName} su ON u.id = su.user_id
-               LEFT JOIN ${userRoleTableName} ur ON ur.id = su.role_id
-               LEFT JOIN ${sectionTableName} s ON s.id = su.section_id`
-
 	async findAll(): Promise<UserEntity[]> {
-		const [rows] = await db.query<RowDataPacket[]>(this.selectQueryBase)
+		const [rows] = await db.query<RowDataPacket[]>(
+			`SELECT * FROM ${userTableName}`,
+		)
 		return rows.map((o) => o as UserEntity)
 	}
 
 	async findById(id: number): Promise<UserEntity | null> {
 		console.log()
 		const [rows] = await db.query<RowDataPacket[]>(
-			`${this.selectQueryBase} WHERE u.id = ?`,
+			`SELECT * FROM ${userTableName} WHERE u.id = ?`,
 			[id],
 		)
 
@@ -32,7 +24,7 @@ class UserRepository {
 
 	async findByEmail(email: string): Promise<UserEntity | null> {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`${this.selectQueryBase} WHERE u.email = ?`,
+			`SELECT * FROM user WHERE u.email = ?`,
 			[email],
 		)
 

@@ -1,6 +1,3 @@
-/**
- * User object for creating users
- */
 type UserCreate = {
 	email: string
 	firstName: string

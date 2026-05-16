@@ -15,7 +15,17 @@ export default class SectionUserMapper {
 			roleId: entity.role_id,
 			sectionId: entity.section_id,
 			userId: entity.user_id,
+
+			// From joins
 			role: entity.role,
+			email: entity.email,
+			firstName: entity.first_name,
+			lastName: entity.last_name,
+			roomNumber: entity.room_number,
+			major: entity.major,
+			stayPeriodStart: entity.stay_period_start,
+			stayPeriodEnd: entity.stay_period_end,
+			profilePictureUrl: entity.profile_picture_url,
 		}
 	}
 }
