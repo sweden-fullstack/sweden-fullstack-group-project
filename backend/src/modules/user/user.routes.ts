@@ -1,18 +1,34 @@
 import { Router } from "express"
 import userController from "./user.controller"
-import AuthHandler from "@/middlewares/authHandler"
+import isLandlordOfUser from "./middlewares/isLandlordOfUser"
+import authHandler from "@/middlewares/authHandler"
 
 const router = Router()
 
 router.get("/", userController.getAll)
 router.get(
 	"/selfAuthenticated",
-	AuthHandler.handle(),
+	authHandler(),
 	userController.getByAuthentication,
 )
 router.get("/:id", userController.getById)
-router.post("/", userController.create)
-router.put("/:id", userController.update)
-router.delete("/:id", userController.delete)
+router.post(
+	"/",
+	authHandler(["admin", "landlord"]),
+	isLandlordOfUser(),
+	userController.create,
+)
+router.put(
+	"/:id",
+	authHandler(["admin", "landlord"]),
+	isLandlordOfUser(),
+	userController.update,
+)
+router.delete(
+	"/:id",
+	authHandler(["admin", "landlord"]),
+	isLandlordOfUser(),
+	userController.delete,
+)
 
 export default router

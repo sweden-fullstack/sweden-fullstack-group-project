@@ -13,7 +13,7 @@ class UserRepository {
 	selectQueryBase = `SELECT u.*, su.section_id, su.role_id, s.building_id, ur.name as role FROM ${tableName} u 
                LEFT JOIN ${sectionUserTableName} su ON u.id = su.user_id
                LEFT JOIN ${userRoleTableName} ur ON ur.id = su.role_id
-               RIGHT JOIN ${sectionTableName} s ON s.id = su.section_id`
+               LEFT JOIN ${sectionTableName} s ON s.id = su.section_id`
 
 	async findAll(): Promise<UserEntity[]> {
 		const [rows] = await db.query<RowDataPacket[]>(this.selectQueryBase)

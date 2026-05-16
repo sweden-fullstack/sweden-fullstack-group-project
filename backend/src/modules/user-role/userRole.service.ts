@@ -4,20 +4,27 @@ import userRoleRepository from "./userRole.repository"
 import NotFoundError from "@/errors/NotFoundError"
 
 class UserRoleService {
+	// The roles won't change so we can cache them
+	userRolesCache?: UserRoleDto[]
+
 	async getAll(): Promise<UserRoleDto[]> {
-		return (await userRoleRepository.findAll()).map((o) =>
-			UserRoleMapper.toDto(o),
-		)
+		if (!this.userRolesCache) {
+			this.userRolesCache = (await userRoleRepository.findAll()).map(
+				(o) => UserRoleMapper.toDto(o),
+			)
+		}
+
+		return this.userRolesCache
 	}
 
 	async getById(id: number): Promise<UserRoleDto> {
-		const user = await userRoleRepository.findById(id)
+		const role = await userRoleRepository.findById(id)
 
-		if (!user) {
-			throw new NotFoundError("User not found")
+		if (!role) {
+			throw new NotFoundError("Role not found")
 		}
 
-		return UserRoleMapper.toDto(user)
+		return UserRoleMapper.toDto(role)
 	}
 }
 

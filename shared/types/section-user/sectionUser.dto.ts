@@ -2,7 +2,7 @@ type SectionUserDto = {
 	userId: number
 	sectionId: number
 	roleId: number
-	role: string
+	role?: string
 }
 
 export default SectionUserDto

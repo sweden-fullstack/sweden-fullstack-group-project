@@ -20,8 +20,6 @@ class UserController {
 
 	async getByAuthentication(req: Request, res: Response) {
 		const jwt = req.user as JwtPayloadExtended
-		console.log("JWT IS")
-		console.log(jwt)
 
 		const user = await userService.getById(jwt.userId)
 		res.json(user)

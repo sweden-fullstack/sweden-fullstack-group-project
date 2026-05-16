@@ -3,17 +3,10 @@ import { UserRoleEntity } from "./userRole.entity"
 
 export default class UserRoleMapper {
 	static toEntity(dto: Partial<UserRoleDto>): Partial<UserRoleEntity> {
-		const entity: Partial<UserRoleEntity> = {}
-
-		if (dto.id !== undefined) {
-			entity.id = dto.id
+		return {
+			id: dto.id,
+			name: dto.name,
 		}
-
-		if (dto.name !== undefined) {
-			entity.name = dto.name
-		}
-
-		return entity
 	}
 
 	static toDto(entity: UserRoleEntity): UserRoleDto {
