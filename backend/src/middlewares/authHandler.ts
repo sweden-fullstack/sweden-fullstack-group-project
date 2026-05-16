@@ -1,3 +1,4 @@
+import UnauthenticatedError from "@/errors/UnauthenticatedError"
 import UserRole from "@/shared/types/user-role/userRole"
 import { JWT } from "@/utils/jwt"
 import { NextFunction } from "express"
@@ -16,7 +17,18 @@ function authHandler(
 	buildingId?: number,
 ) {
 	return (req: Request, _res: Response, next: NextFunction) => {
-		const token = req.cookies.token
+		let token: string | undefined
+
+		if (req.cookies?.token) {
+			token = req.cookies.token
+		} else if (req.headers.authorization?.startsWith("Bearer ")) {
+			token = req.headers.authorization.split(" ")[1]
+		}
+
+		if (!token) {
+			throw new UnauthenticatedError("No token provided")
+		}
+
 		const decoded = JWT.verify(
 			token,
 			validRoles,
