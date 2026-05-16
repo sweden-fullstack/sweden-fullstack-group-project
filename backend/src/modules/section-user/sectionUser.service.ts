@@ -14,6 +14,18 @@ import SectionUserEntity from "./types/sectionUser.entity"
 import userRepository from "../user/user.repository"
 
 class SectionUserService {
+	async getAllByBuildingId(buildingId: number): Promise<SectionUserDto[]> {
+		return (
+			await sectionUserRepository.findAllByBuildingId(buildingId)
+		).map((o) => SectionUserMapper.toDto(o))
+	}
+
+	async getAllBySectionId(sectionId: number): Promise<SectionUserDto[]> {
+		return (await sectionUserRepository.findAllBySectionId(sectionId)).map(
+			(o) => SectionUserMapper.toDto(o),
+		)
+	}
+
 	async getBySectionIdAndUserId(
 		sectionId: number,
 		userId: number,

@@ -6,7 +6,7 @@ import {
 } from "passport-google-oauth20"
 import authService from "./auth.service"
 import { Request, Response } from "express"
-import { JWT } from "@/utils/jtw"
+import { JWT } from "@/utils/jwt"
 import UserDto from "@/shared/types/user/user.dto"
 import UserRole from "@/shared/types/user-role/userRole"
 
@@ -52,7 +52,7 @@ class AuthController {
 			sameSite: "lax",
 		})
 
-		res.redirect(envConfig.frontendServer)
+		res.redirect(envConfig.oauthSuccessRedirect)
 	}
 }
 

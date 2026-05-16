@@ -5,6 +5,24 @@ import canAssignToSection from "./middlewares/canAssignToSection"
 
 const router = Router()
 
+router.get(
+	"/building/:buildingId",
+	authHandler(),
+	sectionUserController.getByBuildingId,
+)
+
+router.get(
+	"/section/:sectionId",
+	authHandler(),
+	sectionUserController.getBySectionId,
+)
+
+router.get(
+	"/selfAuthenticated",
+	authHandler(),
+	sectionUserController.getByAuthentication,
+)
+
 router.post(
 	"/userToSection/sectionId/:sectionId",
 	authHandler(["admin", "landlord"]),

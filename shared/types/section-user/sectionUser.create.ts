@@ -1,13 +1,11 @@
 import UserRole from "../user-role/userRole"
 
 type SectionUserCreate = {
-	// Alternative representation (still join)
+	// From joins
 	/**
 	 * If landlord only student and section_admin is permitted, otherwise throw error
 	 */
 	role: UserRole
-
-	// From joins
 	email: string
 	firstName: string
 	lastName: string

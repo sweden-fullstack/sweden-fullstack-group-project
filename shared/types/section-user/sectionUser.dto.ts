@@ -7,8 +7,6 @@ type SectionUserDto = {
 
 	// Alternative representation (still join)
 	role?: UserRole
-
-	// From joins
 	email?: string
 	firstName?: string
 	lastName?: string

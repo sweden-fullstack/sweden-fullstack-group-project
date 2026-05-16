@@ -5,7 +5,7 @@ import { tableName as sectionUserTableName } from "@/modules/section-user/sectio
 import { tableName as userRoleTableName } from "@/modules/user-role/userRole.repository"
 import { tableName as sectionTableName } from "@/modules/section/section.repository"
 
-const tableName = "user"
+export const tableName = "user"
 
 class UserRepository {
 	selectQueryBase = `SELECT u.*, su.section_id, su.role_id, s.building_id, ur.name as role FROM ${tableName} u 
@@ -15,7 +15,7 @@ class UserRepository {
 
 	async findAll(): Promise<UserEntity[]> {
 		const [rows] = await db.query<RowDataPacket[]>(this.selectQueryBase)
-		return rows.map((o) => o as unknown as UserEntity)
+		return rows.map((o) => o as UserEntity)
 	}
 
 	async findById(id: number): Promise<UserEntity | null> {
