@@ -1,6 +1,9 @@
 import express from "express"
 
-// This may be some of the WORST code I have EVER written but javascript has forced my hand, and yes, YYYY-MM-DD date gets converted to ISO date EVEN IF THEY ARE NOT DATES AND JUST SHARE THE SAME FORMAT... I miss real type safety
+// This may be some of the WORST code I have EVER written but javascript has forced my hand,
+// ISO date format should behave the same way with a magic cast to string back and forth
+// however, if a string that looks like YYYY-MM-DD is passed it will get converted to ISO date
+// I miss true type safety
 const expressJsonParser = express.json({
 	reviver: (_key, value) => {
 		if (typeof value !== "string") return value
