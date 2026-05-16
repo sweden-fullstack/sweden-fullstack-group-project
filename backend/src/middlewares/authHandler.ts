@@ -5,13 +5,13 @@ import { NextFunction } from "express"
 import { Request, Response } from "express"
 
 /**
- * @param validRoles If empty (length 0) will skip check, if there is one or more role will try to validate that the token contains one of the roles
+ * @param validRoles If empty (length 0) will skip check, if there is one or more role will try to validate that the token contains one of the roles, default empty
  * @param userId the userId to validate against
  * @param sectionId If defined will check whether user belongs to given section
  * @param buildingId If defined will check whether user belongs to given building
  */
 function authHandler(
-	validRoles: UserRole[] = ["student"],
+	validRoles: UserRole[] = [],
 	userId?: number,
 	sectionId?: number,
 	buildingId?: number,

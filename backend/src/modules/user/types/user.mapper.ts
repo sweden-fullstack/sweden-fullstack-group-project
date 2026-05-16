@@ -1,10 +1,11 @@
 import UserDto from "@/shared/types/user/user.dto"
 import UserEntity from "./user.entity"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
+import { removeUndefined } from "@/utils/mapper"
 
 export default class UserMapper {
 	static toEntity(dto: Partial<UserDto>): Partial<UserEntity> {
-		return {
+		return removeUndefined({
 			id: dto.id,
 			email: dto.email,
 			first_name: dto.firstName,
@@ -13,7 +14,7 @@ export default class UserMapper {
 			major: dto.major,
 			stay_period_start: dto.stayPeriodStart,
 			stay_period_end: dto.stayPeriodStart,
-		}
+		})
 	}
 
 	static toDto(entity: UserEntity): UserDto {

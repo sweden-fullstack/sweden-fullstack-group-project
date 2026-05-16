@@ -10,6 +10,6 @@ userRouter.get(
 	authHandler(),
 	userController.getByAuthentication,
 )
-userRouter.put("/:id", authHandler(), userController.update)
+userRouter.put("/:id", authHandler([]), userController.update)
 
 export default userRouter

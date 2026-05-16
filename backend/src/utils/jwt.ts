@@ -63,7 +63,7 @@ export class JWT {
 		}
 
 		if (validRoles.length > 0 && !validRoles.includes(decoded.userRole)) {
-			throw new jwt.JsonWebTokenError("User Role missing")
+			throw new jwt.JsonWebTokenError("User role missing")
 		}
 
 		if (userId && decoded.userId !== userId) {
