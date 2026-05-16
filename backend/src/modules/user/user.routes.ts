@@ -2,14 +2,14 @@ import { Router } from "express"
 import userController from "./user.controller"
 import authHandler from "@/middlewares/authHandler"
 
-const router = Router()
+const userRouter = Router()
 
-router.get("/", authHandler(["admin"]), userController.getAll)
-router.get(
+userRouter.get("/", authHandler(["admin"]), userController.getAll)
+userRouter.get(
 	"/selfAuthenticated",
 	authHandler(),
 	userController.getByAuthentication,
 )
-router.put("/:id", authHandler(), userController.update)
+userRouter.put("/:id", authHandler(), userController.update)
 
-export default router
+export default userRouter
