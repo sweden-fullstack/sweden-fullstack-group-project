@@ -24,6 +24,7 @@ const envConfig = {
 	oauthClientId: process.env.OAUTH_CLIENT_ID!,
 	oauthClientSecret: process.env.OAUTH_CLIENT_SECRET!,
 	oauthSuccessRedirect: process.env.OAUTH_SUCCESS_REDIRECT!,
+	oauthFailureRedirect: process.env.OAUTH_FAILURE_REDIRECT!,
 	jwtSecret: process.env.JWT_SECRET!,
 	frontendServer: process.env.FRONTEND_SERVER
 		? process.env.FRONTEND_SERVER
