@@ -66,6 +66,13 @@ class AuthController {
 
 			res.redirect(envConfig.oauthSuccessRedirect)
 		} catch {
+			res.cookie("oauthUser", JSON.stringify(oauthUser), {
+				domain: "localhost",
+				httpOnly: false,
+				secure: false,
+				sameSite: "lax",
+			})
+
 			res.redirect(envConfig.oauthFailureRedirect)
 		}
 	}
