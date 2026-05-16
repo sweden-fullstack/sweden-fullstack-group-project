@@ -1,0 +1,17 @@
+import envConfig from "@/config/env"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
+import axios from "axios"
+
+class SectionUserApi {
+	path = `${envConfig.backend}section-user/`
+
+	async getSelfAuthenticated() {
+		const { data } = await axios.get(`${this.path}selfAuthenticated`, {
+			withCredentials: true,
+		})
+
+		return data as SectionUserDto
+	}
+}
+
+export default new SectionUserApi()

@@ -1,5 +1,5 @@
 import AuthApi from "@/api/auth"
-import UserApi from "@/api/user"
+import SectionUserApi from "@/api/sectionUser"
 import envConfig from "@/config/env"
 import { Box, Button, Heading, Input, Text, VStack } from "@chakra-ui/react"
 import { type FormEvent, useState } from "react"
@@ -34,7 +34,7 @@ export default function LoginPage() {
 
 	const getSelfAuthenticated = () => {
 		try {
-			UserApi.getSelfAuthenticated().then((user) => {
+			SectionUserApi.getSelfAuthenticated().then((user) => {
 				console.log(user)
 			})
 		} catch {

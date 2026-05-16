@@ -27,6 +27,12 @@ export default class UserMapper {
 			stayPeriodStart: entity.stay_period_start,
 			stayPeriodEnd: entity.stay_period_end,
 			profilePictureUrl: entity.profile_picture_url,
+
+			// From joins
+			role: entity.role,
+			roleId: entity.role_id,
+			sectionId: entity.section_id,
+			buildingId: entity.building_id,
 		}
 	}
 
