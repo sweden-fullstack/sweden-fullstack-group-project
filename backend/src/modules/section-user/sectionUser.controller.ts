@@ -36,8 +36,8 @@ class SectionUserController {
 	async getByAuthentication(req: Request, res: Response) {
 		const jwt = req.user as JwtPayloadExtended
 		const user = await sectionUserService.getBySectionIdAndUserId(
-			jwt.userId,
 			jwt.sectionId,
+			jwt.userId,
 		)
 
 		res.json(user)

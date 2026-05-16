@@ -2,7 +2,6 @@ import envConfig from "@/config/env"
 import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 import UserRole from "@/shared/types/user-role/userRole"
 import jwt from "jsonwebtoken"
-import { decode } from "node:punycode"
 
 export class JWT {
 	private static secret = envConfig.jwtSecret

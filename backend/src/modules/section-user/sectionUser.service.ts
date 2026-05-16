@@ -30,6 +30,9 @@ class SectionUserService {
 		sectionId: number,
 		userId: number,
 	): Promise<SectionUserDto> {
+		console.log("TEST")
+		console.log(`Section ${sectionId} user ${userId}`)
+
 		const user = await sectionUserRepository.findBySectionIdAndUserId(
 			sectionId,
 			userId,
