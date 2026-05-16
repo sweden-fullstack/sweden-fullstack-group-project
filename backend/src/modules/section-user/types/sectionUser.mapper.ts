@@ -1,13 +1,14 @@
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import SectionUserEntity from "./sectionUser.entity"
+import { removeUndefined } from "@/utils/mapper"
 
 export default class SectionUserMapper {
 	static toEntity(dto: Partial<SectionUserDto>): Partial<SectionUserEntity> {
-		return {
+		return removeUndefined({
 			role_id: dto.roleId,
 			section_id: dto.sectionId,
 			user_id: dto.userId,
-		}
+		})
 	}
 
 	static toDto(entity: SectionUserEntity): SectionUserDto {
