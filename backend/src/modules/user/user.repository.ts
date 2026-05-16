@@ -1,14 +1,15 @@
 import db from "@/config/database"
 import UserEntity from "./types/user.entity"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
-import { tableName as sectionUserTableName } from "@/modules/section-user/sectionUser.repository"
-import { tableName as userRoleTableName } from "@/modules/user-role/userRole.repository"
-import { tableName as sectionTableName } from "@/modules/section/section.repository"
-
-export const tableName = "user"
+import {
+	sectionTableName,
+	sectionUserTableName,
+	userRoleTableName,
+	userTableName,
+} from "@/utils/tableNames"
 
 class UserRepository {
-	selectQueryBase = `SELECT u.*, su.section_id, su.role_id, s.building_id, ur.name as role FROM ${tableName} u 
+	selectQueryBase = `SELECT u.*, su.section_id, su.role_id, s.building_id, ur.name as role FROM ${userTableName} u 
                LEFT JOIN ${sectionUserTableName} su ON u.id = su.user_id
                LEFT JOIN ${userRoleTableName} ur ON ur.id = su.role_id
                LEFT JOIN ${sectionTableName} s ON s.id = su.section_id`
@@ -41,7 +42,7 @@ class UserRepository {
 
 	async create(user: Partial<UserEntity>) {
 		const [result] = await db.query<ResultSetHeader>(
-			`INSERT INTO ${tableName} SET ?`,
+			`INSERT INTO ${userTableName} SET ?`,
 			[user],
 		)
 
@@ -50,7 +51,7 @@ class UserRepository {
 
 	async update(id: number, user: Partial<UserEntity>) {
 		const [result] = await db.query<ResultSetHeader>(
-			`UPDATE ${tableName} SET ? WHERE id = ?`,
+			`UPDATE ${userTableName} SET ? WHERE id = ?`,
 			[user, id],
 		)
 
@@ -59,7 +60,7 @@ class UserRepository {
 
 	async delete(id: number) {
 		const [result] = await db.query<ResultSetHeader>(
-			`DELETE FROM ${tableName} WHERE id = ?`,
+			`DELETE FROM ${userTableName} WHERE id = ?`,
 			[id],
 		)
 

@@ -1,13 +1,12 @@
 import db from "@/config/database"
 import { RowDataPacket } from "mysql2"
 import SectionEntity from "./types/section.entity"
-
-export const tableName = "section"
+import { sectionTableName } from "@/utils/tableNames"
 
 class BuildingRepository {
 	async findById(id: number): Promise<SectionEntity | null> {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${tableName} WHERE id = ?`,
+			`SELECT * FROM ${sectionTableName} WHERE id = ?`,
 			[id],
 		)
 
