@@ -14,7 +14,6 @@ import SectionUserEntity from "./types/sectionUser.entity"
 import userRepository from "../user/user.repository"
 import BadRequestError from "@/errors/BadRequestError"
 import userRoleService from "../user-role/userRole.service"
-import ConflictError from "@/errors/ConflictError"
 
 class SectionUserService {
 	async getAllByBuildingId(buildingId: number): Promise<SectionUserDto[]> {
@@ -46,19 +45,14 @@ class SectionUserService {
 	}
 
 	async create(sectionId: number, user: SectionUserCreate) {
-		return Transaction.run(async () => {
+		return await Transaction.run(async () => {
 			const sectionUserAsDto = user as SectionUserDto
 			sectionUserAsDto.sectionId = sectionId
 			sectionUserAsDto.roleId = (await userRoleService.getAll()).find(
 				(o) => o.name === sectionUserAsDto.role,
 			)!.id
 
-			if (!userService.findByEmail(sectionUserAsDto.email!)) {
-				throw new ConflictError(
-					`User with email ${sectionUserAsDto.email} already exists`,
-				)
-			}
-
+			// Does email exists checks internally
 			const createdUser = await userService.create(
 				UserMapper.toDtoFromSectionUserDto(
 					sectionUserAsDto,
@@ -66,10 +60,6 @@ class SectionUserService {
 			)
 
 			sectionUserAsDto.userId = createdUser.id
-			console.log(createdUser)
-			console.log("BETWEEN")
-			console.log(sectionUserAsDto)
-
 			const createdSectionUser = await sectionUserRepository.create(
 				SectionUserMapper.toEntity(
 					sectionUserAsDto,
@@ -80,15 +70,15 @@ class SectionUserService {
 				throw new BadRequestError()
 			}
 
-			throw new BadRequestError()
-
-			console.log(createdSectionUser)
-			return SectionUserMapper.toDto(createdSectionUser!)
+			return await this.getBySectionIdAndUserId(
+				createdSectionUser.section_id,
+				createdSectionUser.user_id,
+			)
 		})
 	}
 
 	async update(sectionId: number, userId: number, user: SectionUserUpdate) {
-		return Transaction.run(async () => {
+		return await Transaction.run(async () => {
 			const sectionUserAsDto = user as SectionUserDto
 			sectionUserAsDto.userId = userId
 			sectionUserAsDto.sectionId = sectionId
@@ -103,33 +93,40 @@ class SectionUserService {
 				) as UserUpdate,
 			)
 
-			await sectionUserRepository.update(
+			const sectionUserModified = await sectionUserRepository.update(
 				sectionId,
 				userId,
 				SectionUserMapper.toEntity(sectionUserAsDto),
 			)
 
-			const updatedUser = await this.getBySectionIdAndUserId(
+			if (!sectionUserModified) {
+				throw new BadRequestError(
+					`Section User with secionId ${sectionId} and userId ${userId} was either not found or there was nothing to update`,
+				)
+			}
+
+			return await this.getBySectionIdAndUserId(
 				sectionUserAsDto.sectionId,
 				userId,
 			)
-			return SectionUserMapper.toEntity(updatedUser)
 		})
 	}
 
 	async delete(sectionId: number, userId: number) {
-		return Transaction.run(async () => {
+		return await Transaction.run(async () => {
 			const sectionUserDeleted = await sectionUserRepository.delete(
 				sectionId,
 				userId,
 			)
 			if (!sectionUserDeleted) {
-				throw new NotFoundError("")
+				throw new NotFoundError(
+					`Section user with sectionId ${sectionId} and userId ${userId} not found`,
+				)
 			}
 
 			const userDeleted = await userRepository.delete(userId)
 			if (!userDeleted) {
-				throw new NotFoundError("")
+				throw new NotFoundError(`User with id ${userId} not found`)
 			}
 		})
 	}

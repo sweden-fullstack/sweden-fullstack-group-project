@@ -10,6 +10,7 @@ export const config: PoolOptions = {
 	dateStrings: true,
 }
 
-const db = mysql.createPool(config)
+const pool = mysql.createPool(config)
+const db = await pool.getConnection()
 
 export default db

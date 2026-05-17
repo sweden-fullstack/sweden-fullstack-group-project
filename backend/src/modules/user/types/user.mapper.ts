@@ -2,9 +2,12 @@ import UserDto from "@/shared/types/user/user.dto"
 import UserEntity from "./user.entity"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import { removeUndefined } from "@/utils/mapper"
+import BadRequestError from "@/errors/BadRequestError"
 
 export default class UserMapper {
 	static toEntity(dto: Partial<UserDto>): Partial<UserEntity> {
+		this.validate(dto)
+
 		return removeUndefined({
 			id: dto.id,
 			email: dto.email,
@@ -13,7 +16,7 @@ export default class UserMapper {
 			room_number: dto.roomNumber,
 			major: dto.major,
 			stay_period_start: dto.stayPeriodStart,
-			stay_period_end: dto.stayPeriodStart,
+			stay_period_end: dto.stayPeriodEnd,
 		})
 	}
 
@@ -46,6 +49,16 @@ export default class UserMapper {
 			major: dto.major!,
 			stayPeriodStart: dto.stayPeriodStart!,
 			stayPeriodEnd: dto.stayPeriodEnd!,
+		}
+	}
+
+	static validate(dto: Partial<UserDto>) {
+		if (dto.stayPeriodStart && dto.stayPeriodEnd) {
+			if (dto.stayPeriodStart > dto.stayPeriodEnd) {
+				throw new BadRequestError(
+					"Start date can't be bigger than end date",
+				)
+			}
 		}
 	}
 }

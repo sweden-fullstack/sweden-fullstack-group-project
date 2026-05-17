@@ -9,8 +9,6 @@ import sectionService from "../section/section.service"
 
 class SectionUserController {
 	async getByBuildingId(req: Request, res: Response) {
-		console.log({ test: new Date("2026-01-01") })
-
 		const jwt = req.user as JwtPayloadExtended
 		const buildingId = parseInt(req.params.buildingId as string)
 
@@ -48,7 +46,7 @@ class SectionUserController {
 	async create(req: Request, res: Response) {
 		const body = typia.assertEquals<SectionUserCreate>(req.body)
 		const sectionId = parseInt(req.params.sectionId as string)
-		const newUser = sectionUserService.create(sectionId, body)
+		const newUser = await sectionUserService.create(sectionId, body)
 
 		res.status(201).json(newUser)
 	}
@@ -63,8 +61,11 @@ class SectionUserController {
 	}
 
 	async delete(req: Request, res: Response) {
+		console.log("BEFORE")
 		const userId = parseInt(req.params.userId as string)
 		const sectionId = parseInt(req.params.sectionId as string)
+
+		console.log("REACHED")
 
 		await sectionUserService.delete(sectionId, userId)
 		return res.status(204).send()

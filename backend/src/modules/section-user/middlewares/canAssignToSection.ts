@@ -14,11 +14,15 @@ const canAssignToSection = () => {
 		}
 
 		if (jwt.userRole !== "landlord") {
-			throw new ForbiddenError()
+			throw new ForbiddenError(
+				"Only landlords and admins can modify users",
+			)
 		}
 
-		if (body.role !== "student" && body.role !== "section_admin") {
-			throw new ForbiddenError()
+		if (body && body.role !== "student" && body.role !== "section_admin") {
+			throw new ForbiddenError(
+				"Assigned role must be student or section_admin",
+			)
 		}
 
 		const sectionId = req.params.sectionId ?? body.sectionId
@@ -29,7 +33,9 @@ const canAssignToSection = () => {
 		if (jwt.buildingId === section.buildingId) {
 			return next()
 		} else {
-			throw new ForbiddenError()
+			throw new ForbiddenError(
+				"Landlords can't assign students between buildings, use different jwt token if landlord has multiple buildings",
+			)
 		}
 	}
 }

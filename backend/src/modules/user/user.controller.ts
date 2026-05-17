@@ -11,13 +11,6 @@ class UserController {
 		res.json(users)
 	}
 
-	async getByAuthentication(req: Request, res: Response) {
-		const jwt = req.user as JwtPayloadExtended
-
-		const user = await userService.getById(jwt.userId)
-		res.json(user)
-	}
-
 	async update(req: Request, res: Response) {
 		const jwt = req.user as JwtPayloadExtended
 		const id = parseInt(req.params.id as string)

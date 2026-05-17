@@ -18,29 +18,30 @@ sectionUserRouter.get(
 )
 
 sectionUserRouter.get(
-	"/selfAuthenticated",
+	"/self_authenticated",
 	authHandler(),
 	sectionUserController.getByAuthentication,
 )
 
 sectionUserRouter.post(
-	"/userToSection/sectionId/:sectionId",
+	"/user_to_section/section_id/:sectionId",
 	authHandler(["admin", "landlord"]),
 	canAssignToSection(),
 	sectionUserController.create,
 )
 
 sectionUserRouter.put(
-	"/userToSection/sectionId/:sectionId/userId/:userId",
+	"/user_to_section/section_id/:sectionId/user_id/:userId",
 	authHandler(["admin", "landlord"]),
 	canAssignToSection(),
-	sectionUserController.create,
+	sectionUserController.update,
 )
 
 sectionUserRouter.delete(
-	"/userToSection/sectionId/:sectionId/userId/:userId",
+	"/user_to_section/section_id/:sectionId/user_id/:userId",
 	authHandler(["admin", "landlord"]),
 	canAssignToSection(),
+	sectionUserController.delete,
 )
 
 export default sectionUserRouter

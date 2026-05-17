@@ -5,6 +5,8 @@ import UserUpdate from "@/shared/types/user/user.update"
 import UserMapper from "./types/user.mapper"
 import NotFoundError from "@/errors/NotFoundError"
 import { Transaction } from "@/utils/transaction"
+import BadRequestError from "@/errors/BadRequestError"
+import ConflictError from "@/errors/ConflictError"
 
 class UserService {
 	async getAll(): Promise<UserDto[]> {
@@ -40,6 +42,15 @@ class UserService {
 
 	async create(user: UserCreate): Promise<UserDto> {
 		return Transaction.run(async () => {
+			const userWithEmailExists = await userRepository.findByEmail(
+				user.email,
+			)
+			if (userWithEmailExists) {
+				throw new ConflictError(
+					`User with email ${user.email} already exists`,
+				)
+			}
+
 			const id = await userRepository.create(UserMapper.toEntity(user))
 			return await this.getById(id)
 		})
@@ -47,7 +58,15 @@ class UserService {
 
 	async update(id: number, user: UserUpdate): Promise<UserDto> {
 		return Transaction.run(async () => {
-			await userRepository.update(id, UserMapper.toEntity(user))
+			const userModified = await userRepository.update(
+				id,
+				UserMapper.toEntity(user),
+			)
+			if (!userModified) {
+				throw new BadRequestError(
+					`User with id ${id} was either not found or there was nothing to update`,
+				)
+			}
 			return await this.getById(id)
 		})
 	}
