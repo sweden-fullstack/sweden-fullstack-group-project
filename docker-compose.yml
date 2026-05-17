@@ -1,6 +1,7 @@
+name: zona
+
 services:
     backend:
-        image: zona-backend
         container_name: zona-backend
         build:
             context: .
