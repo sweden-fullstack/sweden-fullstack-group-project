@@ -41,7 +41,7 @@ class UserService {
 	}
 
 	async create(user: UserCreate): Promise<UserDto> {
-		return Transaction.run(async () => {
+		return await Transaction.run(async () => {
 			const userWithEmailExists = await userRepository.findByEmail(
 				user.email,
 			)
@@ -57,7 +57,7 @@ class UserService {
 	}
 
 	async update(id: number, user: UserUpdate): Promise<UserDto> {
-		return Transaction.run(async () => {
+		return await Transaction.run(async () => {
 			const userModified = await userRepository.update(
 				id,
 				UserMapper.toEntity(user),

@@ -3,11 +3,10 @@ import SectionService from "./section.service"
 import SectionUpdate from "@/shared/types/section/section.update"
 import SectionCreate from "@/shared/types/section/section.create"
 import typia from "typia"
-import sectionService from "./section.service"
 
 class SectionController {
 	async getAll(_req: Request, res: Response) {
-		const sections = await sectionService.getAll()
+		const sections = await SectionService.getAll()
 		res.json(sections)
 	}
 
