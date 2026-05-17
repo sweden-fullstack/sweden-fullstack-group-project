@@ -22,9 +22,9 @@ services:
             test:
                 [
                     "CMD",
-                    "curl",
-                    "-f",
-                    "http://localhost:${BACKEND_PORT:-3000}/health",
+                    "node",
+                    "-e",
+                    "fetch('http://localhost:${BACKEND_PORT:-3000}/health').then(r => r.ok ? process.exit(0) : process.exit(1))",
                 ]
             start_period: 5s
             interval: 5s
@@ -38,12 +38,24 @@ services:
         ports:
             - "${FRONTEND_PORT:-5173}:${FRONTEND_PORT:-5173}"
         depends_on:
-            frontend:
+            backend:
                 condition: service_healthy
         environment:
             BACKEND_SERVER: "http://backend:${BACKEND_PORT-3000}/"
         env_file:
             - .env
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "node",
+                    "-e",
+                    "fetch('http://localhost:${FRONTEND_PORT:-5173}').then(r => r.ok ? process.exit(0) : process.exit(1))",
+                ]
+            start_period: 5s
+            interval: 5s
+            retries: 5
+            timeout: 5s
     db:
         image: mysql:9.7.0
         container_name: zona-database

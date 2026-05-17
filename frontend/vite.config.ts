@@ -17,6 +17,7 @@ export default defineConfig({
 		"import.meta.env.BACKEND_SERVER": JSON.stringify(backendServer),
 	},
 	server: {
+		host: true,
 		port: frontendPort,
 		proxy: {
 			"/api": {
