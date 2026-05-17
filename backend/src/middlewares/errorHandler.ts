@@ -10,6 +10,7 @@ export default class ErrorHandler {
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_next: NextFunction,
 	) {
+		console.log("WTF DUDE")
 		if (err instanceof Error) {
 			console.error(err)
 		}

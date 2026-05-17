@@ -46,12 +46,13 @@ class SectionUserRepository {
 	}
 
 	async create(user: SectionUserEntity) {
-		const [rows] = await db.query<RowDataPacket[]>(
+		const [result] = await db.query<ResultSetHeader>(
 			`INSERT INTO ${sectionUserTableName} SET ?`,
 			[user],
 		)
 
-		return rows[0] as SectionUserEntity
+		if (result.affectedRows === 0) return null
+		return user as SectionUserEntity
 	}
 
 	async update(

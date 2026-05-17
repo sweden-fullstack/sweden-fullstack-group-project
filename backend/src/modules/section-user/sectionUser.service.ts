@@ -12,6 +12,9 @@ import UserUpdate from "@/shared/types/user/user.update"
 import SectionUserUpdate from "@/shared/types/section-user/sectionUser.update"
 import SectionUserEntity from "./types/sectionUser.entity"
 import userRepository from "../user/user.repository"
+import BadRequestError from "@/errors/BadRequestError"
+import userRoleService from "../user-role/userRole.service"
+import ConflictError from "@/errors/ConflictError"
 
 class SectionUserService {
 	async getAllByBuildingId(buildingId: number): Promise<SectionUserDto[]> {
@@ -46,24 +49,41 @@ class SectionUserService {
 		return Transaction.run(async () => {
 			const sectionUserAsDto = user as SectionUserDto
 			sectionUserAsDto.sectionId = sectionId
-			sectionUserAsDto.roleId = (await userRoleRepository.findAll()).find(
+			sectionUserAsDto.roleId = (await userRoleService.getAll()).find(
 				(o) => o.name === sectionUserAsDto.role,
 			)!.id
 
-			const insertedUserData = await userService.create(
+			if (!userService.findByEmail(sectionUserAsDto.email!)) {
+				throw new ConflictError(
+					`User with email ${sectionUserAsDto.email} already exists`,
+				)
+			}
+
+			const createdUser = await userService.create(
 				UserMapper.toDtoFromSectionUserDto(
 					sectionUserAsDto,
 				) as UserCreate,
 			)
-			sectionUserAsDto.userId = insertedUserData.id
 
-			const insertedSectionData = await sectionUserRepository.create(
+			sectionUserAsDto.userId = createdUser.id
+			console.log(createdUser)
+			console.log("BETWEEN")
+			console.log(sectionUserAsDto)
+
+			const createdSectionUser = await sectionUserRepository.create(
 				SectionUserMapper.toEntity(
 					sectionUserAsDto,
 				) as SectionUserEntity,
 			)
 
-			return SectionUserMapper.toDto(insertedSectionData)
+			if (!createdSectionUser) {
+				throw new BadRequestError()
+			}
+
+			throw new BadRequestError()
+
+			console.log(createdSectionUser)
+			return SectionUserMapper.toDto(createdSectionUser!)
 		})
 	}
 

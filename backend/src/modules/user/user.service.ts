@@ -21,14 +21,21 @@ class UserService {
 		return UserMapper.toDto(user)
 	}
 
-	async getByEmail(email: string): Promise<UserDto> {
+	async findByEmail(email: string): Promise<UserDto | null> {
 		const user = await userRepository.findByEmail(email)
+
+		if (!user) return null
+		return UserMapper.toDto(user)
+	}
+
+	async getByEmail(email: string): Promise<UserDto> {
+		const user = await this.findByEmail(email)
 
 		if (!user) {
 			throw new NotFoundError("User not found")
 		}
 
-		return UserMapper.toDto(user)
+		return user
 	}
 
 	async create(user: UserCreate): Promise<UserDto> {
