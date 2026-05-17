@@ -13,14 +13,17 @@ services:
         depends_on:
             db:
                 condition: service_healthy
+        environment:
+            DB_HOST: "db"
         env_file:
             - .env
     db:
-        image: alpine/mysql:15.2
+        image: mysql:9.7.0
         container_name: zona-database
         networks:
             - zona-network
         environment:
+            MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
             MYSQL_USER: "${DB_USERNAME}"
             MYSQL_PASSWORD: "${DB_PASSWORD}"
             MYSQL_DATABASE: "${DB_DATABASE}"
