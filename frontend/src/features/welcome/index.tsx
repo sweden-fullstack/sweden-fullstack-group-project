@@ -6,7 +6,7 @@ import { Box, Button, Center, Code, Separator, VStack } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom"
 import ReactIcon from "./components/ReactIcon"
 import { ViteIcon } from "./components/ViteIcon"
-import useUserStore from "./stores/userStore"
+import useUserStore from "../../stores/userStore"
 
 export default function WelcomePage() {
 	const [count, setCount] = useState(0)
