@@ -10,7 +10,7 @@
 	"scripts": {
 		"dev": "nodemon",
 		"dev:no-restart": "npm run build && node ./dist/backend/src/index.js",
-		"build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
+		"build": "rimraf dist && tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
 		"seed": "tsx src/seed/seed.ts",
 		"prepare": "ts-patch install"
 	},
@@ -27,7 +27,6 @@
 		"@types/express": "^5.0.6",
 		"nodemon": "^3.1.14",
 		"ts-patch": "^3.3.0",
-		"tsc-alias": "^1.8.16",
 		"tsx": "^4.21.0"
 	}
 }

@@ -4,7 +4,8 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite"
+		"dev": "vite",
+		"build": "rimraf dist && tsc -p tsconfig.app.json && tsc-alias -p tsconfig.app.json --resolve-full-paths"
 	},
 	"dependencies": {
 		"@chakra-ui/react": "^3.34.0",

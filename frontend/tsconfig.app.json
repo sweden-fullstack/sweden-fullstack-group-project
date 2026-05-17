@@ -8,7 +8,8 @@
 		/* Bundler mode */
 		"jsx": "react-jsx",
 
-		"rootDir": "..",
+		"rootDirs": [".", "../shared/"],
+		"outDir": "./dist",
 		"baseUrl": ".",
 		/* imports with @ */
 		"paths": {
