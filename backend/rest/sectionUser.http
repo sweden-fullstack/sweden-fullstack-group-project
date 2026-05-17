@@ -1,0 +1,50 @@
+### 
+
+@SECTION_USER_URL = {{API_URL}}/section-user
+
+
+### Get all by buildingId
+
+GET {{SECTION_USER_URL}}/building/2 HTTP/1.1
+
+
+### Get all by sectionId
+
+GET {{SECTION_USER_URL}}/section/3 HTTP/1.1
+
+
+### Get self authenticated
+
+GET {{SECTION_USER_URL}}/self_authenticated HTTP/1.1
+
+
+### Create user and assign to section
+
+POST {{SECTION_USER_URL}}/user_to_section/section_id/3 HTTP/1.1
+
+{
+  "email": "test.test16@gmail.com",
+  "firstName": "T",
+  "lastName": "B",
+  "major": "Unemployement",
+  "role": "student",
+  "roomNumber": 10,
+  "stayPeriodEnd": "2026-02-02",
+  "stayPeriodStart": "2026-01-01"
+}
+
+### Update user and it's section
+
+PUT {{SECTION_USER_URL}}/user_to_section/section_id/3/user_id/3
+
+{
+   "role": "student",
+   "roomNumber": 101,
+   "stayPeriodStart": "2026-05-02",
+   "stayPeriodEnd": "2026-07-03"
+}
+
+
+### Delete user and it's section
+
+DELETE {{SECTION_USER_URL}}/user_to_section/section_id/3/user_id/9
