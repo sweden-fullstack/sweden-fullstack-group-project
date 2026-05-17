@@ -15,6 +15,33 @@ services:
                 condition: service_healthy
         environment:
             DB_HOST: "db"
+            FRONTEND_SERVER: "http://frontend:${FRONTEND_PORT-5173}/"
+        env_file:
+            - .env
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "curl",
+                    "-f",
+                    "http://localhost:${BACKEND_PORT:-3000}/health",
+                ]
+            start_period: 5s
+            interval: 5s
+            retries: 5
+            timeout: 5s
+    frontend:
+        container_name: zona-frontend
+        build:
+            context: .
+            dockerfile: frontend/Dockerfile
+        ports:
+            - "${FRONTEND_PORT:-5173}:${FRONTEND_PORT:-5173}"
+        depends_on:
+            frontend:
+                condition: service_healthy
+        environment:
+            BACKEND_SERVER: "http://backend:${BACKEND_PORT-3000}/"
         env_file:
             - .env
     db:

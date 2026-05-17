@@ -22,6 +22,10 @@ app.listen(envConfig.port, () =>
 	console.log(`Server running on: localhost:${envConfig.port}`),
 )
 
+app.get("/health", (_req, res) => {
+	res.status(200).json({ status: "ok" })
+})
+
 app.use("/user", usersRouter)
 app.use("/section", sectionRouter)
 
