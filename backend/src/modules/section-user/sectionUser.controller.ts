@@ -61,11 +61,8 @@ class SectionUserController {
 	}
 
 	async delete(req: Request, res: Response) {
-		console.log("BEFORE")
 		const userId = parseInt(req.params.userId as string)
 		const sectionId = parseInt(req.params.sectionId as string)
-
-		console.log("REACHED")
 
 		await sectionUserService.delete(sectionId, userId)
 		return res.status(204).send()

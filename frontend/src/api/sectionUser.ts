@@ -6,7 +6,7 @@ class SectionUserApi {
 	path = `${envConfig.backend}section-user/`
 
 	async getSelfAuthenticated() {
-		const { data } = await axios.get(`${this.path}selfAuthenticated`, {
+		const { data } = await axios.get(`${this.path}self_authenticated`, {
 			withCredentials: true,
 		})
 
