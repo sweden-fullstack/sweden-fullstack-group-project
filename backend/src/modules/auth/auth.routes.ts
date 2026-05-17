@@ -2,11 +2,11 @@ import passport from "passport"
 import { Router } from "express"
 import authController from "./auth.controller"
 
-const authRouter = Router()
+const router = Router()
 
 authController.configurePassport()
 
-authRouter.get(
+router.get(
 	"/",
 	passport.authenticate("google", {
 		scope: ["profile", "email"],
@@ -15,10 +15,10 @@ authRouter.get(
 	}),
 )
 
-authRouter.get(
+router.get(
 	"/callback",
 	passport.authenticate("google", { session: false }),
 	authController.callback,
 )
 
-export default authRouter
+export default router

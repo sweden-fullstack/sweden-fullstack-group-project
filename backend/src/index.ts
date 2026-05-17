@@ -8,6 +8,7 @@ import cors from "cors"
 import ErrorHandler from "./middlewares/errorHandler"
 import cookieParser from "cookie-parser"
 import sectionUserRouter from "./modules/section-user/sectionUser.routes"
+import sectionRouter from "./modules/section/section.routes"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
@@ -56,7 +57,8 @@ app.listen(envConfig.port, () =>
 
 app.use("/user", usersRouter)
 app.use("/auth", authRouter)
-app.use("/section-user", sectionUserRouter)
+app.use("/section", sectionRouter)
+app.use("/section_user", sectionUserRouter)
 
 app.use(ErrorHandler.handle)
 

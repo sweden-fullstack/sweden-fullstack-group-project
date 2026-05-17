@@ -3,45 +3,45 @@ import authHandler from "@/middlewares/authHandler"
 import sectionUserController from "./sectionUser.controller"
 import canAssignToSection from "./middlewares/canAssignToSection"
 
-const sectionUserRouter = Router()
+const router = Router()
 
-sectionUserRouter.get(
+router.get(
 	"/building/:buildingId",
 	authHandler(),
 	sectionUserController.getByBuildingId,
 )
 
-sectionUserRouter.get(
+router.get(
 	"/section/:sectionId",
 	authHandler(),
 	sectionUserController.getBySectionId,
 )
 
-sectionUserRouter.get(
+router.get(
 	"/self_authenticated",
 	authHandler(),
 	sectionUserController.getByAuthentication,
 )
 
-sectionUserRouter.post(
+router.post(
 	"/user_to_section/section_id/:sectionId",
 	authHandler(["admin", "landlord"]),
 	canAssignToSection(),
 	sectionUserController.create,
 )
 
-sectionUserRouter.put(
+router.put(
 	"/user_to_section/section_id/:sectionId/user_id/:userId",
 	authHandler(["admin", "landlord"]),
 	canAssignToSection(),
 	sectionUserController.update,
 )
 
-sectionUserRouter.delete(
+router.delete(
 	"/user_to_section/section_id/:sectionId/user_id/:userId",
 	authHandler(["admin", "landlord"]),
 	canAssignToSection(),
 	sectionUserController.delete,
 )
 
-export default sectionUserRouter
+export default router
