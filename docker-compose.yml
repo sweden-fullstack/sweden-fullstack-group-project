@@ -71,7 +71,7 @@ services:
             - "${DOCKER_DB_PORT:-3306}:3306"
         environment:
             MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
-            MYSQL_USER: "${DB_USERNAME}"
+            MYSQL_USER: "${DOCKER_DB_USER:-${DB_USERNAME}}"
             MYSQL_PASSWORD: "${DB_PASSWORD}"
             MYSQL_DATABASE: "${DB_DATABASE}"
         env_file:
