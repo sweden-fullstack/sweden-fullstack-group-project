@@ -1,3 +1,5 @@
+import UserEntity from "@/modules/user/types/user.entity"
+
 export default interface SectionEventCleaningEntity {
 	id: number
 	sectionId: number
@@ -5,11 +7,5 @@ export default interface SectionEventCleaningEntity {
 	description: string
 	startTime: Date
 	endTime: Date
-	users: Array<{
-		id: number
-		email: string
-		firstName: string
-		lastName: string
-		sectionId: number
-	}>
+	users: UserEntity[]
 }

@@ -1,26 +1,20 @@
 import db from "@/config/database"
 import SectionEventCleaningEntity from "./types/sectionEventCleaning.entity"
 import { ResultSetHeader } from "mysql2"
+import eventData from "@/modules/cleaning/types/eventData.entity"
 
 class CleaningRepository {
-	async create(
-		sectionId: number,
-		eventData: {
-			eventTypeId: number
-			description: string
-			startTime: string
-			endTime: string
-		},
-	) {
+	async create(sectionId: number, eventData_param: eventData) {
 		const [result] = await db.query<ResultSetHeader>(
-			`INSERT INTO section_event (section_id, event_type_id, description, start_time, end_time)
-			 VALUES (?, ?, ?, ?, ?)`,
+			`INSERT INTO section_event SET ?`,
 			[
-				sectionId,
-				eventData.eventTypeId,
-				eventData.description,
-				eventData.startTime,
-				eventData.endTime,
+				{
+					section_id: sectionId,
+					event_type_id: eventData_param.eventTypeId,
+					description: eventData_param.description,
+					start_time: eventData_param.startTime,
+					end_time: eventData_param.endTime,
+				},
 			],
 		)
 		return result.insertId
