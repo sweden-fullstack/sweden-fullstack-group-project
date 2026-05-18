@@ -9,7 +9,7 @@ services:
         networks:
             - zona-network
         ports: # Dev
-            - "${BACKEND_PORT:-3000}:${BACKEND_PORT:-3000}"
+            - "${BACKEND_PORT:-3000}:${DOCKER_BACKEND_PORT-${BACKEND_PORT:-3000}}"
         environment:
             DB_HOST: "db"
             FRONTEND_SERVER: "http://frontend:${FRONTEND_PORT-5173}/"
@@ -38,7 +38,7 @@ services:
         networks:
             - zona-network
         ports:
-            - "${FRONTEND_PORT:-5173}:${FRONTEND_PORT:-5173}"
+            - "${FRONTEND_PORT:-5173}:${DOCKER_FRONTEND_PORT-${FRONTEND_PORT:-5173}}"
         environment:
             BACKEND_SERVER: "http://backend:${BACKEND_PORT-3000}/"
         env_file:
@@ -64,8 +64,7 @@ services:
         networks:
             - zona-network
         ports: # Dev
-            - 3306:3306
-            - 33060:33060
+            - "3306:${DOCKER_DB_PORT-3306}"
         environment:
             MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
             MYSQL_USER: "${DB_USERNAME}"
