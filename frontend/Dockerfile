@@ -1,4 +1,4 @@
-FROM node:22.22.3-alpine
+FROM node:22.22.3-alpine as zona-frontend
 
 WORKDIR /app
 

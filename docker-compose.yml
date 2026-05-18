@@ -74,14 +74,13 @@ services:
         env_file:
             - .env
         volumes:
-            - bugtracker-mysql-data:/var/lib/mysql
+            - zona-database:/var/lib/mysql
         healthcheck:
             test: "mysqladmin ping -h 127.0.0.1 -u ${DB_USERNAME} --password=${DB_PASSWORD}"
             start_period: 5s
             interval: 5s
             retries: 5
             timeout: 5s
-
 networks:
     zona-network:
         name: zona-network
