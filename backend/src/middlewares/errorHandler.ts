@@ -1,5 +1,6 @@
 import AppError from "@/errors/AppError"
 import { NextFunction, Request, Response } from "express"
+import jwt from "jsonwebtoken"
 
 export default class ErrorHandler {
 	static handle(
@@ -11,6 +12,10 @@ export default class ErrorHandler {
 	) {
 		if (err instanceof Error) {
 			console.error(err)
+		}
+
+		if (err instanceof jwt.JsonWebTokenError) {
+			return res.status(401).json({ message: err.message })
 		}
 
 		if (err instanceof AppError) {

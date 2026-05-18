@@ -10,24 +10,33 @@
 	"scripts": {
 		"dev": "nodemon",
 		"dev:no-restart": "npm run build && node ./dist/backend/src/index.js",
-		"build": "tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
+		"build": "rimraf dist && tsc && tsc-alias -p tsconfig.json --resolve-full-paths",
 		"seed": "tsx src/seed/seed.ts",
 		"prepare": "ts-patch install"
 	},
 	"dependencies": {
+		"@types/passport": "^1.0.17",
+		"@types/passport-google-oauth20": "^2.0.17",
+		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.6",
 		"express": "^5.2.1",
+		"jsonwebtoken": "^9.0.3",
 		"mysql2": "^3.22.0",
+		"passport": "^0.7.0",
+		"passport-google-oauth20": "^2.0.0",
 		"sequelize": "^6.37.8",
 		"typia": "^12.0.2",
 		"umzug": "^3.8.2"
 	},
 	"devDependencies": {
+		"@types/cookie-parser": "^1.4.10",
 		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.6",
+		"@types/jsonwebtoken": "^9.0.10",
 		"nodemon": "^3.1.14",
+		"rimraf": "^6.1.3",
 		"ts-patch": "^3.3.0",
-		"tsc-alias": "^1.8.16",
+		"tsc-alias": "^1.8.17",
 		"tsx": "^4.21.0"
 	}
 }

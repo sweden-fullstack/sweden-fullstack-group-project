@@ -31,10 +31,6 @@ const createAppRouter = () =>
 			lazy: () => import("@/features/login"),
 		},
 		{
-			path: "/welcome",
-			lazy: () => import("@/features/welcome"),
-		},
-		{
 			path: "*",
 			lazy: () => import("@/features/not-found"),
 		},

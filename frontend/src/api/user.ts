@@ -12,6 +12,14 @@ class UserApi {
 		return data as UserDto[]
 	}
 
+	async getSelfAuthenticated() {
+		const { data } = await axios.get(`${this.path}selfAuthenticated`, {
+			withCredentials: true,
+		})
+
+		return data as UserDto
+	}
+
 	async getByUsername(username: string) {
 		const { data } = await axios.get(this.path, {
 			params: { username },

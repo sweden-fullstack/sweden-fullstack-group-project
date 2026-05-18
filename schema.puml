@@ -26,12 +26,12 @@ entity user_interest {
 }
 
 entity section_user {
-    user_id: int
+    user_id: int 
     section_id: int
     role_id: int
     ---
     <<PK>>
-    (user_id, section_id, role_id)
+    (user_id, section_id)
 }
 
 entity building {
