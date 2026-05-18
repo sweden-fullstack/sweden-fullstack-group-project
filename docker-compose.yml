@@ -87,7 +87,7 @@ services:
 networks:
     zona-network:
         name: zona-network
-        external: true
+        external: false
 
 volumes:
     zona-database:
