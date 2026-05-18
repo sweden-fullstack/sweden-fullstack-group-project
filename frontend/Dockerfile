@@ -5,12 +5,13 @@ WORKDIR /app
 # Copy only package.json for better layer caching
 
 COPY package*.json ./
-COPY frontend/package*.json ./frontend/  
+RUN npm ci && npm cache clean --force
 
-RUN npm ci 
+# Install rest of dependencies
+COPY frontend/package*.json ./frontend/  
+RUN npm ci && npm cache clean --force
 
 # Copy rest of files
-
 COPY frontend/ ./frontend/
 COPY shared/ ./shared/
 COPY *.json ./
