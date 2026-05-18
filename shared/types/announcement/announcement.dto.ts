@@ -1,6 +1,6 @@
 type AnnouncementDto = {
 	id: number
-	building_id: number
+	buildingId: number
 	title: string
 	meta: string
 	body: string

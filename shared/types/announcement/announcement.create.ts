@@ -1,5 +1,5 @@
 type AnnouncementCreate = {
-	building_id: number
+	buildingId: number
 	title: string
 	meta: string
 	body: string
