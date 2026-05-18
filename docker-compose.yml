@@ -1,0 +1,94 @@
+name: zona
+
+services:
+    backend:
+        image: zona-backend
+        container_name: zona-backend
+        pull_policy: never
+        build:
+            context: .
+            dockerfile: backend/Dockerfile
+        networks:
+            - zona-network
+        ports: # Dev
+            - "${DOCKER_BACKEND_PORT:-${BACKEND_PORT:-3000}}:${BACKEND_PORT:-3000}"
+        environment:
+            DB_HOST: "db"
+            FRONTEND_SERVER: "http://frontend:${FRONTEND_PORT-5173}/"
+        env_file:
+            - .env
+        depends_on:
+            db:
+                condition: service_healthy
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "node",
+                    "-e",
+                    "fetch('http://localhost:${BACKEND_PORT:-3000}/health').then(r => r.ok ? process.exit(0) : process.exit(1))",
+                ]
+            start_period: 5s
+            interval: 5s
+            retries: 5
+            timeout: 5s
+    frontend:
+        image: zona-frontend
+        container_name: zona-frontend
+        pull_policy: never
+        build:
+            context: .
+            dockerfile: frontend/Dockerfile
+        networks:
+            - zona-network
+        ports:
+            - "${DOCKER_FRONTEND_PORT:-${FRONTEND_PORT:-5173}}:${FRONTEND_PORT:-5173}"
+        environment:
+            BACKEND_SERVER: "http://backend:${BACKEND_PORT-3000}/"
+        env_file:
+            - .env
+        depends_on:
+            backend:
+                condition: service_healthy
+        healthcheck:
+            test:
+                [
+                    "CMD",
+                    "node",
+                    "-e",
+                    "fetch('http://localhost:${FRONTEND_PORT:-5173}').then(r => r.ok ? process.exit(0) : process.exit(1))",
+                ]
+            start_period: 5s
+            interval: 5s
+            retries: 5
+            timeout: 5s
+    db:
+        image: mysql:9.7.0
+        container_name: zona-database
+        networks:
+            - zona-network
+        ports: # Dev
+            - "${DOCKER_DB_PORT:-3306}:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_USER: "${DOCKER_DB_USER:-${DB_USERNAME}}"
+            MYSQL_PASSWORD: "${DB_PASSWORD}"
+            MYSQL_DATABASE: "${DB_DATABASE}"
+        env_file:
+            - .env
+        volumes:
+            - zona-database:/var/lib/mysql
+        healthcheck:
+            test: "mysqladmin ping -h 127.0.0.1 -u ${DB_USERNAME} --password=${DB_PASSWORD}"
+            start_period: 5s
+            interval: 5s
+            retries: 5
+            timeout: 5s
+networks:
+    zona-network:
+        name: zona-network
+        external: false
+
+volumes:
+    zona-database:
+        external: false
