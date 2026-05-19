@@ -1,5 +1,4 @@
 import sectionEventAssigneeRepository from "@/modules/section-event-assignee/sectionEventAssignee.repository"
-
 import { Transaction } from "@/utils/transaction"
 import sectionEventRepository from "@/modules/section-event/sectionEvent.repository"
 import NotFoundError from "@/errors/NotFoundError"

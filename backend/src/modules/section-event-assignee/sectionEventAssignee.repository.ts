@@ -6,7 +6,7 @@ import { Transaction } from "@/utils/transaction"
 class SectionEventAssigneeRepository {
 	async getAssigneesByEventId(eventId: number) {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT u.id, u.email, u.first_name, u.last_name, su.section_id
+			`SELECT u.id AS user_id, u.email, u.first_name, u.last_name, su.section_id
 			FROM section_event_assignee a
 			LEFT JOIN \`user\` u ON u.id = a.user_id
 			LEFT JOIN section_user su ON su.user_id = u.id

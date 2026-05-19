@@ -109,7 +109,7 @@ export default function CleaningPage() {
 			return {
 				eventId: event?.id ?? null,
 				name: dutyName,
-				assigneeIds: event?.users?.map((user) => user.id) ?? [],
+				assigneeIds: event?.users?.map((user) => user.userId) ?? [],
 			}
 		})
 	}, [sectionDutyTemplate, selectedDayEvents])
@@ -134,7 +134,7 @@ export default function CleaningPage() {
 
 	const nextMyDuty = useMemo<NextMyDuty | null>(() => {
 		const myItems = allUpcomingEvents.filter(({ event }) =>
-			event.users?.some((user) => user.id === currentUserId),
+			event.users?.some((user) => user.userId === currentUserId),
 		)
 		if (!myItems.length) {
 			return null
@@ -151,7 +151,7 @@ export default function CleaningPage() {
 	const myDutyScheduleList = useMemo<MyDutyEntry[]>(() => {
 		const grouped = new Map<string, string[]>()
 		for (const { event, dateKey } of allUpcomingEvents) {
-			if (!event.users?.some((user) => user.id === currentUserId)) {
+			if (!event.users?.some((user) => user.userId === currentUserId)) {
 				continue
 			}
 			const tasksOnDate = grouped.get(dateKey) ?? []
