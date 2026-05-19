@@ -1,27 +1,15 @@
 import SectionDto from "@/shared/types/section/section.dto"
-import SectionEntity from "@/modules/section/types/section.entity"
+import SectionEntity from "./section.entity"
+import { removeUndefined } from "@/utils/mapper"
 
 export default class SectionMapper {
 	static toEntity(dto: Partial<SectionDto>): Partial<SectionEntity> {
-		const entity: Partial<SectionEntity> = {}
-
-		if (dto.id !== undefined) {
-			entity.id = dto.id
-		}
-
-		if (dto.buildingId !== undefined) {
-			entity.building_id = dto.buildingId
-		}
-
-		if (dto.name !== undefined) {
-			entity.name = dto.name
-		}
-
-		if (dto.description !== undefined) {
-			entity.description = dto.description
-		}
-
-		return entity
+		return removeUndefined({
+			id: dto.id,
+			building_id: dto.buildingId,
+			name: dto.name,
+			description: dto.description,
+		})
 	}
 
 	static toDto(entity: SectionEntity): SectionDto {

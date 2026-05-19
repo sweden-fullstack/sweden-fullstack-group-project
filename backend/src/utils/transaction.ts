@@ -3,12 +3,11 @@ import mysql from "mysql2/promise"
 import { AsyncLocalStorage } from "async_hooks"
 
 export class Transaction {
-	private static pool?: mysql.Pool
-	private static asyncLocalStorage =
-		new AsyncLocalStorage<mysql.PoolConnection>()
+	private static connection?: mysql.Connection
+	private static asyncLocalStorage = new AsyncLocalStorage<mysql.Connection>()
 
-	private static initialize(pool: mysql.Pool) {
-		this.pool = pool
+	private static initialize(connection: mysql.Connection) {
+		this.connection = connection
 	}
 
 	/**
@@ -17,13 +16,13 @@ export class Transaction {
 	 * reusing the old context instead of creating new one and breaking everything
 	 */
 	static async run<T>(
-		callback: (conn: mysql.PoolConnection) => Promise<T>,
+		callback: (conn: mysql.Connection) => Promise<T>,
 	): Promise<T> {
-		if (!this.pool) {
+		if (!this.connection) {
 			this.initialize(db)
 		}
 
-		if (!this.pool) {
+		if (!this.connection) {
 			throw new Error("Database pool initialization failed")
 		}
 
@@ -32,22 +31,20 @@ export class Transaction {
 			const result = await callback(existingConnection)
 			return result
 		} else {
-			const conn = await this.pool.getConnection()
-			const context = conn
-
-			return this.asyncLocalStorage.run(context, async () => {
-				try {
-					await conn.beginTransaction()
-					const result = await callback(conn)
-					await conn.commit()
-					return result
-				} catch (error) {
-					await conn.rollback()
-					throw error
-				} finally {
-					conn.release()
-				}
-			})
+			return await this.asyncLocalStorage.run(
+				this.connection!,
+				async () => {
+					try {
+						await this.connection!.beginTransaction()
+						const result = await callback(this.connection!)
+						await this.connection!.commit()
+						return result
+					} catch (error) {
+						await this.connection!.rollback()
+						throw error
+					}
+				},
+			)
 		}
 	}
 }

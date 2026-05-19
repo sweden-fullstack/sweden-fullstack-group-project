@@ -1,9 +1,10 @@
-import SectionDto from "@/shared/types/section/section.dto"
-import sectionRepository from "@/modules/section/section.repository"
-import SectionMapper from "@/modules/section/types/section.mapper"
 import NotFoundError from "@/errors/NotFoundError"
-import SectionCreate from "@/shared/types/section/section.create"
+import sectionRepository from "./section.repository"
+import SectionMapper from "./types/section.mapper"
+import SectionDto from "@/shared/types/section/section.dto"
 import { Transaction } from "@/utils/transaction"
+import SectionCreate from "@/shared/types/section/section.create"
+import SectionEntity from "./types/section.entity"
 import SectionUpdate from "@/shared/types/section/section.update"
 
 class SectionService {
@@ -24,15 +25,17 @@ class SectionService {
 	}
 
 	async create(section: SectionCreate): Promise<SectionDto> {
-		return Transaction.run(async () => {
-			const id = await sectionRepository.create(section)
+		return await Transaction.run(async () => {
+			const entity = SectionMapper.toEntity(section) as SectionEntity
+			const id = await sectionRepository.create(entity)
 			return await this.getById(id)
 		})
 	}
 
 	async update(id: number, section: SectionUpdate): Promise<SectionDto> {
-		return Transaction.run(async () => {
-			await sectionRepository.update(id, section)
+		return await Transaction.run(async () => {
+			const entity = SectionMapper.toEntity(section)
+			await sectionRepository.update(id, entity)
 			return await this.getById(id)
 		})
 	}

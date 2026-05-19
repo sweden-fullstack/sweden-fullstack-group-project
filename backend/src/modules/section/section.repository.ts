@@ -1,41 +1,38 @@
-import SectionEntity from "@/modules/section/types/section.entity"
-import { ResultSetHeader, RowDataPacket } from "mysql2"
 import db from "@/config/database"
-import SectionCreate from "@/shared/types/section/section.create"
-import SectionUpdate from "@/shared/types/section/section.update"
-
-const tableName = "section"
+import { ResultSetHeader, RowDataPacket } from "mysql2"
+import SectionEntity from "./types/section.entity"
+import { sectionTableName } from "@/utils/tableNames"
 
 class SectionRepository {
 	async findAll(): Promise<SectionEntity[]> {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${tableName}`,
+			`SELECT * FROM ${sectionTableName}`,
 		)
 		return rows.map((o) => o as unknown as SectionEntity)
 	}
 
 	async findById(id: number): Promise<SectionEntity | null> {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${tableName} WHERE id = ?`,
+			`SELECT * FROM ${sectionTableName} WHERE id = ?`,
 			[id],
 		)
 
 		if (rows.length === 0) return null
-		return rows[0] as unknown as SectionEntity
+		return rows[0] as SectionEntity
 	}
 
-	async create(section: SectionCreate) {
+	async create(section: SectionEntity) {
 		const [result] = await db.query<ResultSetHeader>(
-			`INSERT INTO ${tableName} SET ?`,
+			`INSERT INTO ${sectionTableName} SET ?`,
 			[section],
 		)
 
 		return result.insertId
 	}
 
-	async update(id: number, section: SectionUpdate) {
+	async update(id: number, section: Partial<SectionEntity>) {
 		const [result] = await db.query<ResultSetHeader>(
-			`UPDATE ${tableName} SET ? WHERE id = ?`,
+			`UPDATE ${sectionTableName} SET ? WHERE id = ?`,
 			[section, id],
 		)
 
@@ -44,7 +41,7 @@ class SectionRepository {
 
 	async delete(id: number) {
 		const [result] = await db.query<ResultSetHeader>(
-			`DELETE FROM ${tableName} WHERE id = ?`,
+			`DELETE FROM ${sectionTableName} WHERE id = ?`,
 			[id],
 		)
 
