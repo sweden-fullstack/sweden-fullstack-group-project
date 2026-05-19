@@ -23,15 +23,19 @@ const STORED_EVENT_TYPE = "section" as const
 
 export type EventEditorDraft = SectionCalendarEvent | SectionEventDraft
 
-type Props = {
-	open: boolean
-	draft: EventEditorDraft | null
+type FormProps = {
+	draft: EventEditorDraft
 	sectionId: number
 	buildingId?: number
 	onClose: () => void
 	onCreate: (payload: SectionEventDraft) => void
 	onUpdate: (event: SectionCalendarEvent) => void
 	onDelete: (id: number) => void
+}
+
+type OverlayProps = Omit<FormProps, "draft"> & {
+	open: boolean
+	draft: EventEditorDraft | null
 }
 
 const fieldStyle = {
@@ -61,7 +65,7 @@ function EventEditorForm({
 	onCreate,
 	onUpdate,
 	onDelete,
-}: Props & { draft: EventEditorDraft }) {
+}: FormProps) {
 	const [title, setTitle] = useState(draft.title)
 	const [visibility, setVisibility] = useState<SectionEventVisibility>(
 		draft.visibility ?? "section",
@@ -269,7 +273,7 @@ export default function EventEditorOverlay({
 	onCreate,
 	onUpdate,
 	onDelete,
-}: Props) {
+}: OverlayProps) {
 	if (!open || !draft) return null
 
 	return (
@@ -286,7 +290,6 @@ export default function EventEditorOverlay({
 		>
 			<EventEditorForm
 				key={draftFormKey(draft)}
-				open={open}
 				draft={draft}
 				sectionId={sectionId}
 				buildingId={buildingId}

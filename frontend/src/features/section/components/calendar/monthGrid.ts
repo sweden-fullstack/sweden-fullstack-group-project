@@ -3,14 +3,6 @@ export type MonthCell = {
 	inCurrentMonth: boolean
 }
 
-export function startOfMonth(d: Date) {
-	return new Date(d.getFullYear(), d.getMonth(), 1)
-}
-
-export function endOfMonth(d: Date) {
-	return new Date(d.getFullYear(), d.getMonth() + 1, 0)
-}
-
 export function addMonths(d: Date, delta: number) {
 	return new Date(d.getFullYear(), d.getMonth() + delta, 1)
 }

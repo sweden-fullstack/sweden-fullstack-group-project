@@ -37,11 +37,17 @@ export default function CalendarHeader({
 				<Box>
 					<Heading size="md">{formatMonthHeading(month)}</Heading>
 				</Box>
-				<HStack flexWrap="wrap" gap={2}>
+				<HStack flexWrap="wrap" gap={2} align="center">
 					<Button
 						size="sm"
-						variant="outline"
-						borderColor="#cad6cf"
+						variant="ghost"
+						minW="8"
+						px={2}
+						color="#506057"
+						fontSize="lg"
+						lineHeight="1"
+						_hover={{ bg: "transparent", color: "#506057" }}
+						_active={{ bg: "transparent" }}
 						onClick={onPrev}
 					>
 						‹
@@ -58,8 +64,14 @@ export default function CalendarHeader({
 					</Button>
 					<Button
 						size="sm"
-						variant="outline"
-						borderColor="#cad6cf"
+						variant="ghost"
+						minW="8"
+						px={2}
+						color="#506057"
+						fontSize="lg"
+						lineHeight="1"
+						_hover={{ bg: "transparent", color: "#506057" }}
+						_active={{ bg: "transparent" }}
 						onClick={onNext}
 					>
 						›
@@ -97,23 +109,11 @@ export default function CalendarHeader({
 			</HStack>
 			<HStack gap={3} flexWrap="wrap" fontSize="xs" color="#506057">
 				<HStack gap={1.5} align="center">
-					<Box
-						w="14px"
-						h="14px"
-						borderRadius="4px"
-						bg="#1d4ed8"
-						boxShadow="inset 3px 0 0 0 #93c5fd"
-					/>
+					<Box w="14px" h="14px" borderRadius="4px" bg="#3b82f6" />
 					<Text>Building-wide</Text>
 				</HStack>
 				<HStack gap={1.5} align="center">
-					<Box
-						w="14px"
-						h="14px"
-						borderRadius="4px"
-						bg="#047857"
-						boxShadow="inset 3px 0 0 0 #6ee7b7"
-					/>
+					<Box w="14px" h="14px" borderRadius="4px" bg="#10b981" />
 					<Text>This section only</Text>
 				</HStack>
 			</HStack>

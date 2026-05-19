@@ -17,8 +17,7 @@ export default function SectionPage() {
 	const [currentUserId, setCurrentUserId] = useState<number | null>(null)
 	const [userSectionId, setUserSectionId] = useState(1)
 
-	const { events, ready, init, create, update, remove } =
-		useSectionCalendarStore()
+	const { events, init, create, update, remove } = useSectionCalendarStore()
 
 	useEffect(() => {
 		async function loadSection() {
@@ -126,19 +125,13 @@ export default function SectionPage() {
 						<Heading size="md" mb={4}>
 							Section calendar
 						</Heading>
-						{ready ? (
-							<SectionEventCalendar
-								sectionId={section.id}
-								events={events}
-								onCreate={(payload) =>
-									create(section.id, payload)
-								}
-								onUpdate={update}
-								onRemove={remove}
-							/>
-						) : (
-							<Spinner size="sm" />
-						)}
+						<SectionEventCalendar
+							sectionId={section.id}
+							events={events}
+							onCreate={(payload) => create(section.id, payload)}
+							onUpdate={update}
+							onRemove={remove}
+						/>
 					</Box>
 				</VStack>
 			) : null}
