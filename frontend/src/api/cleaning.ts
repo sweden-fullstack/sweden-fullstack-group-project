@@ -1,5 +1,8 @@
 import SectionEventAssigneeDto from "@/shared/types/section-event/sectionEventAssignee.dto"
 import UserDto from "@/shared/types/user/user.dto"
+import envConfig from "@/config/env"
+import axios from "axios"
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 
 export type CleaningEventCreate = {
 	sectionId: number
@@ -9,134 +12,57 @@ export type CleaningEventCreate = {
 	users?: UserDto[]
 }
 
-let cleaning: SectionEventAssigneeDto[] = [
-	{
-		id: 1,
-		sectionId: 1,
-		eventType: "cleaning",
-		startTime: new Date("2026-05-08T10:00:00Z"),
-		endTime: new Date("2026-05-08T11:00:00Z"),
-		description: "Kitchen",
-		users: [
-			{
-				id: 1,
-				email: "",
-				firstName: "Alice",
-				lastName: "Smith",
-				sectionId: 1,
-				roomNumber: 11,
-				major: "Unemployement",
-				stayPeriodStart: new Date("2026-05-08"),
-				stayPeriodEnd: new Date("2026-04-04"),
-			},
-		],
-	},
-	{
-		id: 2,
-		sectionId: 1,
-		eventType: "cleaning",
-		startTime: new Date("2026-05-09T10:00:00Z"),
-		endTime: new Date("2026-05-09T11:00:00Z"),
-		description: "Trash",
-	},
-	{
-		id: 3,
-		sectionId: 1,
-		eventType: "cleaning",
-		startTime: new Date("2026-05-10T13:00:00Z"),
-		endTime: new Date("2026-05-10T14:00:00Z"),
-		description: "Bathroom",
-		users: [
-			{
-				id: 2,
-				email: "",
-				firstName: "Bob",
-				lastName: "Lee",
-				sectionId: 1,
-				roomNumber: 11,
-				major: "Unemployement",
-				stayPeriodStart: new Date("2026-05-08"),
-				stayPeriodEnd: new Date("2026-04-04"),
-			},
-		],
-	},
-	{
-		id: 4,
-		sectionId: 1,
-		eventType: "cleaning",
-		startTime: new Date("2026-05-11T08:30:00Z"),
-		endTime: new Date("2026-05-11T09:30:00Z"),
-		description: "Stairwell",
-	},
-	{
-		id: 5,
-		sectionId: 1,
-		eventType: "cleaning",
-		startTime: new Date("2026-05-12T17:00:00Z"),
-		endTime: new Date("2026-05-12T18:00:00Z"),
-		description: "Laundry Room",
-		users: [
-			{
-				id: 3,
-				email: "",
-				firstName: "Cathy",
-				lastName: "Wang",
-				sectionId: 1,
-				roomNumber: 11,
-				major: "Unemployement",
-				stayPeriodStart: new Date("2026-05-08"),
-				stayPeriodEnd: new Date("2026-04-04"),
-			},
-			{
-				id: 4,
-				email: "",
-				firstName: "David",
-				lastName: "Brown",
-				sectionId: 1,
-				roomNumber: 11,
-				major: "Unemployement",
-				stayPeriodStart: new Date("2026-05-08"),
-				stayPeriodEnd: new Date("2026-04-04"),
-			},
-		],
-	},
-]
-
-let nextEventId =
-	cleaning.reduce((max, event) => Math.max(max, event.id), 0) + 1
-
 class CleaningApi {
+	path_event = `${envConfig.backend}section_event/`
+	path_assignee = `${envConfig.backend}section_event_assignee/`
+
 	async getBySection(sectionId: number) {
-		// Later: return axios.get<SectionEventCleaningDto[]>(`/api/sections/${sectionId}/cleaning`).then((res) => res.data)
-		return cleaning
-			.filter((event) => event.sectionId === sectionId)
-			.map((event) => ({ ...event }))
+		const { data } = await axios.get(
+			`${this.path_event}sectionId/${sectionId}`,
+		)
+		// Filtern nach Cleaning-Events (eventTypeId === 2) und Datum-Strings in Date umwandeln
+		return data
+			.filter((event: SectionEventDto) => event.eventTypeId === 2)
+			.map((event: SectionEventDto) => ({
+				...event,
+				startTime: new Date(event.startTime),
+				endTime: new Date(event.endTime),
+			})) as SectionEventAssigneeDto[]
 	}
 
 	async create(payload: CleaningEventCreate) {
-		// Later: return axios.post<SectionEventCleaningDto>("/api/cleaning", payload).then((res) => res.data)
-		const event: SectionEventAssigneeDto = {
-			id: nextEventId++,
-			eventType: "cleaning",
-			...payload,
+		const { data } = await axios.post(
+			`${this.path_event}sectionId/${payload.sectionId}`,
+			{
+				eventTypeId: 2,
+				description: payload.description,
+				startTime: payload.startTime,
+				endTime: payload.endTime,
+			},
+			{ withCredentials: true },
+		)
+
+		const event = data as SectionEventAssigneeDto
+
+		if (payload.users && payload.users.length > 0) {
+			return await this.updateAssignees(event.id, payload.users)
 		}
-		cleaning.push(event)
-		return { ...event }
+
+		return event
 	}
 
 	async updateAssignees(eventId: number, users: UserDto[]) {
-		// Later: return axios.put<SectionEventCleaningDto>(`/api/cleaning/${eventId}/assignees`, { users }).then((res) => res.data)
-		const index = cleaning.findIndex((event) => event.id === eventId)
-		if (index < 0) {
-			throw new Error(`Cleaning event ${eventId} not found`)
-		}
-		cleaning[index] = { ...cleaning[index], users }
-		return { ...cleaning[index] }
+		const userIds = users.map((u) => u.id)
+		const { data } = await axios.put(
+			`${this.path_assignee}eventId/${eventId}/assignees`,
+			{ userIds },
+		)
+		// the backend might not return the full event, but we return a stub or ignore since the frontend refetches
+		return data
 	}
 
 	async delete(eventId: number) {
-		// Later: await axios.delete(`/api/cleaning/${eventId}`)
-		cleaning = cleaning.filter((event) => event.id !== eventId)
+		await axios.delete(`${this.path_event}eventId/${eventId}`)
 	}
 }
 
