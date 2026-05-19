@@ -1,7 +1,5 @@
 const LOCALE = "en-US" as const
 
-// TODO There are 7 ways to make dates please reduce ;_;/
-
 export function formatTimeRange(start: Date, end: Date) {
 	const opts: Intl.DateTimeFormatOptions = {
 		month: "short",
@@ -32,9 +30,4 @@ export function formatDayRangeInMonth(d: Date) {
 		day: "numeric",
 	}
 	return `${start.toLocaleDateString(LOCALE, longFmt)} – ${end.toLocaleDateString(LOCALE, longFmt)}`
-}
-
-export function toLocalDatetimeInputValue(date: Date) {
-	const p = (n: number) => String(n).padStart(2, "0")
-	return `${date.getFullYear()}-${p(date.getMonth() + 1)}-${p(date.getDate())}T${p(date.getHours())}:${p(date.getMinutes())}`
 }

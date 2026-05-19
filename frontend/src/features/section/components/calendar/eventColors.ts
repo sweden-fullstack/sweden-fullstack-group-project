@@ -1,4 +1,4 @@
-import type { SectionCalendarEvent } from "../types"
+import type { SectionCalendarEvent } from "../../types"
 
 export function eventPillColors(event: SectionCalendarEvent) {
 	if (event.visibility === "building") {

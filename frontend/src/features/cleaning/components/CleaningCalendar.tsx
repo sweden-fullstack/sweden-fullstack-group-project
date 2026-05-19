@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react"
 import Calendar from "react-calendar"
 import styles from "./CleaningCalendar.module.css"
-import { toDateKey } from "../utils/date"
+import { toDateKey } from "@/utils/date"
 
 type Props = {
 	selectedDate: Date

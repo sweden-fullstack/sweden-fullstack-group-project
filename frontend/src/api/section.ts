@@ -1,7 +1,11 @@
-import type { SectionCalendarEvent } from "../features/section/types"
+import type {
+	SectionCalendarEvent,
+	SectionEventCreate,
+} from "../features/section/types"
 
 export type ResidentProfile = {
 	id: number
+	sectionId: number
 	email: string
 	fullName: string
 	roomNumber: string
@@ -11,18 +15,126 @@ export type ResidentProfile = {
 	profilePictureUrl?: string
 }
 
+export type SectionSummary = {
+	id: number
+	name: string
+	building: string
+}
+
 export type SectionDetails = {
 	id: number
 	name: string
 	building: string
 	description: string
-	residents: ResidentProfile[]
 	calendarEvents: SectionCalendarEvent[]
 }
 
-const calendarSeed: SectionCalendarEvent[] = [
+type SectionEventRaw = Omit<SectionCalendarEvent, "startTime" | "endTime"> & {
+	startTime: string | Date
+	endTime: string | Date
+}
+
+const DEFAULT_BUILDING_ID = 1
+
+export function normalizeSectionEvent(
+	raw: SectionEventRaw,
+): SectionCalendarEvent {
+	return {
+		...raw,
+		buildingId: raw.buildingId ?? DEFAULT_BUILDING_ID,
+		startTime:
+			raw.startTime instanceof Date
+				? raw.startTime
+				: new Date(raw.startTime),
+		endTime:
+			raw.endTime instanceof Date ? raw.endTime : new Date(raw.endTime),
+		visibility:
+			raw.visibility ?? (raw.sectionId != null ? "section" : "building"),
+	}
+}
+
+const buildingResidents: ResidentProfile[] = [
+	{
+		id: 1,
+		sectionId: 1,
+		email: "alice.smith@example.edu",
+		fullName: "Alice Smith",
+		roomNumber: "A-301",
+		stayPeriod: "Aug 2025 – Jun 2026",
+		major: "Computer Science",
+		interests: ["Board games", "Running"],
+	},
+	{
+		id: 2,
+		sectionId: 1,
+		email: "bob.lee@example.edu",
+		fullName: "Bob Lee",
+		roomNumber: "A-302",
+		stayPeriod: "Jan 2026 – Dec 2026",
+		major: "Business",
+		interests: ["Cooking", "Films"],
+	},
+	{
+		id: 3,
+		sectionId: 1,
+		email: "mike.wang@example.edu",
+		fullName: "Mike Wang",
+		roomNumber: "A-303",
+		stayPeriod: "Sep 2025 – Aug 2026",
+		major: "Environmental Science",
+		interests: ["Climbing", "Photography"],
+	},
+	{
+		id: 4,
+		sectionId: 1,
+		email: "amy.brown@example.edu",
+		fullName: "Amy Brown",
+		roomNumber: "A-304",
+		stayPeriod: "Aug 2025 – Jun 2026",
+		major: "Design",
+		interests: ["Sketching", "Jazz"],
+	},
+	{
+		id: 5,
+		sectionId: 2,
+		email: "carlos.vega@example.edu",
+		fullName: "Carlos Vega",
+		roomNumber: "B-201",
+		stayPeriod: "Feb 2026 – Jan 2027",
+		major: "Mechanical Engineering",
+		interests: ["Cycling", "Coffee"],
+	},
+	{
+		id: 6,
+		sectionId: 2,
+		email: "diana.kim@example.edu",
+		fullName: "Diana Kim",
+		roomNumber: "B-202",
+		stayPeriod: "Aug 2025 – Jun 2026",
+		major: "Architecture",
+		interests: ["Pottery", "Hiking"],
+	},
+	{
+		id: 7,
+		sectionId: 2,
+		email: "erik.johansson@example.edu",
+		fullName: "Erik Johansson",
+		roomNumber: "B-203",
+		stayPeriod: "Sep 2025 – Aug 2026",
+		major: "Physics",
+		interests: ["Chess", "Podcasts"],
+	},
+]
+
+const sectionsInBuilding: SectionSummary[] = [
+	{ id: 1, name: "Section A", building: "Building 1" },
+	{ id: 2, name: "Section B", building: "Building 1" },
+]
+
+const calendarSeedRaw: SectionEventRaw[] = [
 	{
 		id: 101,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Common room dinner",
@@ -33,6 +145,7 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 	{
 		id: 102,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Building fire drill briefing",
@@ -43,6 +156,7 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 	{
 		id: 103,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Corridor deep clean",
@@ -53,6 +167,7 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 	{
 		id: 104,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Roof terrace welcome mixer",
@@ -63,6 +178,7 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 	{
 		id: 105,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Hot water inspection slot",
@@ -73,6 +189,7 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 	{
 		id: 106,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Board game night",
@@ -83,6 +200,7 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 	{
 		id: 107,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Section budget check-in",
@@ -93,6 +211,7 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 	{
 		id: 108,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Recycling room tidy",
@@ -103,6 +222,7 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 	{
 		id: 109,
+		buildingId: 1,
 		sectionId: 1,
 		eventType: "section",
 		title: "Quiet hours reminder",
@@ -113,57 +233,88 @@ const calendarSeed: SectionCalendarEvent[] = [
 	},
 ]
 
+let calendarEvents: SectionCalendarEvent[] = calendarSeedRaw.map(
+	normalizeSectionEvent,
+)
+
+function nextEventId() {
+	return Math.max(0, ...calendarEvents.map((e) => e.id)) + 1
+}
+
 const section: SectionDetails = {
 	id: 1,
 	name: "Section A",
 	building: "Building 1",
 	description:
 		"A shared student corridor with kitchen, lounge, and study spaces.",
-	residents: [
-		{
-			id: 1,
-			email: "alice.smith@example.edu",
-			fullName: "Alice Smith",
-			roomNumber: "A-301",
-			stayPeriod: "Aug 2025 – Jun 2026",
-			major: "Computer Science",
-			interests: ["Board games", "Running"],
-		},
-		{
-			id: 2,
-			email: "bob.lee@example.edu",
-			fullName: "Bob Lee",
-			roomNumber: "A-302",
-			stayPeriod: "Jan 2026 – Dec 2026",
-			major: "Business",
-			interests: ["Cooking", "Films"],
-		},
-		{
-			id: 3,
-			email: "mike.wang@example.edu",
-			fullName: "Mike Wang",
-			roomNumber: "A-303",
-			stayPeriod: "Sep 2025 – Aug 2026",
-			major: "Environmental Science",
-			interests: ["Climbing", "Photography"],
-		},
-		{
-			id: 4,
-			email: "amy.brown@example.edu",
-			fullName: "Amy Brown",
-			roomNumber: "A-304",
-			stayPeriod: "Aug 2025 – Jun 2026",
-			major: "Design",
-			interests: ["Sketching", "Jazz"],
-		},
-	],
-	calendarEvents: calendarSeed,
+	get calendarEvents() {
+		return calendarEvents
+	},
 }
 
 class SectionApi {
-	async getCurrentSection() {
+	async getCurrentSection(): Promise<SectionDetails> {
 		// Later: return axios.get<SectionDetails>("/api/sections/me").then((res) => res.data)
-		return section
+		return {
+			...section,
+			calendarEvents: calendarEvents.map((e) => ({
+				...e,
+				startTime: new Date(e.startTime),
+				endTime: new Date(e.endTime),
+			})),
+		}
+	}
+
+	async createEvent(
+		_sectionId: number,
+		payload: SectionEventCreate,
+	): Promise<SectionCalendarEvent> {
+		// Later: return axios.post<SectionCalendarEvent>(`/api/sections/${sectionId}/events`, payload).then((res) => normalizeSectionEvent(res.data))
+		const event = normalizeSectionEvent({
+			...payload,
+			id: nextEventId(),
+		})
+		calendarEvents = [...calendarEvents, event]
+		return {
+			...event,
+			startTime: new Date(event.startTime),
+			endTime: new Date(event.endTime),
+		}
+	}
+
+	async updateEvent(
+		event: SectionCalendarEvent,
+	): Promise<SectionCalendarEvent> {
+		// Later: return axios.put(`/api/section-events/${event.id}`, event).then((res) => normalizeSectionEvent(res.data))
+		const normalized = normalizeSectionEvent(event)
+		calendarEvents = calendarEvents.map((e) =>
+			e.id === normalized.id ? normalized : e,
+		)
+		return {
+			...normalized,
+			startTime: new Date(normalized.startTime),
+			endTime: new Date(normalized.endTime),
+		}
+	}
+
+	async deleteEvent(id: number): Promise<void> {
+		// Later: return axios.delete(`/api/section-events/${id}`)
+		calendarEvents = calendarEvents.filter((e) => e.id !== id)
+	}
+
+	async getSectionsInBuilding(building: string) {
+		// Later: return axios.get<SectionSummary[]>(`/api/buildings/${buildingId}/sections`).then((res) => res.data)
+		return sectionsInBuilding.filter((s) => s.building === building)
+	}
+
+	async getBuildingResidents(building: string) {
+		// Later: return axios.get<ResidentProfile[]>(`/api/buildings/${buildingId}/residents`).then((res) => res.data)
+		const sectionIds = new Set(
+			sectionsInBuilding
+				.filter((s) => s.building === building)
+				.map((s) => s.id),
+		)
+		return buildingResidents.filter((r) => sectionIds.has(r.sectionId))
 	}
 }
 
