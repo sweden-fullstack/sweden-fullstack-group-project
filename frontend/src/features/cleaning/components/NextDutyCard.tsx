@@ -1,6 +1,6 @@
 import { Box, Heading, Text, VStack } from "@chakra-ui/react"
 import type { NextMyDuty } from "../types"
-import { formatDate } from "../utils/date"
+import { formatDate } from "@/utils/date"
 
 type Props = {
 	nextMyDuty: NextMyDuty | null

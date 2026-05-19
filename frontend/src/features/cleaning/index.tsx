@@ -16,7 +16,7 @@ import type {
 	SelectedDayRow,
 	ViewMode,
 } from "./types"
-import { toDateKey } from "./utils/date"
+import { toDateKey } from "@/utils/date"
 import UserDto from "@/shared/types/user/user.dto"
 import SectionEventCleaningDto from "@/shared/types/section-event/sectionEventCleaning.dto"
 import useUserStore from "@/stores/userStore"

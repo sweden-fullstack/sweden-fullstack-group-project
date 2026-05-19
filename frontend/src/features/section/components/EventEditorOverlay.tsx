@@ -7,17 +7,30 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react"
-import { type ChangeEvent, useEffect, useState } from "react"
-import { toLocalDatetimeInputValue } from "../calendar/formatTimes"
-import type { SectionCalendarEvent } from "../types"
+import { type ChangeEvent, useState } from "react"
+import {
+	parseLocalDatetimeInputValue,
+	toLocalDatetimeInputValue,
+} from "@/utils/date"
+import type { SectionEventVisibility } from "@/shared/types/section-event/sectionEvent.dto"
+import type {
+	SectionCalendarEvent,
+	SectionEventDraft,
+} from "@/features/section/types"
+import { VISIBILITY_OPTIONS } from "@/features/section/utils/eventVisibility"
 
 const STORED_EVENT_TYPE = "section" as const
 
+export type EventEditorDraft = SectionCalendarEvent | SectionEventDraft
+
 type Props = {
 	open: boolean
-	draft: SectionCalendarEvent | null
+	draft: EventEditorDraft | null
+	sectionId: number
+	buildingId?: number
 	onClose: () => void
-	onSave: (event: SectionCalendarEvent) => void
+	onCreate: (payload: SectionEventDraft) => void
+	onUpdate: (event: SectionCalendarEvent) => void
 	onDelete: (id: number) => void
 }
 
@@ -30,34 +43,39 @@ const fieldStyle = {
 	background: "white",
 } as const
 
-export default function EventEditorOverlay({
-	open,
+function isExistingEvent(
+	draft: EventEditorDraft,
+): draft is SectionCalendarEvent {
+	return "id" in draft && typeof draft.id === "number"
+}
+
+function draftFormKey(draft: EventEditorDraft) {
+	return isExistingEvent(draft) ? `edit-${draft.id}` : "new"
+}
+
+function EventEditorForm({
 	draft,
+	sectionId,
+	buildingId,
 	onClose,
-	onSave,
+	onCreate,
+	onUpdate,
 	onDelete,
-}: Props) {
-	const [title, setTitle] = useState("")
-	// TODO maybe create a type from "building" | "section", if you use something more than once have one source of truth!
-	const [visibility, setVisibility] = useState<"building" | "section">(
-		"section",
+}: Props & { draft: EventEditorDraft }) {
+	const [title, setTitle] = useState(draft.title)
+	const [visibility, setVisibility] = useState<SectionEventVisibility>(
+		draft.visibility ?? "section",
 	)
-	const [startLocal, setStartLocal] = useState("")
-	const [endLocal, setEndLocal] = useState("")
-	const [description, setDescription] = useState("")
+	const [startAt, setStartAt] = useState<Date | null>(
+		() => new Date(draft.startTime),
+	)
+	const [endAt, setEndAt] = useState<Date | null>(
+		() => new Date(draft.endTime),
+	)
+	const [description, setDescription] = useState(draft.description ?? "")
 	const [error, setError] = useState<string | null>(null)
 
-	useEffect(() => {
-		if (!draft) return
-		setTitle(draft.title)
-		setVisibility(draft.visibility)
-		setStartLocal(toLocalDatetimeInputValue(new Date(draft.startTime)))
-		setEndLocal(toLocalDatetimeInputValue(new Date(draft.endTime)))
-		setDescription(draft.description ?? "")
-		setError(null)
-	}, [draft])
-
-	if (!open || !draft) return null
+	const editing = isExistingEvent(draft)
 
 	function handleSave() {
 		const trimmed = title.trim()
@@ -65,28 +83,194 @@ export default function EventEditorOverlay({
 			setError("Add a title.")
 			return
 		}
-		const start = new Date(startLocal)
-		const end = new Date(endLocal)
-		// TODO If you use Date instead of string you don't have to worry about this! just use dates instead, startLocal and endLocal as date instead of string
-		if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+		if (!startAt || !endAt) {
 			setError("Fix the dates.")
 			return
 		}
-		if (end <= start) {
+		if (endAt <= startAt) {
 			setError("End time must be after start.")
 			return
 		}
-		onSave({
-			...draft,
+
+		const base = {
 			title: trimmed,
 			eventType: STORED_EVENT_TYPE,
 			visibility,
-			startTime: start.toISOString(),
-			endTime: end.toISOString(),
+			startTime: startAt,
+			endTime: endAt,
 			description: description.trim() || undefined,
-		})
+			buildingId: editing ? draft.buildingId : buildingId,
+		}
+
+		if (editing) {
+			onUpdate({
+				...draft,
+				...base,
+			})
+		} else {
+			onCreate({
+				...base,
+				sectionId,
+			})
+		}
 		onClose()
 	}
+
+	return (
+		<Box
+			bg="white"
+			borderRadius="22px"
+			border="1px solid #dce5df"
+			p={6}
+			maxW="520px"
+			w="full"
+			boxShadow="0 24px 60px rgba(54, 74, 62, 0.18)"
+			onClick={(e) => e.stopPropagation()}
+		>
+			<Heading size="md" mb={4}>
+				{editing ? "Edit event" : "New event"}
+			</Heading>
+			<VStack align="stretch" gap={3}>
+				<Box>
+					<Text fontSize="sm" color="#506057" mb={1}>
+						Title
+					</Text>
+					<Input
+						value={title}
+						onChange={(e) => setTitle(e.target.value)}
+						placeholder="e.g. Corridor dinner"
+					/>
+				</Box>
+				<Box>
+					<Text fontSize="sm" color="#506057" mb={1}>
+						Who can see it
+					</Text>
+					<select
+						value={visibility}
+						onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+							setVisibility(
+								e.target.value as SectionEventVisibility,
+							)
+						}
+						style={fieldStyle}
+					>
+						{VISIBILITY_OPTIONS.map((opt) => (
+							<option key={opt.value} value={opt.value}>
+								{opt.label}
+							</option>
+						))}
+					</select>
+				</Box>
+				<HStack gap={4} flexWrap="wrap" align="flex-start">
+					<Box flex="1" minW="200px">
+						<Text fontSize="sm" color="#506057" mb={1}>
+							Starts
+						</Text>
+						<Input
+							type="datetime-local"
+							value={
+								startAt
+									? toLocalDatetimeInputValue(startAt)
+									: ""
+							}
+							onChange={(e) =>
+								setStartAt(
+									parseLocalDatetimeInputValue(
+										e.target.value,
+									),
+								)
+							}
+						/>
+					</Box>
+					<Box flex="1" minW="200px">
+						<Text fontSize="sm" color="#506057" mb={1}>
+							Ends
+						</Text>
+						<Input
+							type="datetime-local"
+							value={
+								endAt ? toLocalDatetimeInputValue(endAt) : ""
+							}
+							onChange={(e) =>
+								setEndAt(
+									parseLocalDatetimeInputValue(
+										e.target.value,
+									),
+								)
+							}
+						/>
+					</Box>
+				</HStack>
+				<Box>
+					<Text fontSize="sm" color="#506057" mb={1}>
+						Details
+					</Text>
+					<textarea
+						rows={4}
+						value={description}
+						onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+							setDescription(e.target.value)
+						}
+						placeholder="Optional notes"
+						style={{
+							...fieldStyle,
+							resize: "vertical",
+							minHeight: "100px",
+						}}
+					/>
+				</Box>
+				{error ? (
+					<Text fontSize="sm" color="#9b2c2c">
+						{error}
+					</Text>
+				) : null}
+				<HStack justify="space-between" flexWrap="wrap" gap={3} pt={2}>
+					{editing ? (
+						<Button
+							variant="outline"
+							borderColor="#d9a3a3"
+							color="#7a2323"
+							_hover={{ bg: "#fff5f5" }}
+							onClick={() => {
+								onDelete(draft.id)
+								onClose()
+							}}
+						>
+							Delete
+						</Button>
+					) : (
+						<Box />
+					)}
+					<HStack gap={2}>
+						<Button variant="outline" onClick={onClose}>
+							Cancel
+						</Button>
+						<Button
+							bg="#90d5ff"
+							color="#163447"
+							_hover={{ bg: "#78c9fb" }}
+							onClick={handleSave}
+						>
+							Save
+						</Button>
+					</HStack>
+				</HStack>
+			</VStack>
+		</Box>
+	)
+}
+
+export default function EventEditorOverlay({
+	open,
+	draft,
+	sectionId,
+	buildingId = 1,
+	onClose,
+	onCreate,
+	onUpdate,
+	onDelete,
+}: Props) {
+	if (!open || !draft) return null
 
 	return (
 		<Box
@@ -100,129 +284,17 @@ export default function EventEditorOverlay({
 			p={4}
 			onClick={onClose}
 		>
-			<Box
-				bg="white"
-				borderRadius="22px"
-				border="1px solid #dce5df"
-				p={6}
-				maxW="520px"
-				w="full"
-				boxShadow="0 24px 60px rgba(54, 74, 62, 0.18)"
-				onClick={(e) => e.stopPropagation()}
-			>
-				<Heading size="md" mb={4}>
-					{draft.id < 0 ? "New event" : "Edit event"}
-				</Heading>
-				<VStack align="stretch" gap={3}>
-					<Box>
-						<Text fontSize="sm" color="#506057" mb={1}>
-							Title
-						</Text>
-						<Input
-							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-							placeholder="e.g. Corridor dinner"
-						/>
-					</Box>
-					<Box>
-						<Text fontSize="sm" color="#506057" mb={1}>
-							Who can see it
-						</Text>
-						<select
-							value={visibility}
-							onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-								setVisibility(
-									// TODO when I say one source of truth I mean this here as the second source of truth
-									e.target.value as "building" | "section",
-								)
-							}
-							style={fieldStyle}
-						>
-							<option value="building">
-								Everyone in the building
-							</option>
-							<option value="section">Only this section</option>
-						</select>
-					</Box>
-					<HStack gap={4} flexWrap="wrap" align="flex-start">
-						<Box flex="1" minW="200px">
-							<Text fontSize="sm" color="#506057" mb={1}>
-								Starts
-							</Text>
-							<Input
-								type="datetime-local"
-								value={startLocal}
-								onChange={(e) => setStartLocal(e.target.value)}
-							/>
-						</Box>
-						<Box flex="1" minW="200px">
-							<Text fontSize="sm" color="#506057" mb={1}>
-								Ends
-							</Text>
-							<Input
-								type="datetime-local"
-								value={endLocal}
-								onChange={(e) => setEndLocal(e.target.value)}
-							/>
-						</Box>
-					</HStack>
-					<Box>
-						<Text fontSize="sm" color="#506057" mb={1}>
-							Details
-						</Text>
-						<textarea
-							rows={4}
-							value={description}
-							onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-								setDescription(e.target.value)
-							}
-							placeholder="Optional notes"
-							style={{
-								...fieldStyle,
-								resize: "vertical",
-								minHeight: "100px",
-							}}
-						/>
-					</Box>
-					{error ? (
-						<Text fontSize="sm" color="#9b2c2c">
-							{error}
-						</Text>
-					) : null}
-					<HStack
-						justify="space-between"
-						flexWrap="wrap"
-						gap={3}
-						pt={2}
-					>
-						<Button
-							variant="outline"
-							borderColor="#d9a3a3"
-							color="#7a2323"
-							_hover={{ bg: "#fff5f5" }}
-							onClick={() => {
-								onDelete(draft.id)
-								onClose()
-							}}
-						>
-							Delete
-						</Button>
-						<HStack gap={2}>
-							<Button variant="outline" onClick={onClose}>
-								Cancel
-							</Button>
-							<Button
-								bg="#90d5ff"
-								color="#163447"
-								_hover={{ bg: "#78c9fb" }}
-								onClick={handleSave}
-							>
-								Save
-							</Button>
-						</HStack>
-					</HStack>
-				</VStack>
-			</Box>
+			<EventEditorForm
+				key={draftFormKey(draft)}
+				open={open}
+				draft={draft}
+				sectionId={sectionId}
+				buildingId={buildingId}
+				onClose={onClose}
+				onCreate={onCreate}
+				onUpdate={onUpdate}
+				onDelete={onDelete}
+			/>
 		</Box>
 	)
 }

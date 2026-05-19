@@ -1,60 +1,38 @@
-import {
-	Box,
-	Button,
-	Grid,
-	Heading,
-	HStack,
-	Text,
-	VStack,
-} from "@chakra-ui/react"
-import { useEffect, useMemo, useState } from "react"
-import {
-	addMonths,
-	buildMonthGrid,
-	isDayBetween,
-	sameCalendarDay,
-	toDateKey,
-} from "../calendar/layoutMonth"
-import {
-	formatDayRangeInMonth,
-	formatMonthHeading,
-	formatTimeShort,
-} from "../calendar/formatTimes"
-import { eventPillColors } from "../calendar/eventColors"
-import type { SectionCalendarEvent } from "../types"
+import { Box, Button, Grid, HStack, Text, VStack } from "@chakra-ui/react"
+import { useMemo, useState } from "react"
+import { addMonths, buildMonthGrid } from "./calendar/monthGrid"
+import { isDayBetween, sameCalendarDay, toDateKey } from "@/utils/date"
+import { formatTimeShort } from "../utils/formatTimes"
+import { eventPillColors } from "./calendar/eventColors"
+import type { SectionCalendarEvent, SectionEventDraft } from "../types"
+import type { EventEditorDraft } from "./EventEditorOverlay"
 import EventEditorOverlay from "./EventEditorOverlay"
-
-type Filter = "all" | "building" | "section"
+import CalendarHeader, { type CalendarFilter } from "./CalendarHeader"
 
 type Props = {
 	sectionId: number
 	events: SectionCalendarEvent[]
-	// TODO With onUpdate and onCreate since we coded backend like that ;_;
-	onUpsert: (e: SectionCalendarEvent) => void
-	onRemove: (id: number) => void
+	onCreate: (payload: SectionEventDraft) => void | Promise<unknown>
+	onUpdate: (event: SectionCalendarEvent) => void | Promise<unknown>
+	onRemove: (id: number) => void | Promise<unknown>
 }
 
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 const maxPills = 3
 
-// TODO ehhhh you are not supposted to set ID from the frontend!
-function nextNewId(list: SectionCalendarEvent[]) {
-	return Math.min(0, ...list.map((e) => e.id), 0) - 1
-}
-
-function blankDraft(sectionId: number, id: number): SectionCalendarEvent {
+function blankDraft(sectionId: number): SectionEventDraft {
 	const start = new Date()
 	start.setMinutes(0, 0, 0)
 	start.setHours(start.getHours() + 1)
 	const end = new Date(start)
 	end.setHours(end.getHours() + 1)
 	return {
-		id,
 		sectionId,
+		buildingId: 1,
 		eventType: "section",
 		title: "",
-		startTime: start.toISOString(),
-		endTime: end.toISOString(),
+		startTime: start,
+		endTime: end,
 		description: "",
 		visibility: "section",
 	}
@@ -63,13 +41,14 @@ function blankDraft(sectionId: number, id: number): SectionCalendarEvent {
 export default function SectionEventCalendar({
 	sectionId,
 	events,
-	onUpsert,
+	onCreate,
+	onUpdate,
 	onRemove,
 }: Props) {
 	const [month, setMonth] = useState(() => new Date())
-	const [filter, setFilter] = useState<Filter>("all")
+	const [filter, setFilter] = useState<CalendarFilter>("all")
 	const [editorOpen, setEditorOpen] = useState(false)
-	const [draft, setDraft] = useState<SectionCalendarEvent | null>(null)
+	const [draft, setDraft] = useState<EventEditorDraft | null>(null)
 	const [expandedKey, setExpandedKey] = useState<string | null>(null)
 
 	const filtered = useMemo(() => {
@@ -92,7 +71,7 @@ export default function SectionEventCalendar({
 				boxShadow="0 10px 28px rgba(83, 130, 182, 0.12)"
 			>
 				<VStack align="stretch" gap={4}>
-					<FlexHeader
+					<CalendarHeader
 						month={month}
 						onPrev={() => setMonth((d) => addMonths(d, -1))}
 						onNext={() => setMonth((d) => addMonths(d, 1))}
@@ -100,13 +79,10 @@ export default function SectionEventCalendar({
 						filter={filter}
 						onFilter={setFilter}
 						onAdd={() => {
-							setDraft(blankDraft(sectionId, nextNewId(events)))
+							setDraft(blankDraft(sectionId))
 							setEditorOpen(true)
 						}}
 					/>
-					<Text fontSize="sm" color="#506057">
-						{formatDayRangeInMonth(month)}
-					</Text>
 
 					<Grid templateColumns="repeat(7, minmax(0, 1fr))" gap={1}>
 						{weekdays.map((d) => (
@@ -235,6 +211,14 @@ export default function SectionEventCalendar({
 															onClick={() => {
 																setDraft({
 																	...ev,
+																	startTime:
+																		new Date(
+																			ev.startTime,
+																		),
+																	endTime:
+																		new Date(
+																			ev.endTime,
+																		),
 																})
 																setEditorOpen(
 																	true,
@@ -285,148 +269,15 @@ export default function SectionEventCalendar({
 			<EventEditorOverlay
 				open={editorOpen}
 				draft={draft}
+				sectionId={sectionId}
 				onClose={() => {
 					setEditorOpen(false)
 					setDraft(null)
 				}}
-				onSave={onUpsert}
+				onCreate={onCreate}
+				onUpdate={onUpdate}
 				onDelete={onRemove}
 			/>
 		</>
-	)
-}
-
-// TODO move to separate component
-function FlexHeader({
-	month,
-	onPrev,
-	onNext,
-	onToday,
-	filter,
-	onFilter,
-	onAdd,
-}: {
-	month: Date
-	onPrev: () => void
-	onNext: () => void
-	onToday: () => void
-	filter: Filter
-	onFilter: (f: Filter) => void
-	onAdd: () => void
-}) {
-	return (
-		<VStack align="stretch" gap={3}>
-			<HStack
-				justify="space-between"
-				flexWrap="wrap"
-				gap={3}
-				align="flex-start"
-			>
-				<Box>
-					<Heading size="md">{formatMonthHeading(month)}</Heading>
-				</Box>
-				<HStack flexWrap="wrap" gap={2}>
-					<Button
-						size="sm"
-						variant="outline"
-						borderColor="#cad6cf"
-						onClick={onPrev}
-					>
-						‹
-					</Button>
-					<Button
-						size="sm"
-						bg="#d8ebff"
-						color="#123a5f"
-						border="1px solid #a9cff5"
-						_hover={{ bg: "#c8e2ff" }}
-						onClick={onToday}
-					>
-						Today
-					</Button>
-					<Button
-						size="sm"
-						variant="outline"
-						borderColor="#cad6cf"
-						onClick={onNext}
-					>
-						›
-					</Button>
-					<Button
-						size="sm"
-						bg="#90d5ff"
-						color="#163447"
-						_hover={{ bg: "#78c9fb" }}
-						onClick={onAdd}
-					>
-						+ Add event
-					</Button>
-				</HStack>
-			</HStack>
-			<HStack gap={2} flexWrap="wrap">
-				<FilterBtn
-					active={filter === "all"}
-					onClick={() => onFilter("all")}
-					label="All events"
-				/>
-				<FilterBtn
-					active={filter === "building"}
-					onClick={() => onFilter("building")}
-					label="Everyone (building)"
-				/>
-				<FilterBtn
-					active={filter === "section"}
-					onClick={() => onFilter("section")}
-					label="This section"
-				/>
-			</HStack>
-			<HStack gap={3} flexWrap="wrap" fontSize="xs" color="#506057">
-				<HStack gap={1.5} align="center">
-					<Box
-						w="14px"
-						h="14px"
-						borderRadius="4px"
-						bg="#1d4ed8"
-						boxShadow="inset 3px 0 0 0 #93c5fd"
-					/>
-					<Text>Building-wide</Text>
-				</HStack>
-				<HStack gap={1.5} align="center">
-					<Box
-						w="14px"
-						h="14px"
-						borderRadius="4px"
-						bg="#047857"
-						boxShadow="inset 3px 0 0 0 #6ee7b7"
-					/>
-					<Text>This section only</Text>
-				</HStack>
-			</HStack>
-		</VStack>
-	)
-}
-
-// TODO move to separate component
-function FilterBtn({
-	active,
-	onClick,
-	label,
-}: {
-	active: boolean
-	onClick: () => void
-	label: string
-}) {
-	return (
-		<Button
-			size="sm"
-			bg={active ? "#d8ebff" : "white"}
-			color="#123a5f"
-			border="1px solid"
-			borderColor={active ? "#a9cff5" : "#d2deea"}
-			_hover={{ bg: active ? "#d8ebff" : "#f4f9ff" }}
-			onClick={onClick}
-		>
-			{label}
-		</Button>
 	)
 }

@@ -1,20 +1,13 @@
 import SectionApi, { type SectionDetails } from "@/api/section"
 import AppShell from "@/components/AppShell"
-import {
-	Box,
-	Grid,
-	Heading,
-	HStack,
-	Spinner,
-	Text,
-	VStack,
-} from "@chakra-ui/react"
+import { Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react"
+import SectionResidents from "@/features/section/components/SectionResidents"
 import { useEffect, useMemo, useState } from "react"
 import SectionEventCalendar from "@/features/section/components/SectionEventCalendar"
-import { useSectionCalendarEvents } from "@/features/section/hooks/useSectionCalendarEvents"
 import { pickNearestSectionOnlyEvent } from "@/features/section/utils/pickNearestSectionOnlyEvent"
 import useUserStore from "@/stores/userStore"
-import { formatTimeRange } from "@/features/section/calendar/formatTimes"
+import { formatTimeRange } from "@/features/section/utils/formatTimes"
+import useSectionCalendarStore from "@/features/section/stores/sectionCalendarStore"
 
 export default function SectionPage() {
 	const [section, setSection] = useState<SectionDetails | null>(null)
@@ -22,17 +15,34 @@ export default function SectionPage() {
 	const [error, setError] = useState<string | null>(null)
 	const { getUserSelf } = useUserStore()
 	const [currentUserId, setCurrentUserId] = useState<number | null>(null)
+	const [userSectionId, setUserSectionId] = useState(1)
 
-	// TODO perhaps store in zustand store and set the seed there? will require separate commit to merge changes with backend if left like this
-	const seed = useMemo(
-		() => section?.calendarEvents ?? [],
-		[section?.calendarEvents],
-	)
+	const { events, ready, init, create, update, remove } =
+		useSectionCalendarStore()
 
-	const { events, upsert, remove, ready } = useSectionCalendarEvents(
-		section?.id ?? null,
-		seed,
-	)
+	useEffect(() => {
+		async function loadSection() {
+			try {
+				const data = await SectionApi.getCurrentSection()
+				setSection(data)
+				init(data.id, data.calendarEvents)
+			} catch {
+				setError("Could not load section information.")
+			} finally {
+				setIsLoading(false)
+			}
+		}
+
+		void loadSection()
+	}, [init])
+
+	useEffect(() => {
+		void (async () => {
+			const self = await getUserSelf()
+			setCurrentUserId(self?.id ?? null)
+			if (self?.sectionId) setUserSectionId(self.sectionId)
+		})()
+	}, [getUserSelf])
 
 	const spotlight = useMemo(
 		() => pickNearestSectionOnlyEvent(events),
@@ -42,28 +52,6 @@ export default function SectionPage() {
 	const spotlightIsPast = spotlight
 		? new Date(spotlight.endTime).getTime() < Date.now()
 		: false
-
-	useEffect(() => {
-		async function loadSection() {
-			try {
-				const data = await SectionApi.getCurrentSection()
-				setSection(data)
-			} catch {
-				setError("Could not load section information.")
-			} finally {
-				setIsLoading(false)
-			}
-		}
-
-		void loadSection()
-	}, [])
-
-	useEffect(() => {
-		void (async () => {
-			const self = await getUserSelf()
-			setCurrentUserId(self?.id ?? null)
-		})()
-	}, [getUserSelf])
 
 	return (
 		<AppShell
@@ -90,92 +78,11 @@ export default function SectionPage() {
 						</Text>
 					</Box>
 
-					<Box>
-						<Heading size="md" mb={4}>
-							Student residents
-						</Heading>
-						<Grid
-							templateColumns={{
-								base: "1fr",
-								md: "repeat(2, 1fr)",
-							}}
-							gap={4}
-						>
-							{section.residents.map((resident) => {
-								const isYou = currentUserId === resident.id
-								return (
-									<Box
-										key={resident.id}
-										bg="white"
-										border="1px solid #dce5df"
-										borderRadius="22px"
-										p={5}
-										boxShadow={
-											isYou
-												? "0 0 0 2px #90d5ff, 0 12px 28px rgba(83, 130, 182, 0.12)"
-												: "none"
-										}
-									>
-										<HStack
-											justify="space-between"
-											align="flex-start"
-											mb={2}
-										>
-											<Text fontSize="sm" color="#718176">
-												Room {resident.roomNumber}
-											</Text>
-											{isYou ? (
-												<Text
-													fontSize="xs"
-													fontWeight="semibold"
-													color="#163447"
-													bg="#d8ebff"
-													borderRadius="full"
-													px={2}
-													py={0.5}
-												>
-													You
-												</Text>
-											) : null}
-										</HStack>
-										<Heading size="md" mb={2}>
-											{resident.fullName}
-										</Heading>
-										<Text
-											color="#506057"
-											fontSize="sm"
-											mb={1}
-										>
-											{resident.email}
-										</Text>
-										<Text color="#506057">
-											{resident.major}
-										</Text>
-										<Text color="#506057">
-											{resident.stayPeriod}
-										</Text>
-										<HStack mt={3} gap={2} flexWrap="wrap">
-											{resident.interests.map(
-												(interest) => (
-													<Text
-														key={interest}
-														fontSize="sm"
-														bg="#edf7f1"
-														color="#355243"
-														borderRadius="999px"
-														px={3}
-														py={1}
-													>
-														{interest}
-													</Text>
-												),
-											)}
-										</HStack>
-									</Box>
-								)
-							})}
-						</Grid>
-					</Box>
+					<SectionResidents
+						buildingName={section.building}
+						defaultSectionId={userSectionId}
+						currentUserId={currentUserId}
+					/>
 
 					<Box>
 						<Heading size="md" mb={4}>
@@ -223,7 +130,10 @@ export default function SectionPage() {
 							<SectionEventCalendar
 								sectionId={section.id}
 								events={events}
-								onUpsert={upsert}
+								onCreate={(payload) =>
+									create(section.id, payload)
+								}
+								onUpdate={update}
 								onRemove={remove}
 							/>
 						) : (

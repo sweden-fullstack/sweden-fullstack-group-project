@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import type { Resident, SelectedDayRow } from "../types"
-import { formatDate } from "../utils/date"
+import { formatDate } from "@/utils/date"
 import styles from "./SectionDutyTable.module.css"
 
 type Props = {

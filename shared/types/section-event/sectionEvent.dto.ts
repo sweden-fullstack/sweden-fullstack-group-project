@@ -7,8 +7,11 @@ type SectionEventDto = {
 	endTime: Date
 	title: string
 	description?: string
-	/** TODO Everyone in the building vs this section corridor only. */
-	visibility?: "building" | "section"
+	visibility?: SectionEventVisibility
 }
+
+export type SectionEventVisibility = "building" | "section"
+
+export type SectionEventCreate = Omit<SectionEventDto, "id">
 
 export default SectionEventDto
