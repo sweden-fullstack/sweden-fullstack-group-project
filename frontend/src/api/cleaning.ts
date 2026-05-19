@@ -1,4 +1,4 @@
-import SectionEventCleaningDto from "@/shared/types/section-event/sectionEventCleaning.dto"
+import SectionEventAssigneeDto from "@/shared/types/section-event/sectionEventAssignee.dto"
 import UserDto from "@/shared/types/user/user.dto"
 
 export type CleaningEventCreate = {
@@ -9,7 +9,7 @@ export type CleaningEventCreate = {
 	users?: UserDto[]
 }
 
-let cleaning: SectionEventCleaningDto[] = [
+let cleaning: SectionEventAssigneeDto[] = [
 	{
 		id: 1,
 		sectionId: 1,
@@ -115,7 +115,7 @@ class CleaningApi {
 
 	async create(payload: CleaningEventCreate) {
 		// Later: return axios.post<SectionEventCleaningDto>("/api/cleaning", payload).then((res) => res.data)
-		const event: SectionEventCleaningDto = {
+		const event: SectionEventAssigneeDto = {
 			id: nextEventId++,
 			eventType: "cleaning",
 			...payload,

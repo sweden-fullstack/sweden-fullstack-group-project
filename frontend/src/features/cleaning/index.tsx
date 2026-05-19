@@ -18,7 +18,7 @@ import type {
 } from "./types"
 import { toDateKey } from "./utils/date"
 import UserDto from "@/shared/types/user/user.dto"
-import SectionEventCleaningDto from "@/shared/types/section-event/sectionEventCleaning.dto"
+import SectionEventAssigneeDto from "@/shared/types/section-event/sectionEventAssignee.dto"
 import useUserStore from "@/stores/userStore"
 
 export default function CleaningPage() {
@@ -28,7 +28,7 @@ export default function CleaningPage() {
 		undefined,
 	)
 	const [cleaningEvents, setCleaningEvents] = useState<
-		SectionEventCleaningDto[]
+		SectionEventAssigneeDto[]
 	>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
@@ -98,7 +98,7 @@ export default function CleaningPage() {
 	)
 
 	const selectedDayRows = useMemo<SelectedDayRow[]>(() => {
-		const eventByDuty = new Map<string, SectionEventCleaningDto>()
+		const eventByDuty = new Map<string, SectionEventAssigneeDto>()
 		for (const event of selectedDayEvents) {
 			if (event.description) {
 				eventByDuty.set(event.description, event)
