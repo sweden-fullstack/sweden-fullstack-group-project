@@ -9,7 +9,6 @@ import { applyVisibilityToSectionId } from "@/features/section/utils/eventVisibi
 type SectionCalendarState = {
 	sectionId: number | null
 	events: SectionCalendarEvent[]
-	ready: boolean
 	init: (sectionId: number, seed: SectionCalendarEvent[]) => void
 	create: (
 		sectionId: number,
@@ -35,7 +34,6 @@ export const useSectionCalendarStore = create<SectionCalendarState>(
 	(set, get) => ({
 		sectionId: null,
 		events: [],
-		ready: false,
 
 		init(sectionId, seed) {
 			set({
@@ -45,7 +43,6 @@ export const useSectionCalendarStore = create<SectionCalendarState>(
 					startTime: new Date(e.startTime),
 					endTime: new Date(e.endTime),
 				})),
-				ready: true,
 			})
 		},
 

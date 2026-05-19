@@ -1,13 +1,15 @@
-import { Box, Button, Grid, HStack, Text, VStack } from "@chakra-ui/react"
+import { Box, Button, Grid, Text, VStack } from "@chakra-ui/react"
 import { useMemo, useState } from "react"
+import useWindowSize from "@/hooks/useWindowSize"
+import { getCalendarTitleCharLimit } from "@/features/section/utils/calendarTitleLimit"
+import { indexEventsByDay } from "@/features/section/utils/eventsByDay"
 import { addMonths, buildMonthGrid } from "./calendar/monthGrid"
-import { isDayBetween, sameCalendarDay, toDateKey } from "@/utils/date"
-import { formatTimeShort } from "../utils/formatTimes"
-import { eventPillColors } from "./calendar/eventColors"
+import { sameCalendarDay, toDateKey } from "@/utils/date"
 import type { SectionCalendarEvent, SectionEventDraft } from "../types"
 import type { EventEditorDraft } from "./EventEditorOverlay"
 import EventEditorOverlay from "./EventEditorOverlay"
 import CalendarHeader, { type CalendarFilter } from "./CalendarHeader"
+import CalendarEventMarker from "./calendar/CalendarEventMarker"
 
 type Props = {
 	sectionId: number
@@ -38,6 +40,14 @@ function blankDraft(sectionId: number): SectionEventDraft {
 	}
 }
 
+function toEditorDraft(event: SectionCalendarEvent): EventEditorDraft {
+	return {
+		...event,
+		startTime: new Date(event.startTime),
+		endTime: new Date(event.endTime),
+	}
+}
+
 export default function SectionEventCalendar({
 	sectionId,
 	events,
@@ -58,8 +68,24 @@ export default function SectionEventCalendar({
 		return events.filter((e) => e.visibility === "section")
 	}, [events, filter])
 
+	const eventsByDay = useMemo(() => indexEventsByDay(filtered), [filtered])
 	const weeks = useMemo(() => buildMonthGrid(month), [month])
 	const today = new Date()
+	const { width } = useWindowSize()
+	const titleMaxChars = useMemo(
+		() => getCalendarTitleCharLimit(width),
+		[width],
+	)
+
+	function openEditor(next: EventEditorDraft) {
+		setDraft(next)
+		setEditorOpen(true)
+	}
+
+	function closeEditor() {
+		setEditorOpen(false)
+		setDraft(null)
+	}
 
 	return (
 		<>
@@ -78,10 +104,7 @@ export default function SectionEventCalendar({
 						onToday={() => setMonth(new Date())}
 						filter={filter}
 						onFilter={setFilter}
-						onAdd={() => {
-							setDraft(blankDraft(sectionId))
-							setEditorOpen(true)
-						}}
+						onAdd={() => openEditor(blankDraft(sectionId))}
 					/>
 
 					<Grid templateColumns="repeat(7, minmax(0, 1fr))" gap={1}>
@@ -107,22 +130,8 @@ export default function SectionEventCalendar({
 								gap={1}
 							>
 								{row.map((cell) => {
-									const list = filtered
-										.filter((ev) =>
-											isDayBetween(
-												cell.date,
-												new Date(ev.startTime),
-												new Date(ev.endTime),
-											),
-										)
-										.sort(
-											(a, b) =>
-												new Date(
-													a.startTime,
-												).getTime() -
-												new Date(b.startTime).getTime(),
-										)
 									const key = toDateKey(cell.date)
+									const list = eventsByDay.get(key) ?? []
 									const expanded = expandedKey === key
 									const shown = expanded
 										? list
@@ -138,6 +147,7 @@ export default function SectionEventCalendar({
 									return (
 										<Box
 											key={key}
+											minW={0}
 											minH="108px"
 											bg={
 												cell.inCurrentMonth
@@ -148,102 +158,67 @@ export default function SectionEventCalendar({
 											borderRadius="14px"
 											p={1.5}
 										>
-											<HStack
-												justify="space-between"
+											<Text
+												fontSize="sm"
+												fontWeight={
+													isToday ? "bold" : "medium"
+												}
+												color={
+													cell.inCurrentMonth
+														? "#1e2a24"
+														: "#9aa89f"
+												}
+												bg={
+													isToday
+														? "#90d5ff"
+														: "transparent"
+												}
+												borderRadius="full"
+												display="inline-block"
+												minW="26px"
+												textAlign="center"
+												lineHeight="26px"
 												mb={1}
+												px={isToday ? 1 : 0}
 											>
-												<Text
-													fontSize="sm"
-													fontWeight={
-														isToday
-															? "bold"
-															: "medium"
-													}
-													color={
-														cell.inCurrentMonth
-															? "#1e2a24"
-															: "#9aa89f"
-													}
-													bg={
-														isToday
-															? "#90d5ff"
-															: "transparent"
-													}
-													borderRadius="full"
-													minW="26px"
-													textAlign="center"
-													lineHeight="26px"
-													px={isToday ? 1 : 0}
-												>
-													{cell.date.getDate()}
-												</Text>
-											</HStack>
+												{cell.date.getDate()}
+											</Text>
 											<VStack align="stretch" gap={0.5}>
-												{shown.map((ev) => {
-													const start = new Date(
-														ev.startTime,
-													)
-													const colors =
-														eventPillColors(ev)
-													return (
-														<Button
-															key={ev.id}
-															size="xs"
-															h="auto"
-															py={1}
-															px={1.5}
-															fontWeight="normal"
-															textAlign="left"
-															whiteSpace="normal"
-															title={ev.title}
-															bg={colors.bg}
-															color={colors.color}
-															boxShadow={
-																colors.boxShadow
-															}
-															border="none"
-															borderRadius="8px"
-															lineHeight="1.2"
-															fontSize="10px"
-															_hover={{
-																filter: "brightness(0.97)",
-															}}
-															onClick={() => {
-																setDraft({
-																	...ev,
-																	startTime:
-																		new Date(
-																			ev.startTime,
-																		),
-																	endTime:
-																		new Date(
-																			ev.endTime,
-																		),
-																})
-																setEditorOpen(
-																	true,
-																)
-															}}
-														>
-															{ev.title}{" "}
-															<Box
-																as="span"
-																opacity={0.88}
-															>
-																{formatTimeShort(
-																	start,
-																)}
-															</Box>
-														</Button>
-													)
-												})}
+												{shown.map((ev) => (
+													<CalendarEventMarker
+														key={ev.id}
+														event={ev}
+														titleMaxChars={
+															titleMaxChars
+														}
+														onSelect={() =>
+															openEditor(
+																toEditorDraft(
+																	ev,
+																),
+															)
+														}
+													/>
+												))}
 												{more > 0 ? (
 													<Button
 														variant="ghost"
 														size="xs"
-														h="6"
+														w="100%"
+														minW={0}
+														maxW="100%"
+														boxSizing="border-box"
+														h="auto"
+														minH="6"
+														px={1}
+														py={0}
 														fontSize="10px"
+														lineHeight="1"
+														overflow="hidden"
+														textOverflow="ellipsis"
+														whiteSpace="nowrap"
 														color="#3d6b8a"
+														title={`${more} more events`}
 														onClick={() =>
 															setExpandedKey(
 																(k) =>
@@ -270,10 +245,7 @@ export default function SectionEventCalendar({
 				open={editorOpen}
 				draft={draft}
 				sectionId={sectionId}
-				onClose={() => {
-					setEditorOpen(false)
-					setDraft(null)
-				}}
+				onClose={closeEditor}
 				onCreate={onCreate}
 				onUpdate={onUpdate}
 				onDelete={onRemove}
