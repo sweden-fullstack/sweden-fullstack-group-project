@@ -10,6 +10,7 @@ router.get(
 	sectionEventController.getAllBySectionId,
 )
 
+// TODO get sectionId from user? and maybe have something like a flag to include the section or no?
 router.post(
 	"/section_id/:sectionId",
 	authHandler([], undefined, "param.sectionId"),
