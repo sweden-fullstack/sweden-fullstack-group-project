@@ -17,6 +17,10 @@ router.post(
 )
 
 // TODO add auth
-router.delete("/eventId/:eventId", authHandler(), sectionEventController.delete)
+router.delete(
+	"/event_id/:eventId",
+	authHandler(),
+	sectionEventController.delete,
+)
 
 export default router

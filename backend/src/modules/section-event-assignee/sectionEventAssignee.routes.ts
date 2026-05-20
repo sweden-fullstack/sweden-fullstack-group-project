@@ -5,7 +5,7 @@ import authHandler from "@/middlewares/authHandler"
 const router = Router()
 
 router.put(
-	"/eventId/:eventId/assignees",
+	"/event_id/:eventId/assignees",
 	authHandler(),
 	sectionEventAssigneeController.overrideAssignees,
 )
