@@ -1,4 +1,6 @@
 import AuthApi from "@/api/auth"
+import SectionUserApi from "@/api/sectionUser"
+import envConfig from "@/config/env"
 import { Box, Button, Heading, Input, Text, VStack } from "@chakra-ui/react"
 import { type FormEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -23,6 +25,20 @@ export default function LoginPage() {
 			setError("Could not log in with those details.")
 		} finally {
 			setIsSubmitting(false)
+		}
+	}
+
+	const handleGoogleSignIn = () => {
+		window.location.href = `${envConfig.backend}auth`
+	}
+
+	const getSelfAuthenticated = () => {
+		try {
+			SectionUserApi.getSelfAuthenticated().then((user) => {
+				console.log(user)
+			})
+		} catch {
+			console.log("Sign in first")
 		}
 	}
 
@@ -94,6 +110,20 @@ export default function LoginPage() {
 								_hover={{ bg: "#78c9fb" }}
 							>
 								Log in
+							</Button>
+							<Button
+								onClick={handleGoogleSignIn}
+								borderRadius="16px"
+								bg="#90d5ff"
+							>
+								Google Sign-In
+							</Button>
+							<Button
+								onClick={getSelfAuthenticated}
+								borderRadius="16px"
+								bg="#90d5ff"
+							>
+								Check authenticated
 							</Button>
 						</VStack>
 					</form>

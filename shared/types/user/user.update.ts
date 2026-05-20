@@ -1,8 +1,8 @@
-/**
- * User object for updating users
- */
 type UserUpdate = {
-	email: string
+	firstName: string
+	lastName: string
+	major: string
+	profilePictureUrl?: string
 }
 
 export default UserUpdate
