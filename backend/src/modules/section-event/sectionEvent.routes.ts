@@ -5,13 +5,13 @@ import authHandler from "@/middlewares/authHandler"
 const router = Router()
 
 router.get(
-	"/sectionId/:sectionId",
+	"/section_id/:sectionId",
 	authHandler([], undefined, "param.sectionId"),
 	sectionEventController.getAllBySectionId,
 )
 
 router.post(
-	"/sectionId/:sectionId",
+	"/section_id/:sectionId",
 	authHandler([], undefined, "param.sectionId"),
 	sectionEventController.create,
 )

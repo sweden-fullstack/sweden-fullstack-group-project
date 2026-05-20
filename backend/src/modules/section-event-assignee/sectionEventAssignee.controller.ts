@@ -10,7 +10,7 @@ class SectionEventAssigneeController {
 			req.body,
 		)
 
-		const result = await SectionEventAssigneeService.updateAssignees(
+		const result = await SectionEventAssigneeService.overrideAssignees(
 			eventId,
 			userIdsDto.userIds,
 		)

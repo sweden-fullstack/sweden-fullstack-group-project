@@ -7,7 +7,7 @@ const router = Router()
 router.put(
 	"/eventId/:eventId/assignees",
 	authHandler(),
-	sectionEventAssigneeController.updateAssignees,
+	sectionEventAssigneeController.overrideAssignees,
 )
 
 export default router
