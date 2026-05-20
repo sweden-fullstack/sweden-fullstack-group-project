@@ -1,5 +1,6 @@
 import express from "express"
 import usersRouter from "@/modules/user/user.routes"
+import houseRuleRouter from "@/modules/house-rule/houseRule.routes"
 import announcementRouter from "@/modules/announcement/announcement.routes"
 import authRouter from "@/modules/auth/auth.routes"
 import db from "@/config/database"
@@ -66,9 +67,10 @@ app.use("/user", usersRouter)
 app.use("/announcement", announcementRouter)
 app.use("/auth", authRouter)
 app.use("/section", sectionRouter)
-app.use("/section_user", sectionUserRouter)
 app.use("/section_event", sectionEventRouter)
 app.use("/section_event_assignee", sectionEventAssigneeRouter)
+app.use("/section_user", sectionUserRouter)
+app.use("/house_rule", houseRuleRouter)
 
 app.use(ErrorHandler.handle)
 
