@@ -5,6 +5,7 @@ import NotFoundError from "@/errors/NotFoundError"
 import { Transaction } from "@/utils/transaction"
 import AnnouncementCreate from "@/shared/types/announcement/announcement.create"
 import AnnouncementUpdate from "@/shared/types/announcement/announcement.update"
+import AnnouncementEntity from "./types/announcement.entity"
 
 class AnnouncementService {
 	async getAll(): Promise<AnnouncementDto[]> {
@@ -31,7 +32,10 @@ class AnnouncementService {
 
 	async create(announcement: AnnouncementCreate): Promise<AnnouncementDto> {
 		return await Transaction.run(async () => {
-			const id = await announcementRepository.create(announcement)
+			const entity = AnnouncementMapper.toEntity(
+				announcement,
+			) as AnnouncementEntity
+			const id = await announcementRepository.create(entity)
 			return await this.getById(id)
 		})
 	}
@@ -41,7 +45,10 @@ class AnnouncementService {
 		announcement: AnnouncementUpdate,
 	): Promise<AnnouncementDto> {
 		return await Transaction.run(async () => {
-			await announcementRepository.update(id, announcement)
+			const entity = AnnouncementMapper.toEntity(
+				announcement,
+			) as AnnouncementEntity
+			await announcementRepository.update(id, entity)
 			return await this.getById(id)
 		})
 	}

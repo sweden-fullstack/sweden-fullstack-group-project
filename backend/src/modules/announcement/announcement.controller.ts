@@ -26,7 +26,7 @@ class AnnouncementController {
 	}
 
 	async create(req: Request, res: Response) {
-		const body = typia.assert<AnnouncementCreate>(req.body)
+		const body = typia.assertEquals<AnnouncementCreate>(req.body)
 		const newAnnouncement = await announcementService.create(body)
 
 		res.status(201).json(newAnnouncement)
@@ -34,7 +34,7 @@ class AnnouncementController {
 
 	async update(req: Request, res: Response) {
 		const id = parseInt(req.params.id as string)
-		const body = typia.assert<AnnouncementUpdate>(req.body)
+		const body = typia.assertEquals<AnnouncementUpdate>(req.body)
 
 		const updatedAnnouncement = await announcementService.update(id, body)
 		return res.status(200).json(updatedAnnouncement)

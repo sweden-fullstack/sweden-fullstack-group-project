@@ -1,49 +1,46 @@
 import db from "@/config/database"
 import AnnouncementEntity from "./types/announcement.entity"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
-import AnnouncementCreate from "@/shared/types/announcement/announcement.create"
-import AnnouncementUpdate from "@/shared/types/announcement/announcement.update"
-
-const tableName = "announcement"
+import { announcementTableName } from "@/utils/tableNames"
 
 class AnnouncementRepository {
 	async findAll(): Promise<AnnouncementEntity[]> {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${tableName}`,
+			`SELECT * FROM ${announcementTableName}`,
 		)
-		return rows.map((o) => o as unknown as AnnouncementEntity)
+		return rows.map((o) => o as AnnouncementEntity)
 	}
 
 	async findById(id: number): Promise<AnnouncementEntity | null> {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${tableName} WHERE id = ?`,
+			`SELECT * FROM ${announcementTableName} WHERE id = ?`,
 			[id],
 		)
 
 		if (rows.length === 0) return null
-		return rows[0] as unknown as AnnouncementEntity
+		return rows[0] as AnnouncementEntity
 	}
 
 	async findByBuildingId(buildingId: number): Promise<AnnouncementEntity[]> {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${tableName} WHERE building_id = ?`,
+			`SELECT * FROM ${announcementTableName} WHERE building_id = ?`,
 			[buildingId],
 		)
-		return rows.map((o) => o as unknown as AnnouncementEntity)
+		return rows.map((o) => o as AnnouncementEntity)
 	}
 
-	async create(announcement: AnnouncementCreate) {
+	async create(announcement: AnnouncementEntity) {
 		const [result] = await db.query<ResultSetHeader>(
-			`INSERT INTO ${tableName} SET ?`,
+			`INSERT INTO ${announcementTableName} SET ?`,
 			[announcement],
 		)
 
 		return result.insertId
 	}
 
-	async update(id: number, announcement: AnnouncementUpdate) {
+	async update(id: number, announcement: Partial<AnnouncementEntity>) {
 		const [result] = await db.query<ResultSetHeader>(
-			`UPDATE ${tableName} SET ? WHERE id = ?`,
+			`UPDATE ${announcementTableName} SET ? WHERE id = ?`,
 			[announcement, id],
 		)
 
@@ -52,7 +49,7 @@ class AnnouncementRepository {
 
 	async delete(id: number) {
 		const [result] = await db.query<ResultSetHeader>(
-			`DELETE FROM ${tableName} WHERE id = ?`,
+			`DELETE FROM ${announcementTableName} WHERE id = ?`,
 			[id],
 		)
 
