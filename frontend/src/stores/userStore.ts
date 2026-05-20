@@ -9,34 +9,50 @@ export type UserState = {
 	appendUsers: (users: UserDto[]) => Promise<void>
 }
 
+const defaultStayPeriod = {
+	major: "Computer Science",
+	stayPeriodStart: new Date("2025-09-01"),
+	stayPeriodEnd: new Date("2026-06-30"),
+}
+
 const seedUsers: UserDto[] = [
 	{
 		id: 1,
 		email: "",
 		firstName: "Alice",
 		lastName: "Smith",
+		roomNumber: 101,
 		sectionId: 1,
+		buildingId: 1,
+		role: "student",
+		...defaultStayPeriod,
 	},
 	{
 		id: 2,
 		email: "",
 		firstName: "Bob",
 		lastName: "Lee",
+		roomNumber: 102,
 		sectionId: 1,
+		...defaultStayPeriod,
 	},
 	{
 		id: 3,
 		email: "",
 		firstName: "Mike",
 		lastName: "Wang",
+		roomNumber: 103,
 		sectionId: 1,
+		...defaultStayPeriod,
 	},
 	{
 		id: 4,
 		email: "",
 		firstName: "Amy",
 		lastName: "Brown",
+		roomNumber: 104,
 		sectionId: 1,
+		...defaultStayPeriod,
 	},
 ]
 
