@@ -2,12 +2,18 @@ import { Request, Response } from "express"
 import sectionEventService from "@/modules/section-event/sectionEvent.service"
 import typia from "typia"
 import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
+import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 
 class SectionEventController {
 	async create(req: Request, res: Response): Promise<Response> {
 		const body = typia.assertEquals<SectionEventCreate>(req.body)
 		const sectionId = parseInt(req.params.sectionId as string)
-		const sectionEvent = await sectionEventService.create(sectionId, body)
+		const jwt = req.user as JwtPayloadExtended
+		const sectionEvent = await sectionEventService.create(
+			sectionId,
+			body,
+			jwt.userId,
+		)
 
 		return res.status(201).json(sectionEvent)
 	}

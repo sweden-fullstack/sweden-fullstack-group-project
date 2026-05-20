@@ -10,7 +10,7 @@ import {
 
 class SectionUserRepository {
 	selectQueryBase = `SELECT su.*, u.email, u.first_name, u.last_name, u.room_number, u.major, u.stay_period_start, u.stay_period_end, u.profile_picture_url, s.building_id, ur.name as role FROM ${sectionUserTableName} su
-      RIGHT JOIN ${userTableName} u ON u.id = su.user_id
+      INNER JOIN ${userTableName} u ON u.id = su.user_id
       LEFT JOIN ${userRoleTableName} ur ON ur.id = su.role_id
       LEFT JOIN ${sectionTableName} s ON s.id = su.section_id `
 

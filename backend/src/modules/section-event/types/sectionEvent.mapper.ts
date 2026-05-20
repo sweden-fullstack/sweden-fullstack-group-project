@@ -8,13 +8,13 @@ export default class SectionEventMapper {
 		dto: Partial<SectionEventDto>,
 	): Partial<SectionEventEntity> {
 		return removeUndefined({
-			event_type_id: dto.eventTypeId,
 			title: dto.title,
+			building_id: dto.buidingId,
+			event_type_id: dto.eventTypeId,
 			description: dto.description,
 			start_time: dto.startTime,
 			end_time: dto.endTime,
 			section_id: dto.sectionId,
-			building_id: dto.buidingId,
 		})
 	}
 

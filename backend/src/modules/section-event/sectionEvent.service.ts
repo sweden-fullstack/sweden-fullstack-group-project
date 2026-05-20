@@ -5,12 +5,23 @@ import NotFoundError from "@/errors/NotFoundError"
 import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
 import SectionEventMapper from "@/modules/section-event/types/sectionEvent.mapper"
 import SectionEventEntity from "@/modules/section-event/types/sectionEvent.entity"
+import sectionUserRepository from "@/modules/section-user/sectionUser.repository"
 
 class SectionEventService {
-	async create(sectionId: number, event: SectionEventCreate) {
+	async create(sectionId: number, event: SectionEventCreate, userId: number) {
 		return await Transaction.run(async () => {
+			const sectionUser =
+				await sectionUserRepository.findBySectionIdAndUserId(
+					sectionId,
+					userId,
+				)
+
+			if (!sectionUser) {
+				throw new NotFoundError("User not found in this section")
+			}
 			const entity = SectionEventMapper.toEntity(event)
 			entity.section_id = sectionId
+			entity.building_id = sectionUser.building_id
 
 			const eventId = await sectionEventRepository.create(
 				entity as SectionEventEntity,

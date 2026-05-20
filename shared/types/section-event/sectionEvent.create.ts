@@ -1,4 +1,6 @@
 type SectionEventCreate = {
+	title: string
+	buildingId: number
 	eventTypeId: number
 	description?: string
 	startTime: Date

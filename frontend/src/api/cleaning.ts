@@ -3,8 +3,11 @@ import envConfig from "@/config/env"
 import axios from "@/config/axios"
 import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import SectionEventAssigneeDto from "@/shared/types/section-event-assignee/sectionEventAssignee.dto"
+import SectionUserApi from "./sectionUser"
 
 export type CleaningEventCreate = {
+	title: string
+	buildingId: number
 	sectionId: number
 	startTime: Date
 	endTime: Date
@@ -20,7 +23,6 @@ class CleaningApi {
 		const { data } = await axios.get(
 			`${this.path_event}sectionId/${sectionId}`,
 		)
-		// Filtern nach Cleaning-Events (eventTypeId === 2) und Datum-Strings in Date umwandeln
 		return data
 			.filter((event: SectionEventDto) => event.eventTypeId === 2)
 			.map((event: SectionEventDto) => ({
@@ -31,9 +33,13 @@ class CleaningApi {
 	}
 
 	async create(payload: CleaningEventCreate) {
+		const buildingId = (await SectionUserApi.getSelfAuthenticated())
+			.buildingId
 		const { data } = await axios.post(
 			`${this.path_event}sectionId/${payload.sectionId}`,
 			{
+				title: "Cleaning Event",
+				buildingId: buildingId,
 				eventTypeId: 2,
 				description: payload.description,
 				startTime: payload.startTime,
