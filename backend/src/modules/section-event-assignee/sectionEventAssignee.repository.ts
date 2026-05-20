@@ -26,10 +26,11 @@ class SectionEventAssigneeRepository {
 				[sectionEventId],
 			)
 
-			for (const userId of userIds) {
+			if (userIds.length > 0) {
+				const values = userIds.map((userId) => [userId, sectionEventId])
 				await db.query(
-					`INSERT INTO section_event_assignee (user_id, section_event_id) VALUES (?, ?)`,
-					[userId, sectionEventId],
+					`INSERT INTO section_event_assignee (user_id, section_event_id) VALUES ?`,
+					[values],
 				)
 			}
 		})

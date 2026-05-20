@@ -56,6 +56,7 @@ class CleaningApi {
 		const { data } = await axios.put(
 			`${this.path_assignee}eventId/${eventId}/assignees`,
 			{ userIds },
+			{ withCredentials: true },
 		)
 		// the backend might not return the full event, but we return a stub or ignore since the frontend refetches
 		return data
