@@ -1,8 +1,8 @@
-import SectionEventAssigneeDto from "@/shared/types/section-event/sectionEventAssignee.dto"
 import UserDto from "@/shared/types/user/user.dto"
 import envConfig from "@/config/env"
-import axios from "axios"
+import axios from "@/config/axios"
 import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
+import SectionEventAssigneeDto from "@/shared/types/section-event-assignee/sectionEventAssignee.dto"
 
 export type CleaningEventCreate = {
 	sectionId: number
@@ -39,7 +39,6 @@ class CleaningApi {
 				startTime: payload.startTime,
 				endTime: payload.endTime,
 			},
-			{ withCredentials: true },
 		)
 
 		const event = data as SectionEventAssigneeDto
@@ -56,7 +55,6 @@ class CleaningApi {
 		const { data } = await axios.put(
 			`${this.path_assignee}eventId/${eventId}/assignees`,
 			{ userIds },
-			{ withCredentials: true },
 		)
 		// the backend might not return the full event, but we return a stub or ignore since the frontend refetches
 		return data
