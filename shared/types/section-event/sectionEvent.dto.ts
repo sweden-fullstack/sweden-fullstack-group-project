@@ -1,3 +1,5 @@
+import SectionUserDto from "../section-user/sectionUser.dto"
+
 type SectionEventDto = {
 	id: number
 	title: string
@@ -7,6 +9,8 @@ type SectionEventDto = {
 	startTime: Date
 	endTime: Date
 	description?: string
+
+	users?: SectionUserDto[]
 }
 
 export default SectionEventDto

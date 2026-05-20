@@ -5,16 +5,7 @@ import SectionEventEntity from "@/modules/section-event/types/sectionEvent.entit
 import NotFoundError from "@/errors/NotFoundError"
 
 class SectionEventRepository {
-	async create(eventData_param: SectionEventEntity) {
-		const [result] = await db.query<ResultSetHeader>(
-			`INSERT INTO ${sectionEventTableName} SET ?`,
-			[eventData_param],
-		)
-
-		return result.insertId
-	}
-
-	async getEventBySection(sectionId: number): Promise<SectionEventEntity[]> {
+	async getAllBySectionId(sectionId: number): Promise<SectionEventEntity[]> {
 		const [rows] = await db.query(
 			`SELECT *
 		FROM ${sectionEventTableName}
@@ -24,7 +15,7 @@ class SectionEventRepository {
 		return rows as SectionEventEntity[]
 	}
 
-	async getEventById(id: number): Promise<SectionEventEntity> {
+	async getById(id: number): Promise<SectionEventEntity> {
 		const [rows] = await db.query<RowDataPacket[]>(
 			`SELECT * FROM ${sectionEventTableName}
 				WHERE id = ?`,
@@ -36,10 +27,19 @@ class SectionEventRepository {
 		return (rows as SectionEventEntity[])[0]
 	}
 
-	async deleteSectionEvent(eventId: number) {
+	async create(eventData_param: SectionEventEntity) {
+		const [result] = await db.query<ResultSetHeader>(
+			`INSERT INTO ${sectionEventTableName} SET ?`,
+			[eventData_param],
+		)
+
+		return result.insertId
+	}
+
+	async delete(id: number) {
 		const [result] = await db.query<ResultSetHeader>(
 			`DELETE FROM ${sectionEventTableName} WHERE id = ?`,
-			[eventId],
+			[id],
 		)
 		return result.affectedRows > 0
 	}

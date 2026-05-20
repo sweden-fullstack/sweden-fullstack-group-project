@@ -1,7 +1,6 @@
 import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import SectionEventEntity from "@/modules/section-event/types/sectionEvent.entity"
 import { removeUndefined } from "@/utils/mapper"
-import SectionUserMapper from "@/modules/section-user/types/sectionUser.mapper"
 
 export default class SectionEventMapper {
 	static toEntity(
@@ -29,10 +28,8 @@ export default class SectionEventMapper {
 			sectionId: entity.section_id,
 			buidingId: entity.building_id,
 
-			// mapped joins
-			...(entity.users && {
-				users: entity.users.map((u) => SectionUserMapper.toDto(u)),
-			}),
+			// Must be mapped manually
+			users: undefined,
 		}
 	}
 }

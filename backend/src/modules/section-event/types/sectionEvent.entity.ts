@@ -1,5 +1,3 @@
-import SectionUserEntity from "@/modules/section-user/types/sectionUser.entity"
-
 type SectionEventEntity = {
 	id: number
 	title: string
@@ -9,9 +7,6 @@ type SectionEventEntity = {
 	description?: string
 	start_time: Date
 	end_time: Date
-
-	// mapped joins
-	users?: SectionUserEntity[]
 }
 
 export default SectionEventEntity

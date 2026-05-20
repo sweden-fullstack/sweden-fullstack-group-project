@@ -4,13 +4,13 @@ import typia from "typia"
 import SectionEventAssigneeUpdate from "@/shared/types/section-event-assignee/sectionEventAssignee.update"
 
 class SectionEventAssigneeController {
-	async updateAssignee(req: Request, res: Response) {
+	async overrideAssignees(req: Request, res: Response) {
 		const eventId = parseInt(req.params.eventId as string)
 		const userIdsDto = typia.assertEquals<SectionEventAssigneeUpdate>(
 			req.body,
 		)
 
-		const result = await SectionEventAssigneeService.update(
+		const result = await SectionEventAssigneeService.updateAssignees(
 			eventId,
 			userIdsDto.userIds,
 		)

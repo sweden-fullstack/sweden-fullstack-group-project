@@ -2,6 +2,7 @@ import db from "@/config/database"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
 import SectionUserEntity from "./types/sectionUser.entity"
 import {
+	sectionEventAssigneeTableName,
 	sectionTableName,
 	sectionUserTableName,
 	userRoleTableName,
@@ -11,8 +12,8 @@ import {
 class SectionUserRepository {
 	selectQueryBase = `SELECT su.*, u.email, u.first_name, u.last_name, u.room_number, u.major, u.stay_period_start, u.stay_period_end, u.profile_picture_url, s.building_id, ur.name as role FROM ${sectionUserTableName} su
       INNER JOIN ${userTableName} u ON u.id = su.user_id
-      LEFT JOIN ${userRoleTableName} ur ON ur.id = su.role_id
-      LEFT JOIN ${sectionTableName} s ON s.id = su.section_id `
+      INNER JOIN ${userRoleTableName} ur ON ur.id = su.role_id
+      INNER JOIN ${sectionTableName} s ON s.id = su.section_id `
 
 	async findAllByBuildingId(buildingId: number) {
 		const [rows] = await db.query<RowDataPacket[]>(
@@ -32,6 +33,18 @@ class SectionUserRepository {
 		)
 
 		return rows.map((o) => o as SectionUserEntity)
+	}
+
+	async findAllBySectionEventId(sectionEventId: number) {
+		const [rows] = await db.query<RowDataPacket[]>(
+			`${this.selectQueryBase}
+               INNER JOIN ${sectionEventAssigneeTableName} a ON u.id = a.user_id
+               WHERE a.section_event_id = ?
+               `,
+			[sectionEventId],
+		)
+
+		return rows as SectionUserEntity[]
 	}
 
 	async findBySectionIdAndUserId(sectionId: number, userId: number) {

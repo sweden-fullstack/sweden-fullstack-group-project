@@ -4,18 +4,16 @@ import authHandler from "@/middlewares/authHandler"
 
 const router = Router()
 
-// TODO validate that the sectionId belongs to the building id
-router.post(
-	"/sectionId/:sectionId",
-	authHandler(),
-	sectionEventController.create,
-)
-
-// TODO add auth
 router.get(
 	"/sectionId/:sectionId",
-	authHandler(),
-	sectionEventController.getEventBySectionId,
+	authHandler([], undefined, "param.sectionId"),
+	sectionEventController.getAllBySectionId,
+)
+
+router.post(
+	"/sectionId/:sectionId",
+	authHandler([], undefined, "param.sectionId"),
+	sectionEventController.create,
 )
 
 // TODO add auth
