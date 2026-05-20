@@ -2,6 +2,8 @@ import SectionUserEntity from "@/modules/section-user/types/sectionUser.entity"
 
 type SectionEventEntity = {
 	id: number
+	title: string
+	building_id: number
 	section_id: number
 	event_type_id: number
 	description?: string

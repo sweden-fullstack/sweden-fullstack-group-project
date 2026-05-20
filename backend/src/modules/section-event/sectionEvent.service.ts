@@ -3,7 +3,7 @@ import { Transaction } from "@/utils/transaction"
 import sectionEventRepository from "@/modules/section-event/sectionEvent.repository"
 import NotFoundError from "@/errors/NotFoundError"
 import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
-import SectionEventMapper from "@/modules/section-event/types/sectionEventMapper"
+import SectionEventMapper from "@/modules/section-event/types/sectionEvent.mapper"
 import SectionEventEntity from "@/modules/section-event/types/sectionEvent.entity"
 
 class SectionEventService {

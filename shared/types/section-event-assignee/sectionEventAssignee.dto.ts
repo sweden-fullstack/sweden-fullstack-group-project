@@ -1,4 +1,4 @@
-import SectionEventDto from "./sectionEvent.dto"
+import SectionEventDto from "../section-event/sectionEvent.dto"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
 type SectionEventAssigneeDto = SectionEventDto & {

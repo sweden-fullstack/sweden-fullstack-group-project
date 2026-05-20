@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import SectionEventAssigneeService from "@/modules/section-event-assignee/sectionEventAssignee.service"
 import typia from "typia"
-import SectionEventAssigneeUpdate from "@/shared/types/section-event/sectionEventAssigneeUpdate"
+import SectionEventAssigneeUpdate from "@/shared/types/section-event-assignee/sectionEventAssignee.update"
 
 class SectionEventAssigneeController {
 	async updateAssignee(req: Request, res: Response) {
