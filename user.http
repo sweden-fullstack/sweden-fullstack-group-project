@@ -1,9 +1,7 @@
 ### 
 
 @USER_URL = {{API_URL}}/user
-@TEST = /user
-
 
 ### GET ALL
 
-GET {{USER_URL}}
+GET {{USER_URL}} HTTP/1.1
