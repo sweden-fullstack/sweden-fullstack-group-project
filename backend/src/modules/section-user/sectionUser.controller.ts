@@ -10,11 +10,10 @@ import sectionService from "../section/section.service"
 class SectionUserController {
 	async getByBuildingId(req: Request, res: Response) {
 		const jwt = req.user as JwtPayloadExtended
-		const buildingId = parseInt(req.params.buildingId as string)
-
-		if (jwt.userRole !== "admin" && jwt.buildingId !== buildingId) {
-			throw new ForbiddenError()
-		}
+		const buildingIdString = req.params.buildingId
+			? req.params.buildingId
+			: jwt.buildingId
+		const buildingId = parseInt(buildingIdString as string)
 
 		const result = await sectionUserService.getAllByBuildingId(buildingId)
 		res.json(result)
@@ -22,7 +21,10 @@ class SectionUserController {
 
 	async getBySectionId(req: Request, res: Response) {
 		const jwt = req.user as JwtPayloadExtended
-		const sectionId = parseInt(req.params.sectionId as string)
+		const sectionIdString = req.params.sectionId
+			? req.params.sectionId
+			: jwt.sectionId
+		const sectionId = parseInt(sectionIdString as string)
 		const section = await sectionService.getById(sectionId)
 
 		if (jwt.userRole !== "admin" && jwt.buildingId !== section.buildingId) {

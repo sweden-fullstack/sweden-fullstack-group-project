@@ -6,13 +6,13 @@ import canAssignToSection from "./middlewares/canAssignToSection"
 const router = Router()
 
 router.get(
-	"/building/:buildingId",
-	authHandler(),
+	"/building{/:buildingId}",
+	authHandler([], undefined, undefined, "params.buildingId?"),
 	sectionUserController.getByBuildingId,
 )
 
 router.get(
-	"/section/:sectionId",
+	"/section{/:sectionId}",
 	authHandler(),
 	sectionUserController.getBySectionId,
 )
