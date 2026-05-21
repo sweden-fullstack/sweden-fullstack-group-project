@@ -1,5 +1,6 @@
 import AppShell from "@/components/AppShell"
 import CleaningApi from "@/api/cleaning"
+import SectionUserApi from "@/api/sectionUser"
 import { Box, Grid, Spinner, Text, VStack } from "@chakra-ui/react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import "react-calendar/dist/Calendar.css"
@@ -18,13 +19,14 @@ import type {
 } from "./types"
 import { toDateKey } from "./utils/date"
 import UserDto from "@/shared/types/user/user.dto"
-import SectionEventAssigneeDto from "@/shared/types/section-event/sectionEventAssignee.dto"
 import useUserStore from "@/stores/userStore"
+import SectionEventAssigneeDto from "@/shared/types/section-event-assignee/sectionEventAssignee.dto"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
 export default function CleaningPage() {
 	const [selectedDate, setSelectedDate] = useState(new Date())
 	const [viewMode, setViewMode] = useState<ViewMode>("section")
-	const [currentUser, setCurrentUser] = useState<UserDto | undefined>(
+	const [currentUser, setCurrentUser] = useState<SectionUserDto | undefined>(
 		undefined,
 	)
 	const [cleaningEvents, setCleaningEvents] = useState<
@@ -35,8 +37,9 @@ export default function CleaningPage() {
 
 	const { users, getUsers, getUserSelf } = useUserStore()
 
-	const currentUserId = currentUser?.id ?? 0
+	const currentUserId = currentUser?.userId ?? 0
 	const sectionId = currentUser?.sectionId ?? 0
+	const buildingId = currentUser?.buildingId ?? 0
 
 	const residents = useMemo<Resident[]>(() => {
 		if (!sectionId) return []
@@ -58,7 +61,7 @@ export default function CleaningPage() {
 		async function loadPageData() {
 			try {
 				await getUsers()
-				const self = await getUserSelf()
+				const self = await SectionUserApi.getSelfAuthenticated()
 				setCurrentUser(self)
 
 				if (self?.sectionId) {
@@ -198,11 +201,20 @@ export default function CleaningPage() {
 				const endTime = new Date(selectedDate)
 				endTime.setHours(11, 0, 0, 0)
 				await CleaningApi.create({
+					title: row.name,
+					buildingId: buildingId,
 					sectionId,
 					startTime,
 					endTime,
-					description: row.name,
 					users: nextUsers,
+
+					// title: string
+					// buildingId: number
+					// sectionId: number
+					// startTime: Date
+					// endTime: Date
+					// description: string
+					// users?: UserDto[]
 				})
 			}
 			await refreshEvents(sectionId)
