@@ -1,0 +1,22 @@
+### 
+
+@SECTION_EVENT = {{API_URL}}/section_event
+
+### Get all by sectionId
+
+GET {{SECTION_EVENT}}/section_id/2 HTTP/1.1
+
+### Create by sectionId
+
+POST {{SECTION_EVENT}}/section_id/2 HTTP/1.1
+
+{
+   "title": "Test",
+   "eventTypeId": 1,
+   "startTime": "2026-05-10",
+   "endTime": "2026-05-11"
+}
+
+### Delete by id
+
+DELETE {{SECTION_EVENT}}/4

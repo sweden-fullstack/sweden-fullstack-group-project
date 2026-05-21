@@ -1,0 +1,11 @@
+### 
+
+@SECTION_EVENT_ASSIGNEE = {{API_URL}}/section_event_assignee
+
+### Override assignees
+
+PUT {{SECTION_EVENT_ASSIGNEE}}/event_id/2/assignees HTTP/1.1 
+
+{
+   "userIds": [2, 3]
+}
