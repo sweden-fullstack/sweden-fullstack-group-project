@@ -21,7 +21,7 @@ class CleaningApi {
 
 	async getBySection(sectionId: number) {
 		const { data } = await axios.get(
-			`${this.path_event}sectionId/${sectionId}`,
+			`${this.path_event}section_id/${sectionId}`,
 		)
 		return data
 			.filter((event: SectionEventDto) => event.eventTypeId === 2)
@@ -36,7 +36,7 @@ class CleaningApi {
 		const buildingId = (await SectionUserApi.getSelfAuthenticated())
 			.buildingId
 		const { data } = await axios.post(
-			`${this.path_event}sectionId/${payload.sectionId}`,
+			`${this.path_event}section_id/${payload.sectionId}`,
 			{
 				title: "Cleaning Event",
 				buildingId: buildingId,
@@ -59,7 +59,7 @@ class CleaningApi {
 	async updateAssignees(eventId: number, users: UserDto[]) {
 		const userIds = users.map((u) => u.id)
 		const { data } = await axios.put(
-			`${this.path_assignee}eventId/${eventId}/assignees`,
+			`${this.path_assignee}event_id/${eventId}/assignees`,
 			{ userIds },
 		)
 		// the backend might not return the full event, but we return a stub or ignore since the frontend refetches
@@ -67,7 +67,7 @@ class CleaningApi {
 	}
 
 	async delete(eventId: number) {
-		await axios.delete(`${this.path_event}eventId/${eventId}`)
+		await axios.delete(`${this.path_event}event_id/${eventId}`)
 	}
 }
 
