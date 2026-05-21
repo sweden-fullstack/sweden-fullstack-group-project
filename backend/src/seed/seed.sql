@@ -51,13 +51,23 @@ INSERT INTO user (
       (1, 'alice@example.com', 'Alice', 'Andersson', 101, 'Computer Science', '2026-01-01', '2026-06-30', NULL),
       (2, 'bob@example.com',   'Bob',   'Berg',      202, 'Electrical Eng',  '2026-02-01', '2026-07-31', NULL),
       (3, 'carol@example.com', 'Carol', 'Carlsson',  305, 'Design',          '2026-01-15', '2026-12-15', NULL),
-      (4, 'dan@example.com',   'Dan',   'Dahl',      110, 'Business',        '2026-03-01', '2026-08-31', NULL);
+      (4, 'dan@example.com',   'Dan',   'Dahl',      110, 'Business',        '2026-03-01', '2026-08-31', NULL),
+      (5, 'dimitar.najdovskiw@gmail.com', 'Dimitar', 'Admin', 100, 'Coffee Expert', '2026-01-01', '2026-02-02', NULL),
+      (6, 'dimitar.najdovskip@gmail.com', 'Dimitar', 'Landlord', 100, 'Rakija Expert', '2026-01-01', '2026-02-02', NULL),
+      (7, 'bi.chen4403@gmail.com', 'Bi', 'Chen', 100, 'Becoming morning person', '2026-01-01', '2026-02-02', NULL),
+      (8, 'ellenviira03@gmail.com', 'Ellen', 'Viira', 100, 'I.C.A secret police', '2026-01-01', '2026-02-02', NULL),
+      (9, 'davidbadenk05@gmail.com', 'David', 'Baden', 100, 'Wakey Wakey', '2026-01-01', '2026-02-02', NULL);
 
 INSERT INTO section_user (user_id, section_id, role_id) VALUES
     (1, 1, 1),
     (2, 2, 1),
     (3, 3, 1),
-    (4, 1, 4);
+    (4, 1, 4),
+    (5, 1, 3),
+    (6, 1, 2),
+    (7, 1, 3),
+    (8, 1, 3),
+    (9, 1, 3);
 
 INSERT INTO user_interest (user_id, interest) VALUES
     (1, 'cooking'),

@@ -1,5 +1,6 @@
 import express from "express"
 import usersRouter from "@/modules/user/user.routes"
+import announcementRouter from "@/modules/announcement/announcement.routes"
 import authRouter from "@/modules/auth/auth.routes"
 import db from "@/config/database"
 import umzug from "./lib/umzugMigrations"
@@ -62,6 +63,7 @@ app.get("/health", (_req, res) => {
 })
 
 app.use("/user", usersRouter)
+app.use("/announcement", announcementRouter)
 app.use("/auth", authRouter)
 app.use("/section", sectionRouter)
 app.use("/section_user", sectionUserRouter)
