@@ -1,6 +1,6 @@
 import UserDto from "@/shared/types/user/user.dto"
 import envConfig from "@/config/env"
-import axios from "@/config/axios"
+import axiosInstance from "@/config/axios"
 import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import SectionEventAssigneeDto from "@/shared/types/section-event-assignee/sectionEventAssignee.dto"
 import SectionUserApi from "./sectionUser"
@@ -20,7 +20,7 @@ class CleaningApi {
 	path_assignee = `${envConfig.backend}section_event_assignee/`
 
 	async getBySection(sectionId: number) {
-		const { data } = await axios.get(
+		const { data } = await axiosInstance.get(
 			`${this.path_event}section_id/${sectionId}`,
 		)
 		return data
@@ -35,7 +35,7 @@ class CleaningApi {
 	async create(payload: CleaningEventCreate) {
 		const buildingId = (await SectionUserApi.getSelfAuthenticated())
 			.buildingId
-		const { data } = await axios.post(
+		const { data } = await axiosInstance.post(
 			`${this.path_event}section_id/${payload.sectionId}`,
 			{
 				title: "Cleaning Event",
@@ -58,7 +58,7 @@ class CleaningApi {
 
 	async updateAssignees(eventId: number, users: UserDto[]) {
 		const userIds = users.map((u) => u.id)
-		const { data } = await axios.put(
+		const { data } = await axiosInstance.put(
 			`${this.path_assignee}event_id/${eventId}/assignees`,
 			{ userIds },
 		)
@@ -67,7 +67,7 @@ class CleaningApi {
 	}
 
 	async delete(eventId: number) {
-		await axios.delete(`${this.path_event}event_id/${eventId}`)
+		await axiosInstance.delete(`${this.path_event}event_id/${eventId}`)
 	}
 }
 
