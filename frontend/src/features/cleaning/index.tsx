@@ -10,16 +10,8 @@ import MyDutySchedule from "./components/MyDutySchedule"
 import NextDutyCard from "./components/NextDutyCard"
 import SectionDutyTable from "./components/SectionDutyTable"
 import ViewModeToggle from "./components/ViewModeToggle"
-import type {
-	MyDutyEntry,
-	NextMyDuty,
-	Resident,
-	SelectedDayRow,
-	ViewMode,
-} from "./types"
+import type { MyDutyEntry, NextMyDuty, SelectedDayRow, ViewMode } from "./types"
 import { toDateKey } from "./utils/date"
-import UserDto from "@/shared/types/user/user.dto"
-import useUserStore from "@/stores/userStore"
 import SectionEventAssigneeDto from "@/shared/types/section-event-assignee/sectionEventAssignee.dto"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
@@ -29,27 +21,12 @@ export default function CleaningPage() {
 	const [currentUser, setCurrentUser] = useState<SectionUserDto | undefined>(
 		undefined,
 	)
+	const [sectionUsers, setSectionUsers] = useState<SectionUserDto[]>([])
 	const [cleaningEvents, setCleaningEvents] = useState<
 		SectionEventAssigneeDto[]
 	>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
-
-	const { users, getUsers, getUserSelf } = useUserStore()
-
-	const currentUserId = currentUser?.userId ?? 0
-	const sectionId = currentUser?.sectionId ?? 0
-	const buildingId = currentUser?.buildingId ?? 0
-
-	const residents = useMemo<Resident[]>(() => {
-		if (!sectionId) return []
-		return users
-			.filter((user) => user.sectionId === sectionId)
-			.map((user) => ({
-				id: user.id,
-				name: `${user.firstName} ${user.lastName}`.trim(),
-			}))
-	}, [users, sectionId])
 
 	const refreshEvents = useCallback(async (sectionIdValue: number) => {
 		if (!sectionIdValue) return
@@ -60,13 +37,13 @@ export default function CleaningPage() {
 	useEffect(() => {
 		async function loadPageData() {
 			try {
-				await getUsers()
 				const self = await SectionUserApi.getSelfAuthenticated()
 				setCurrentUser(self)
 
-				if (self?.sectionId) {
-					await refreshEvents(self.sectionId)
-				}
+				const sectionUsers = await SectionUserApi.getUsersBySecion()
+				setSectionUsers(sectionUsers)
+
+				await refreshEvents(self.sectionId)
 			} catch {
 				setError("Could not load cleaning schedule.")
 			} finally {
@@ -75,15 +52,14 @@ export default function CleaningPage() {
 		}
 
 		void loadPageData()
-	}, [getUsers, getUserSelf, refreshEvents])
+	}, [refreshEvents])
 
 	const selectedDateKey = toDateKey(selectedDate)
 
 	const selectedDayEvents = useMemo(
 		() =>
 			cleaningEvents.filter(
-				(event) =>
-					toDateKey(new Date(event.startTime)) === selectedDateKey,
+				(event) => toDateKey(event.startTime) === selectedDateKey,
 			),
 		[cleaningEvents, selectedDateKey],
 	)
@@ -93,7 +69,7 @@ export default function CleaningPage() {
 			Array.from(
 				new Set(
 					cleaningEvents
-						.map((event) => event.description)
+						.map((event) => event.title)
 						.filter((d): d is string => Boolean(d)),
 				),
 			).sort((a, b) => a.localeCompare(b)),
@@ -103,8 +79,8 @@ export default function CleaningPage() {
 	const selectedDayRows = useMemo<SelectedDayRow[]>(() => {
 		const eventByDuty = new Map<string, SectionEventAssigneeDto>()
 		for (const event of selectedDayEvents) {
-			if (event.description) {
-				eventByDuty.set(event.description, event)
+			if (event.title) {
+				eventByDuty.set(event.title, event)
 			}
 		}
 		return sectionDutyTemplate.map((dutyName) => {
@@ -127,8 +103,8 @@ export default function CleaningPage() {
 			.filter(({ dateKey }) => dateKey >= nowKey)
 			.sort((a, b) => {
 				if (a.dateKey === b.dateKey) {
-					return (a.event.description ?? "").localeCompare(
-						b.event.description ?? "",
+					return (a.event.title ?? "").localeCompare(
+						b.event.title ?? "",
 					)
 				}
 				return a.dateKey.localeCompare(b.dateKey)
@@ -137,7 +113,7 @@ export default function CleaningPage() {
 
 	const nextMyDuty = useMemo<NextMyDuty | null>(() => {
 		const myItems = allUpcomingEvents.filter(({ event }) =>
-			event.users?.some((user) => user.userId === currentUserId),
+			event.users?.some((user) => user.userId === currentUser?.userId),
 		)
 		if (!myItems.length) {
 			return null
@@ -147,18 +123,22 @@ export default function CleaningPage() {
 			dateKey: nextDateKey,
 			tasks: myItems
 				.filter((item) => item.dateKey === nextDateKey)
-				.map((item) => item.event.description ?? ""),
+				.map((item) => item.event.title ?? ""),
 		}
-	}, [allUpcomingEvents, currentUserId])
+	}, [allUpcomingEvents, currentUser.userId])
 
 	const myDutyScheduleList = useMemo<MyDutyEntry[]>(() => {
 		const grouped = new Map<string, string[]>()
 		for (const { event, dateKey } of allUpcomingEvents) {
-			if (!event.users?.some((user) => user.userId === currentUserId)) {
+			if (
+				!event.users?.some(
+					(user) => user.userId === currentUser?.userId,
+				)
+			) {
 				continue
 			}
 			const tasksOnDate = grouped.get(dateKey) ?? []
-			tasksOnDate.push(event.description ?? "")
+			tasksOnDate.push(event.title ?? "")
 			grouped.set(dateKey, tasksOnDate)
 		}
 
@@ -168,7 +148,7 @@ export default function CleaningPage() {
 				dateKey,
 				tasks: tasks.sort((a, b) => a.localeCompare(b)),
 			}))
-	}, [allUpcomingEvents, currentUserId])
+	}, [allUpcomingEvents, currentUser.userId])
 
 	const myDutyDateSet = useMemo(
 		() => new Set(myDutyScheduleList.map((entry) => entry.dateKey)),
@@ -189,9 +169,9 @@ export default function CleaningPage() {
 		row: SelectedDayRow,
 		assigneeIds: number[],
 	) {
-		const nextUsers = assigneeIds
-			.map((id) => users.find((user) => user.id === id))
-			.filter((user): user is UserDto => user !== undefined)
+		const nextUsers = assigneeIds.map((id) =>
+			sectionUsers.find((user) => user.userId === id),
+		)
 		try {
 			if (row.eventId !== null) {
 				await CleaningApi.updateAssignees(row.eventId, nextUsers)
@@ -200,24 +180,17 @@ export default function CleaningPage() {
 				startTime.setHours(10, 0, 0, 0)
 				const endTime = new Date(selectedDate)
 				endTime.setHours(11, 0, 0, 0)
+
 				await CleaningApi.create({
 					title: row.name,
-					buildingId: buildingId,
-					sectionId,
-					startTime,
-					endTime,
+					buildingId: currentUser.buildingId,
+					sectionId: currentUser.sectionId,
+					startTime: startTime,
+					endTime: endTime,
 					users: nextUsers,
-
-					// title: string
-					// buildingId: number
-					// sectionId: number
-					// startTime: Date
-					// endTime: Date
-					// description: string
-					// users?: UserDto[]
 				})
 			}
-			await refreshEvents(sectionId)
+			await refreshEvents(currentUser.sectionId)
 		} catch {
 			setError("Could not update assignee.")
 		}
@@ -225,20 +198,20 @@ export default function CleaningPage() {
 
 	async function deleteDuty(dutyName: string) {
 		const matchingEventIds = cleaningEvents
-			.filter((event) => event.description === dutyName)
+			.filter((event) => event.title === dutyName)
 			.map((event) => event.id)
 		try {
 			await Promise.all(
 				matchingEventIds.map((id) => CleaningApi.delete(id)),
 			)
-			await refreshEvents(sectionId)
+			await refreshEvents(currentUser.sectionId)
 		} catch {
 			setError("Could not delete duty.")
 		}
 	}
 
 	async function addTask(rawTaskName: string): Promise<boolean> {
-		if (!sectionId) return false
+		if (!currentUser.sectionId) return false
 		const taskName = rawTaskName.trim()
 		if (!taskName) return false
 		if (
@@ -256,13 +229,14 @@ export default function CleaningPage() {
 
 		try {
 			await CleaningApi.create({
-				sectionId,
-				startTime,
-				endTime,
-				description: taskName,
+				title: taskName,
+				buildingId: currentUser.buildingId,
+				sectionId: currentUser.sectionId,
+				startTime: startTime,
+				endTime: endTime,
 				users: [],
 			})
-			await refreshEvents(sectionId)
+			await refreshEvents(currentUser.sectionId)
 			return true
 		} catch {
 			setError("Could not add task.")
@@ -315,7 +289,7 @@ export default function CleaningPage() {
 									<SectionDutyTable
 										selectedDateKey={selectedDateKey}
 										selectedDayRows={selectedDayRows}
-										residents={residents}
+										residents={sectionUsers}
 										onAssigneeChange={updateDutyAssignee}
 										onDeleteTask={deleteDuty}
 									/>

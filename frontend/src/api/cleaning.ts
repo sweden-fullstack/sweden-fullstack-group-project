@@ -1,9 +1,10 @@
-import UserDto from "@/shared/types/user/user.dto"
 import envConfig from "@/config/env"
 import axiosInstance from "@/config/axios"
 import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import SectionEventAssigneeDto from "@/shared/types/section-event-assignee/sectionEventAssignee.dto"
 import SectionUserApi from "./sectionUser"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
+import SectionEventType from "@/shared/types/section-event/sectionEventType"
 
 export type CleaningEventCreate = {
 	title: string
@@ -11,8 +12,8 @@ export type CleaningEventCreate = {
 	sectionId: number
 	startTime: Date
 	endTime: Date
-	description: string
-	users?: UserDto[]
+	description?: string
+	users?: SectionUserDto[]
 }
 
 class CleaningApi {
@@ -24,7 +25,10 @@ class CleaningApi {
 			`${this.path_event}section_id/${sectionId}`,
 		)
 		return data
-			.filter((event: SectionEventDto) => event.eventTypeId === 2)
+			.filter(
+				(event: SectionEventDto) =>
+					event.eventTypeId === SectionEventType.CleaningDay,
+			)
 			.map((event: SectionEventDto) => ({
 				...event,
 				startTime: new Date(event.startTime),
@@ -40,7 +44,7 @@ class CleaningApi {
 			{
 				title: "Cleaning Event",
 				buildingId: buildingId,
-				eventTypeId: 2,
+				eventTypeId: SectionEventType.CleaningDay,
 				description: payload.description,
 				startTime: payload.startTime,
 				endTime: payload.endTime,
@@ -56,8 +60,8 @@ class CleaningApi {
 		return event
 	}
 
-	async updateAssignees(eventId: number, users: UserDto[]) {
-		const userIds = users.map((u) => u.id)
+	async updateAssignees(eventId: number, users: SectionUserDto[]) {
+		const userIds = users.map((u) => u.userId)
 		const { data } = await axiosInstance.put(
 			`${this.path_assignee}event_id/${eventId}/assignees`,
 			{ userIds },

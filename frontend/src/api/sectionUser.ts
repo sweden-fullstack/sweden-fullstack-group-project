@@ -15,6 +15,14 @@ class SectionUserApi {
 		return data as SectionUserDto[]
 	}
 
+	async getUsersBySecion(sectionId?: number) {
+		const { data } = await axiosInstance.get(
+			`${this.path}/section/${sectionId}`,
+		)
+
+		return data as SectionUserDto[]
+	}
+
 	async getSelfAuthenticated() {
 		const { data } = await axiosInstance.get(
 			`${this.path}self_authenticated`,
