@@ -28,20 +28,15 @@ class SectionEventService {
 		return SectionEventMapper.toDto(entity)
 	}
 
-	async create(sectionId: number, userId: number, event: SectionEventCreate) {
+	async create(
+		sectionId: number,
+		buildingId: number,
+		event: SectionEventCreate,
+	) {
 		return await Transaction.run(async () => {
-			const sectionUser =
-				await sectionUserService.getBySectionIdAndUserId(
-					sectionId,
-					userId,
-				)
-
-			if (!sectionUser) {
-				throw new NotFoundError("User not found in this section")
-			}
 			const entity = SectionEventMapper.toEntity(event)
 			entity.section_id = sectionId
-			entity.building_id = sectionUser.buildingId
+			entity.building_id = buildingId
 
 			const eventId = await sectionEventRepository.create(
 				entity as SectionEventEntity,

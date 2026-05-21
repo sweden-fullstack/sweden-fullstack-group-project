@@ -20,14 +20,25 @@ function authHandler(
 	return (req: Request, _res: Response, next: NextFunction) => {
 		function mapValue(value?: number | string) {
 			if (typeof value === "string") {
-				const match = value.match(/param\.(\w+)/)
-				const matchValue = match ? match[1] : null
+				const parts = value.split(".")
 
-				if (!matchValue) {
+				if (!parts[0] || !parts[1]) {
 					throw new ServerError()
 				}
 
-				return parseInt(matchValue)
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const reqAny = req as any
+
+				let secondString = ""
+				if (parts[1].endsWith("?")) {
+					secondString = parts[1].slice(0, -1)
+				} else {
+					secondString = parts[1]
+				}
+
+				const result = reqAny[parts[0]]?.[secondString] ?? undefined
+
+				return parseInt(result)
 			}
 			return value
 		}

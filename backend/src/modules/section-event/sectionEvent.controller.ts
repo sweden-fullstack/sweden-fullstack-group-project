@@ -15,11 +15,14 @@ class SectionEventController {
 	async create(req: Request, res: Response): Promise<Response> {
 		const jwt = req.user as JwtPayloadExtended
 		const body = typia.assertEquals<SectionEventCreate>(req.body)
-		const sectionId = parseInt(req.params.sectionId as string)
+		const sectionIdString = req.params.sectionId
+			? req.params.sectionId
+			: jwt.sectionId
+		const sectionId = parseInt(sectionIdString as string)
 
 		const sectionEvent = await sectionEventService.create(
 			sectionId,
-			jwt.userId,
+			jwt.buildingId,
 			body,
 		)
 
@@ -27,9 +30,9 @@ class SectionEventController {
 	}
 
 	async delete(req: Request, res: Response) {
-		const eventId = parseInt(req.params.eventId as string)
+		const id = parseInt(req.params.id as string)
 
-		await sectionEventService.delete(eventId)
+		await sectionEventService.delete(id)
 		return res.status(204).send()
 	}
 }

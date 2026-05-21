@@ -6,22 +6,16 @@ const router = Router()
 
 router.get(
 	"/section_id/:sectionId",
-	authHandler([], undefined, "param.sectionId"),
+	authHandler([], undefined, "params.sectionId"),
 	sectionEventController.getAllBySectionId,
 )
 
-// TODO get sectionId from user? and maybe have something like a flag to include the section or no?
 router.post(
-	"/section_id/:sectionId",
-	authHandler([], undefined, "param.sectionId"),
+	"/section_id{/:sectionId}",
+	authHandler([], undefined, "params.sectionId?"),
 	sectionEventController.create,
 )
 
-// TODO add auth
-router.delete(
-	"/event_id/:eventId",
-	authHandler(),
-	sectionEventController.delete,
-)
+router.delete("/:id", authHandler(), sectionEventController.delete)
 
 export default router
