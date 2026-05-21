@@ -1,7 +1,6 @@
 import { Box, Button, Grid, Text, VStack } from "@chakra-ui/react"
 import { useMemo, useState } from "react"
 import useWindowSize from "@/hooks/useWindowSize"
-import { getCalendarTitleCharLimit } from "@/features/section/utils/calendarTitleLimit"
 import { indexEventsByDay } from "@/features/section/utils/eventsByDay"
 import { addMonths, buildMonthGrid } from "./calendar/monthGrid"
 import { sameCalendarDay, toDateKey } from "@/utils/date"
@@ -71,11 +70,6 @@ export default function SectionEventCalendar({
 	const eventsByDay = useMemo(() => indexEventsByDay(filtered), [filtered])
 	const weeks = useMemo(() => buildMonthGrid(month), [month])
 	const today = new Date()
-	const { width } = useWindowSize()
-	const titleMaxChars = useMemo(
-		() => getCalendarTitleCharLimit(width),
-		[width],
-	)
 
 	function openEditor(next: EventEditorDraft) {
 		setDraft(next)
