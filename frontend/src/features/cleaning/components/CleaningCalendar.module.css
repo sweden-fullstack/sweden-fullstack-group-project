@@ -5,7 +5,7 @@
 	border: none !important;
 	background: transparent !important;
 	font-family: inherit !important;
-	padding: 6px !important;
+	padding: 11px !important;
 }
 
 .calendar :global(.react-calendar__month-view__weekdays) {
