@@ -5,7 +5,6 @@ type HouseRuleDto = {
 	body: string
 	sortOrder: number
 	updatedAt: string
-	categoryIds: number[]
 	categoryNames: string[]
 }
 

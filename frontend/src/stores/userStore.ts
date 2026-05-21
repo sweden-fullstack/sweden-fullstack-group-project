@@ -24,7 +24,7 @@ const seedUsers: UserDto[] = [
 		roomNumber: 101,
 		sectionId: 1,
 		buildingId: 1,
-		role: "student",
+		role: "landlord",
 		...defaultStayPeriod,
 	},
 	{

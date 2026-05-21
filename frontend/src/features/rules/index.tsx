@@ -10,7 +10,6 @@ import useUserStore from "@/stores/userStore"
 import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
 import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
 import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
-import HouseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
 import UserDto from "@/shared/types/user/user.dto"
 import { Box, Button, Grid, Spinner, Text, VStack } from "@chakra-ui/react"
 import { useCallback, useEffect, useState } from "react"
@@ -21,7 +20,6 @@ export default function RulesPage() {
 		undefined,
 	)
 	const [rules, setRules] = useState<HouseRuleDto[]>([])
-	const [categories, setCategories] = useState<HouseRuleCategoryDto[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [editorDraft, setEditorDraft] = useState<RuleDraft | null>(null)
@@ -40,12 +38,9 @@ export default function RulesPage() {
 				const self = await getUserSelf()
 				setCurrentUser(self)
 				const resolvedBuildingId = self?.buildingId ?? 1
-				const [rulesData, categoriesData] = await Promise.all([
-					RulesApi.getByBuilding(resolvedBuildingId),
-					RulesApi.getCategories(),
-				])
+				const rulesData =
+					await RulesApi.getByBuilding(resolvedBuildingId)
 				setRules(rulesData)
-				setCategories(categoriesData)
 			} catch {
 				setError("Could not load house rules.")
 			} finally {
@@ -64,7 +59,7 @@ export default function RulesPage() {
 			title: "",
 			body: "",
 			sortOrder: nextSortOrder || 1,
-			categoryIds: [],
+			categoryNames: [],
 		}
 		setEditorDraft(draft)
 	}
@@ -119,13 +114,13 @@ export default function RulesPage() {
 			) : error ? (
 				<Text color="#9b2c2c">{error}</Text>
 			) : (
-				<VStack align="stretch" gap={4}>
+				<VStack align="stretch" gap={6} minW={0} w="full">
 					{canManage ? (
 						<Box>
 							<Button
-								bg="#90d5ff"
-								color="#163447"
-								_hover={{ bg: "#78c9fb" }}
+								bg="#d8ebff"
+								color="#123a5f"
+								_hover={{ bg: "#c8e2ff" }}
 								onClick={openCreateEditor}
 							>
 								Add rule
@@ -133,16 +128,20 @@ export default function RulesPage() {
 						</Box>
 					) : null}
 					{rules.length === 0 ? (
-						<Text color="#506057">
+						<Text color="#4b6177">
 							No house rules for this building yet.
 						</Text>
 					) : (
 						<Grid
-							templateColumns={{
-								base: "1fr",
-								md: "repeat(2, 1fr)",
-							}}
-							gap={4}
+							minW={0}
+							w="full"
+							templateColumns="minmax(0, 1fr)"
+							gap={5}
+							bg="linear-gradient(180deg, #f7fbff 0%, #f0f6ff 100%)"
+							border="1px solid #dce8f6"
+							borderRadius="24px"
+							p={{ base: 3, md: 4 }}
+							overflow="hidden"
 						>
 							{rules.map((rule) => (
 								<RuleCard
@@ -161,7 +160,6 @@ export default function RulesPage() {
 				<RuleEditorOverlay
 					open={editorDraft !== null}
 					draft={editorDraft}
-					categories={categories}
 					onClose={closeEditor}
 					onCreate={handleCreate}
 					onUpdate={handleUpdate}

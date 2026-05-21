@@ -1,5 +1,20 @@
 import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
-import { Box, Button, Heading, HStack, Text, VStack } from "@chakra-ui/react"
+import {
+	Box,
+	Button,
+	Flex,
+	Heading,
+	HStack,
+	Text,
+	VStack,
+} from "@chakra-ui/react"
+
+const wrapTextProps = {
+	minW: 0,
+	maxW: "100%",
+	wordBreak: "break-word" as const,
+	overflowWrap: "anywhere" as const,
+}
 
 type RuleCardProps = {
 	rule: HouseRuleDto
@@ -15,37 +30,78 @@ export default function RuleCard({
 	onDelete,
 }: RuleCardProps) {
 	return (
-		<Box bg="white" border="1px solid #dce5df" borderRadius="22px" p={5}>
-			<VStack align="stretch" gap={2}>
-				<HStack justify="space-between" align="flex-start">
-					<Text fontSize="sm" color="#718176">
+		<Box
+			minW={0}
+			maxW="100%"
+			w="full"
+			bg="rgba(255,255,255,0.92)"
+			border="1px solid #dce8f6"
+			borderRadius="22px"
+			p={5}
+			boxShadow="0 8px 24px rgba(43, 107, 176, 0.08)"
+		>
+			<VStack align="stretch" gap={2} minW={0}>
+				<Flex
+					justify="space-between"
+					align="flex-start"
+					gap={2}
+					flexWrap="wrap"
+				>
+					<Text
+						fontSize="sm"
+						color="#4b6177"
+						flex="1"
+						{...wrapTextProps}
+					>
 						{rule.categoryNames.join(", ")}
 					</Text>
 					{canManage ? (
-						<HStack gap={1} flexShrink={0}>
+						<HStack gap={1} flexShrink={0} alignSelf="flex-start">
 							<Button
 								size="xs"
-								variant="outline"
+								bg="white"
+								color="#123a5f"
+								border="1px solid"
+								borderColor="#d2deea"
+								fontWeight="normal"
+								_hover={{ bg: "white", borderColor: "#d2deea" }}
+								_active={{
+									bg: "white",
+									borderColor: "#d2deea",
+								}}
 								onClick={() => onEdit(rule)}
 							>
 								Edit
 							</Button>
 							<Button
 								size="xs"
-								variant="outline"
-								borderColor="#d9a3a3"
-								color="#7a2323"
-								_hover={{ bg: "#fff5f5" }}
+								bg="#ffecee"
+								color="#8a2d3b"
+								border="1px solid"
+								borderColor="#f5c2c7"
+								fontWeight="normal"
+								_hover={{
+									bg: "#ffecee",
+									borderColor: "#f5c2c7",
+								}}
+								_active={{
+									bg: "#ffecee",
+									borderColor: "#f5c2c7",
+								}}
 								onClick={() => onDelete(rule)}
 							>
 								Delete
 							</Button>
 						</HStack>
 					) : null}
-				</HStack>
-				<Heading size="md">{rule.title}</Heading>
-				<Text color="#506057">{rule.body}</Text>
-				<Text fontSize="sm" color="#718176">
+				</Flex>
+				<Heading size="md" color="#234567" {...wrapTextProps}>
+					{rule.title}
+				</Heading>
+				<Text color="#3c5975" whiteSpace="pre-wrap" {...wrapTextProps}>
+					{rule.body}
+				</Text>
+				<Text fontSize="sm" color="#4b6177" {...wrapTextProps}>
 					Updated {rule.updatedAt}
 				</Text>
 			</VStack>
