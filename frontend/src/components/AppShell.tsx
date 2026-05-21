@@ -28,6 +28,7 @@ const navItems: NavItem[] = [
 	{ label: "House Rules", path: "/rules" },
 	{ label: "Section", path: "/section" },
 	{ label: "Profile", path: "/profile" },
+	{ label: "About", path: "/about" },
 ]
 
 export default function AppShell({
