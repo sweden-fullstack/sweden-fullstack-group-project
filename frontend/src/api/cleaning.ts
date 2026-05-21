@@ -1,10 +1,8 @@
-import envConfig from "@/config/env"
 import axiosInstance from "@/config/axios"
 import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import SectionEventAssigneeDto from "@/shared/types/section-event-assignee/sectionEventAssignee.dto"
-import SectionUserApi from "./sectionUser"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
-import SectionEventType from "@/shared/types/section-event/sectionEventType"
+import SectionEventType from "../../../shared/types/section-event/sectionEventType"
 
 export type CleaningEventCreate = {
 	title: string
@@ -17,8 +15,8 @@ export type CleaningEventCreate = {
 }
 
 class CleaningApi {
-	path_event = `${envConfig.backend}section_event/`
-	path_assignee = `${envConfig.backend}section_event_assignee/`
+	path_event = `section_event/`
+	path_assignee = `section_event_assignee/`
 
 	async getBySection(sectionId: number) {
 		const { data } = await axiosInstance.get(
@@ -37,15 +35,11 @@ class CleaningApi {
 	}
 
 	async create(payload: CleaningEventCreate) {
-		const buildingId = (await SectionUserApi.getSelfAuthenticated())
-			.buildingId
 		const { data } = await axiosInstance.post(
 			`${this.path_event}section_id/${payload.sectionId}`,
 			{
-				title: "Cleaning Event",
-				buildingId: buildingId,
+				title: payload.title,
 				eventTypeId: SectionEventType.CleaningDay,
-				description: payload.description,
 				startTime: payload.startTime,
 				endTime: payload.endTime,
 			},
@@ -71,7 +65,7 @@ class CleaningApi {
 	}
 
 	async delete(eventId: number) {
-		await axiosInstance.delete(`${this.path_event}event_id/${eventId}`)
+		await axiosInstance.delete(`${this.path_event}${eventId}`)
 	}
 }
 

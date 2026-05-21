@@ -18,9 +18,7 @@ import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 export default function CleaningPage() {
 	const [selectedDate, setSelectedDate] = useState(new Date())
 	const [viewMode, setViewMode] = useState<ViewMode>("section")
-	const [currentUser, setCurrentUser] = useState<SectionUserDto | undefined>(
-		undefined,
-	)
+	const [currentUser, setCurrentUser] = useState<SectionUserDto | null>(null)
 	const [sectionUsers, setSectionUsers] = useState<SectionUserDto[]>([])
 	const [cleaningEvents, setCleaningEvents] = useState<
 		SectionEventAssigneeDto[]
@@ -125,7 +123,7 @@ export default function CleaningPage() {
 				.filter((item) => item.dateKey === nextDateKey)
 				.map((item) => item.event.title ?? ""),
 		}
-	}, [allUpcomingEvents, currentUser.userId])
+	}, [allUpcomingEvents, currentUser])
 
 	const myDutyScheduleList = useMemo<MyDutyEntry[]>(() => {
 		const grouped = new Map<string, string[]>()
@@ -148,7 +146,7 @@ export default function CleaningPage() {
 				dateKey,
 				tasks: tasks.sort((a, b) => a.localeCompare(b)),
 			}))
-	}, [allUpcomingEvents, currentUser.userId])
+	}, [allUpcomingEvents, currentUser])
 
 	const myDutyDateSet = useMemo(
 		() => new Set(myDutyScheduleList.map((entry) => entry.dateKey)),

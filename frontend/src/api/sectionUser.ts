@@ -2,14 +2,14 @@ import axiosInstance from "@/config/axios"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
 class SectionUserApi {
-	path = `section_user/`
+	path = `section_user`
 
 	/**
 	 * @param buildingId If undefined gets from token
 	 */
 	async getUsersByBuilding(buildingId?: number) {
 		const { data } = await axiosInstance.get(
-			`${this.path}/building/${buildingId}`,
+			`${this.path}/building/${buildingId ?? ""}`,
 		)
 
 		return data as SectionUserDto[]
@@ -17,7 +17,7 @@ class SectionUserApi {
 
 	async getUsersBySecion(sectionId?: number) {
 		const { data } = await axiosInstance.get(
-			`${this.path}/section/${sectionId}`,
+			`${this.path}/section/${sectionId ?? ""}`,
 		)
 
 		return data as SectionUserDto[]
@@ -25,7 +25,7 @@ class SectionUserApi {
 
 	async getSelfAuthenticated() {
 		const { data } = await axiosInstance.get(
-			`${this.path}self_authenticated`,
+			`${this.path}/self_authenticated`,
 		)
 
 		return data as SectionUserDto
