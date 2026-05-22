@@ -6,32 +6,62 @@ import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
 import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
 import HouseRuleEntity from "./types/houseRule.entity"
 import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
-import houseRuleCategoryService from "@/modules/house-rule-category/house-rule-category.service"
+import houseRuleCategoryService from "../house-rule-category/house-rule-category-map/houseRuleCategoryMap.service"
+import houseRuleCategoryRepository from "../house-rule-category/house-rule-category-map/houseRuleCategoryMap.repository"
 
 class HouseRuleService {
 	async getAllByBuildingId(buildingId: number): Promise<HouseRuleDto[]> {
-		return (await houseRuleRepository.findAllByBuildingId(buildingId)).map(
-			(o) => HouseRuleMapper.toDto(o),
-		)
+		return await Transaction.run(async () => {
+			const entities =
+				await houseRuleRepository.findAllByBuildingId(buildingId)
+
+			return await Promise.all(
+				entities.map(async (entity) => {
+					const categoryIds = await houseRuleCategoryService.getById(
+						entity.id,
+					)
+					const dto = HouseRuleMapper.toDto(entity)
+					dto.categoryIds = categoryIds.map(
+						(c) => c.houseRuleCategoryId,
+					)
+					return dto
+				}),
+			)
+		})
 	}
 
 	async getById(id: number): Promise<HouseRuleDto> {
-		const entity = await houseRuleRepository.findById(id)
-		const categoryIds = await houseRuleCategoryService.getById(id)
+		return await Transaction.run(async () => {
+			const entity = await houseRuleRepository.findById(id)
+			const categoryIds = await houseRuleCategoryService.getById(id)
 
-		entity.category_ids = categoryIds
+			if (!entity) {
+				throw new NotFoundError("House Rule not found")
+			}
 
-		if (!entity) {
-			throw new NotFoundError("House Rule not found")
-		}
+			const dto = HouseRuleMapper.toDto(entity)
 
-		return HouseRuleMapper.toDto(entity)
+			dto.categoryIds = categoryIds.map((c) => c.houseRuleCategoryId)
+			return dto
+		})
 	}
 
 	async create(dto: HouseRuleCreate): Promise<HouseRuleDto> {
 		return await Transaction.run(async () => {
 			const entity = HouseRuleMapper.toEntity(dto) as HouseRuleEntity
 			const id = await houseRuleRepository.create(entity)
+
+			if (dto.categoryIds.length > 0) {
+				await Promise.all(
+					dto.categoryIds.map((categoryId) =>
+						houseRuleCategoryService.create({
+							houseRuleId: id,
+							houseRuleCategoryId: categoryId,
+						}),
+					),
+				)
+			}
+
 			return await this.getById(id)
 		})
 	}
@@ -40,15 +70,34 @@ class HouseRuleService {
 		return await Transaction.run(async () => {
 			const entity = HouseRuleMapper.toEntity(dto)
 			await houseRuleRepository.update(id, entity)
+
+			if (dto.categoryIds.length > 0) {
+				await Promise.all(
+					dto.categoryIds.map((categoryId) =>
+						houseRuleCategoryService.overrideCategory(
+							id,
+							categoryId,
+						),
+					),
+				)
+			}
+
 			return await this.getById(id)
 		})
 	}
 
 	async delete(id: number): Promise<void> {
-		const deleted = await houseRuleRepository.delete(id)
-		if (!deleted) {
-			throw new NotFoundError("House Rule not found")
-		}
+		return await Transaction.run(async () => {
+			const deleted = await houseRuleRepository.delete(id)
+			if (!deleted) {
+				throw new NotFoundError("House Rule not found")
+			}
+
+			const categoryDeleted = await houseRuleCategoryRepository.delete(id)
+			if (!categoryDeleted) {
+				throw new NotFoundError("House Rule not found")
+			}
+		})
 	}
 }
 

@@ -1,15 +1,15 @@
-import { Transaction } from "@/utils/transaction"
-import HouseRuleCategorymMapDto from "@/shared/types/house-rule-category-map/houseRuleCategorymMap.dto"
-import HouseRuleCategoryMapMapper from "@/modules/house-rule-category/types/houseRuleCategoryMap.mapper"
-import HouseRuleCategoryMapEntity from "@/modules/house-rule-category/types/houseRuleCategoryMap.entity"
-import houseRuleCategoryRepository from "@/modules/house-rule-category/house-rule-category.repository"
-import BadRequestError from "@/errors/BadRequestError"
-import NotFoundError from "@/errors/NotFoundError"
+import { Transaction } from "backend/src/utils/transaction"
+import HouseRuleCategoryMapDto from "../../../../../shared/types/house-rule-category-map/houseRuleCategoryMap.dto"
+import HouseRuleCategoryMapMapper from "backend/src/modules/house-rule-category/types/houseRuleCategoryMap.mapper"
+import HouseRuleCategoryMapEntity from "backend/src/modules/house-rule-category/types/houseRuleCategoryMap.entity"
+import houseRuleCategoryRepository from "./houseRuleCategoryMap.repository"
+import BadRequestError from "backend/src/errors/BadRequestError"
+import NotFoundError from "backend/src/errors/NotFoundError"
 
-class HouseRuleCategoryService {
+class HouseRuleCategoryMapService {
 	async create(
-		dto: HouseRuleCategorymMapDto,
-	): Promise<HouseRuleCategorymMapDto> {
+		dto: HouseRuleCategoryMapDto,
+	): Promise<HouseRuleCategoryMapDto> {
 		return await Transaction.run(async () => {
 			const entity = HouseRuleCategoryMapMapper.toEntity(
 				dto,
@@ -31,17 +31,16 @@ class HouseRuleCategoryService {
 		)
 	}
 
-	async update(
+	async overrideCategory(
 		houseRuleId: number,
 		categoryId: number,
-		newCategoryId: number,
-	): Promise<HouseRuleCategorymMapDto> {
+	): Promise<HouseRuleCategoryMapDto> {
 		return await Transaction.run(async () => {
-			const success = await houseRuleCategoryRepository.update(
-				houseRuleId,
-				categoryId,
-				newCategoryId,
-			)
+			const success =
+				await houseRuleCategoryRepository.overrideCategoryMap(
+					houseRuleId,
+					categoryId,
+				)
 
 			if (!success) {
 				throw new BadRequestError(
@@ -51,7 +50,7 @@ class HouseRuleCategoryService {
 
 			const entity: HouseRuleCategoryMapEntity = {
 				house_rule_id: houseRuleId,
-				house_rule_category_id: newCategoryId,
+				house_rule_category_id: categoryId,
 			}
 
 			return HouseRuleCategoryMapMapper.toDto(entity)
@@ -66,4 +65,4 @@ class HouseRuleCategoryService {
 	}
 }
 
-export default new HouseRuleCategoryService()
+export default new HouseRuleCategoryMapService()

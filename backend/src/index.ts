@@ -71,6 +71,7 @@ app.use("/section_event", sectionEventRouter)
 app.use("/section_event_assignee", sectionEventAssigneeRouter)
 app.use("/section_user", sectionUserRouter)
 app.use("/house_rule", houseRuleRouter)
+app.use("/house_rule_category")
 
 app.use(ErrorHandler.handle)
 

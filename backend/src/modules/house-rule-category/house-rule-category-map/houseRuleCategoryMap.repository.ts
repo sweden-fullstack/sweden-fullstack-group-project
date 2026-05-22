@@ -1,9 +1,9 @@
-import db from "@/config/database"
-import HouseRuleCategoryMapEntity from "@/modules/house-rule-category/types/houseRuleCategoryMap.entity"
-import { houseRuleCategoryMapTableName } from "@/utils/tableNames"
+import db from "backend/src/config/database"
+import HouseRuleCategoryMapEntity from "backend/src/modules/house-rule-category/types/houseRuleCategoryMap.entity"
+import { houseRuleCategoryMapTableName } from "backend/src/utils/tableNames"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
 
-class HouseRuleCategoryRepository {
+class HouseRuleCategoryMapRepository {
 	async create(houseRuleCategorMap: HouseRuleCategoryMapEntity) {
 		const [result] = await db.query<ResultSetHeader>(
 			`INSERT INTO ${houseRuleCategoryMapTableName} SET ?`,
@@ -23,17 +23,14 @@ class HouseRuleCategoryRepository {
 		return rows.map((o) => o as HouseRuleCategoryMapEntity)
 	}
 
-	async update(
-		houseRuleId: number,
-		categoryId: number,
-		newCategoryId: number,
-	) {
-		const [result] = await db.query<ResultSetHeader>(
-			`UPDATE ${houseRuleCategoryMapTableName} SET house_rule_category_id = ? WHERE house_rule_id = ? AND house_rule_category_id = ?`,
-			[newCategoryId, houseRuleId, categoryId],
-		)
+	async overrideCategoryMap(id: number, categoryId: number) {
+		const deleted = await this.delete(id)
+		if (!deleted) return null
 
-		return result.affectedRows > 0
+		return await this.create({
+			house_rule_id: id,
+			house_rule_category_id: categoryId,
+		} as HouseRuleCategoryMapEntity)
 	}
 
 	async delete(houseRuleId: number) {
@@ -46,4 +43,4 @@ class HouseRuleCategoryRepository {
 	}
 }
 
-export default new HouseRuleCategoryRepository()
+export default new HouseRuleCategoryMapRepository()
