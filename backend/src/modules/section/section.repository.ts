@@ -14,7 +14,7 @@ class SectionRepository {
 
 	async findAllByBuildingId(buildingId: number) {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`${this.selectQueryBase} WHERE building_id = ?`,
+			`${this.selectQueryBase} WHERE s.building_id = ?`,
 			[buildingId],
 		)
 		return rows.map((o) => o as SectionEntity)

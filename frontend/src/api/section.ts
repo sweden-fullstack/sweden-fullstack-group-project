@@ -262,6 +262,13 @@ class SectionApi {
 		return data
 	}
 
+	async getAllByBuildingId(buildingId?: number): Promise<SectionDto[]> {
+		const { data } = await axiosInstance.get<SectionDto[]>(
+			`${this.path}/building_id/${buildingId ?? ""}`,
+		)
+		return data
+	}
+
 	async getSectionsInBuilding(building: string) {
 		// Later: return axios.get<SectionSummary[]>(`/api/buildings/${buildingId}/sections`).then((res) => res.data)
 		return sectionsInBuilding.filter((s) => s.building === building)

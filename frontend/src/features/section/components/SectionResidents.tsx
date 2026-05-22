@@ -1,10 +1,8 @@
-import SectionApi, {
-	type ResidentProfile,
-	type SectionSummary,
-} from "@/api/section"
+import SectionApi from "@/api/section"
 import SectionUserApi from "@/api/sectionUser"
 import ResidentCard from "@/features/section/components/ResidentCard"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
+import SectionDto from "@/shared/types/section/section.dto"
 import { Box, Grid, Heading, Input, Text, VStack } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 
@@ -23,7 +21,7 @@ type Props = {
 }
 
 export default function SectionResidents({ buildingName, currentUser }: Props) {
-	const [sections, setSections] = useState<SectionSummary[]>([])
+	const [sections, setSections] = useState<SectionDto[]>([])
 	const [residents, setResidents] = useState<SectionUserDto[]>([])
 	const [selectedSectionId, setSelectedSectionId] = useState(
 		currentUser.sectionId,
@@ -33,7 +31,7 @@ export default function SectionResidents({ buildingName, currentUser }: Props) {
 	useEffect(() => {
 		void (async () => {
 			const [sectionList, allResidents] = await Promise.all([
-				SectionApi.getSectionsInBuilding(buildingName),
+				SectionApi.getAllByBuildingId(),
 				SectionUserApi.getUsersByBuilding(),
 			])
 			setSections(sectionList)
@@ -48,7 +46,7 @@ export default function SectionResidents({ buildingName, currentUser }: Props) {
 		if (query) {
 			return residents.filter((r) => {
 				const fullName = `${r.firstName} ${r.lastName}`
-				fullName.toLowerCase().includes(query)
+				return fullName.toLowerCase().includes(query)
 			})
 		}
 		return residents.filter((r) => r.sectionId === selectedSectionId)
