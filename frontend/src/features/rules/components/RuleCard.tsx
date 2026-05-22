@@ -53,7 +53,9 @@ export default function RuleCard({
 						flex="1"
 						{...wrapTextProps}
 					>
-						{rule.categoryNames.join(", ")}
+						{rule.categoryMap
+							.map((category) => category.name)
+							.join(", ")}
 					</Text>
 					{canManage ? (
 						<HStack gap={1} flexShrink={0} alignSelf="flex-start">
