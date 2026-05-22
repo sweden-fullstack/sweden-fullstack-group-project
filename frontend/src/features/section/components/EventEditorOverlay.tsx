@@ -91,6 +91,7 @@ function EventEditorForm({
 
 	async function onUpdate(dto: SectionEventUpdate, sectionId?: number) {
 		await SectionEventApi.update(dto, sectionId)
+		await refreshSectionData()
 	}
 
 	function handleSave() {
