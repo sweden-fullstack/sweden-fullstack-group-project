@@ -3,52 +3,51 @@ import { useMemo, useState } from "react"
 import { indexEventsByDay } from "@/features/section/utils/eventsByDay"
 import { addMonths, buildMonthGrid } from "./calendar/monthGrid"
 import { sameCalendarDay, toDateKey } from "@/utils/date"
-import type { EventEditorDraft } from "./EventEditorOverlay"
 import EventEditorOverlay from "./EventEditorOverlay"
 import CalendarHeader, { type CalendarFilter } from "./CalendarHeader"
 import CalendarEventMarker from "./calendar/CalendarEventMarker"
 import SectionEventType from "../../../../../shared/types/section-event/sectionEventType"
 import SectionDto from "@/shared/types/section/section.dto"
-import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
 import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
-import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
+import EventDraft from "../types"
 
 type Props = {
 	section: SectionDto
-	currentUser: SectionUserDto
 }
 
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 const maxPills = 3
 
-function blankDraft(): SectionEventCreate {
+function blankDraft(): EventDraft {
 	const start = new Date()
 	start.setMinutes(0, 0, 0)
 	start.setHours(start.getHours() + 1)
 	const end = new Date(start)
 	end.setHours(end.getHours() + 1)
 	return {
-		title: "",
-		eventTypeId: SectionEventType.CleaningDay,
-		description: "",
-		startTime: start,
-		endTime: end,
+		id: undefined,
+		dto: {
+			title: "",
+			eventTypeId: SectionEventType.CleaningDay,
+			description: "",
+			startTime: start,
+			endTime: end,
+		},
 	}
 }
 
-function toEditorDraft(event: SectionEventDto): EventEditorDraft {
+function toEditorDraft(event: SectionEventDto): EventDraft {
 	return {
-		...event,
-		startTime: new Date(event.startTime),
-		endTime: new Date(event.endTime),
+		id: event.sectionId,
+		dto: event,
 	}
 }
 
-export default function SectionEventCalendar({ section, currentUser }: Props) {
+export default function SectionEventCalendar({ section }: Props) {
 	const [month, setMonth] = useState(() => new Date())
 	const [filter, setFilter] = useState<CalendarFilter>("all")
 	const [editorOpen, setEditorOpen] = useState(false)
-	const [draft, setDraft] = useState<EventEditorDraft | null>(null)
+	const [draft, setDraft] = useState<EventDraft | null>(null)
 	const [expandedKey, setExpandedKey] = useState<string | null>(null)
 
 	const filtered = useMemo(() => {
@@ -62,7 +61,7 @@ export default function SectionEventCalendar({ section, currentUser }: Props) {
 	const weeks = useMemo(() => buildMonthGrid(month), [month])
 	const today = new Date()
 
-	function openEditor(next: EventEditorDraft) {
+	function openEditor(next: EventDraft) {
 		setDraft(next)
 		setEditorOpen(true)
 	}

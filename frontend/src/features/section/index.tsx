@@ -33,13 +33,12 @@ export default function SectionPage() {
 	}, [])
 
 	const spotlight = useMemo(
-		() => pickNearestSectionOnlyEvent(section.events),
-		[section.events],
+		() => (section ? pickNearestSectionOnlyEvent(section.events) : null),
+		[section],
 	)
 
-	const spotlightIsPast = spotlight
-		? new Date(spotlight.endTime) < new Date()
-		: false
+	const spotlightIsPast =
+		spotlight && section ? new Date(spotlight.endTime) < new Date() : false
 
 	return (
 		<AppShell
@@ -114,10 +113,7 @@ export default function SectionPage() {
 						<Heading size="md" mb={4}>
 							Section calendar
 						</Heading>
-						<SectionEventCalendar
-							section={section}
-							currentUser={currentUser}
-						/>
+						<SectionEventCalendar section={section!} />
 					</Box>
 				</VStack>
 			) : null}

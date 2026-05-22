@@ -15,14 +15,12 @@ import {
 import { VISIBILITY_OPTIONS } from "@/features/section/utils/eventVisibility"
 import SectionEventType from "../../../../../shared/types/section-event/sectionEventType"
 import SectionDto from "@/shared/types/section/section.dto"
-import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import { SectionEventVisibility } from "@/shared/types/section-event/sectionEvent.dto"
 import EventDraft from "../types"
 
 type FormProps = {
 	draft: EventDraft
 	section: SectionDto
-	currentUser: SectionUserDto
 	// sectionId: number
 	onCloseDraftEditor: () => void
 	// onCreate: (payload: SectionEventCreate) => void
@@ -66,12 +64,12 @@ function EventEditorForm({
 	const [visibility, setVisibility] = useState<SectionEventVisibility>()
 	// draft.sectionId ? "section" : "building",
 	const [startAt, setStartAt] = useState<Date | null>(
-		() => new Date(draft.startTime),
+		() => new Date(draft.dto.startTime),
 	)
 	const [endAt, setEndAt] = useState<Date | null>(
-		() => new Date(draft.endTime),
+		() => new Date(draft.dto.endTime),
 	)
-	const [description, setDescription] = useState(draft.description ?? "")
+	const [description, setDescription] = useState(draft.dto.description ?? "")
 	const [error, setError] = useState<string | null>(null)
 
 	const editing = isExistingEvent()
@@ -97,7 +95,7 @@ function EventEditorForm({
 			startTime: startAt,
 			endTime: endAt,
 			description: description.trim() || undefined,
-			buildingId: editing ? draft.buildingId : buildingId,
+			buildingId: section.buildingId,
 		}
 
 		if (editing) {
