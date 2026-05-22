@@ -16,15 +16,14 @@ class SectionEventController {
 	async create(req: Request, res: Response): Promise<Response> {
 		const jwt = req.user as JwtPayloadExtended
 		const body = typia.assertEquals<SectionEventCreate>(req.body)
-		const sectionIdString = req.params.sectionId
-			? req.params.sectionId
-			: jwt.sectionId
-		const sectionId = parseInt(sectionIdString as string)
+		const sectionId = req.params.sectionId
+			? parseInt(req.params.sectionId as string)
+			: undefined
 
 		const sectionEvent = await sectionEventService.create(
-			sectionId,
 			jwt.buildingId,
 			body,
+			sectionId,
 		)
 
 		return res.status(201).json(sectionEvent)

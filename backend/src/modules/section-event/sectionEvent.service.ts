@@ -30,9 +30,9 @@ class SectionEventService {
 	}
 
 	async create(
-		sectionId: number,
 		buildingId: number,
 		event: SectionEventCreate,
+		sectionId?: number,
 	) {
 		return await Transaction.run(async () => {
 			const entity = SectionEventMapper.toEntity(event)

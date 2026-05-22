@@ -7,36 +7,32 @@ import type { EventEditorDraft } from "./EventEditorOverlay"
 import EventEditorOverlay from "./EventEditorOverlay"
 import CalendarHeader, { type CalendarFilter } from "./CalendarHeader"
 import CalendarEventMarker from "./calendar/CalendarEventMarker"
-import SectionEventDto, {
-	SectionEventCreate,
-} from "@/shared/types/section-event/sectionEvent.dto"
 import SectionEventType from "../../../../../shared/types/section-event/sectionEventType"
+import SectionDto from "@/shared/types/section/section.dto"
+import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
 type Props = {
-	sectionId: number
-	events: SectionEventDto[]
-	onCreate: (payload: SectionEventCreate) => void | Promise<unknown>
-	onUpdate: (event: SectionEventDto) => void | Promise<unknown>
-	onRemove: (id: number) => void | Promise<unknown>
+	section: SectionDto
+	currentUser: SectionUserDto
 }
 
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 const maxPills = 3
 
-function blankDraft(sectionId: number): SectionEventCreate {
+function blankDraft(): SectionEventCreate {
 	const start = new Date()
 	start.setMinutes(0, 0, 0)
 	start.setHours(start.getHours() + 1)
 	const end = new Date(start)
 	end.setHours(end.getHours() + 1)
 	return {
-		sectionId,
-		buildingId: 1,
-		eventTypeId: SectionEventType.CleaningDay,
 		title: "",
+		eventTypeId: SectionEventType.CleaningDay,
+		description: "",
 		startTime: start,
 		endTime: end,
-		description: "",
 	}
 }
 
@@ -48,13 +44,7 @@ function toEditorDraft(event: SectionEventDto): EventEditorDraft {
 	}
 }
 
-export default function SectionEventCalendar({
-	sectionId,
-	events,
-	onCreate,
-	onUpdate,
-	onRemove,
-}: Props) {
+export default function SectionEventCalendar({ section, currentUser }: Props) {
 	const [month, setMonth] = useState(() => new Date())
 	const [filter, setFilter] = useState<CalendarFilter>("all")
 	const [editorOpen, setEditorOpen] = useState(false)
@@ -62,10 +52,11 @@ export default function SectionEventCalendar({
 	const [expandedKey, setExpandedKey] = useState<string | null>(null)
 
 	const filtered = useMemo(() => {
-		if (filter === "all") return events
-		if (filter === "building") return events.filter((e) => !e.sectionId)
-		return events.filter((e) => e.sectionId)
-	}, [events, filter])
+		if (filter === "all") return section.events
+		if (filter === "building")
+			return section.events.filter((e) => !e.sectionId)
+		return section.events.filter((e) => e.sectionId)
+	}, [section.events, filter])
 
 	const eventsByDay = useMemo(() => indexEventsByDay(filtered), [filtered])
 	const weeks = useMemo(() => buildMonthGrid(month), [month])
@@ -98,7 +89,7 @@ export default function SectionEventCalendar({
 						onToday={() => setMonth(new Date())}
 						filter={filter}
 						onFilter={setFilter}
-						onAdd={() => openEditor(blankDraft(sectionId))}
+						onAdd={() => openEditor(blankDraft())}
 					/>
 
 					<Grid templateColumns="repeat(7, minmax(0, 1fr))" gap={1}>
@@ -235,11 +226,8 @@ export default function SectionEventCalendar({
 			<EventEditorOverlay
 				open={editorOpen}
 				draft={draft}
-				sectionId={sectionId}
-				onClose={closeEditor}
-				onCreate={onCreate}
-				onUpdate={onUpdate}
-				onDelete={onRemove}
+				section={section}
+				onCloseDraftEditor={closeEditor}
 			/>
 		</>
 	)

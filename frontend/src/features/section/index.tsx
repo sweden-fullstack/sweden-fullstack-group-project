@@ -15,7 +15,6 @@ export default function SectionPage() {
 	const [error, setError] = useState<string | null>(null)
 	const [currentUser, setCurrentUser] = useState<SectionUserDto | null>(null)
 	const [section, setSection] = useState<SectionDto | null>(null)
-	// const { events, init, create, update, remove } = useSectionCalendarStore()
 
 	useEffect(() => {
 		void (async () => {
@@ -115,7 +114,10 @@ export default function SectionPage() {
 						<Heading size="md" mb={4}>
 							Section calendar
 						</Heading>
-						<SectionEventCalendar sectionId={section.id} />
+						<SectionEventCalendar
+							section={section}
+							currentUser={currentUser}
+						/>
 					</Box>
 				</VStack>
 			) : null}

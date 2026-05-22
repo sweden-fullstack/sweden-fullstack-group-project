@@ -12,29 +12,27 @@ import {
 	parseLocalDatetimeInputValue,
 	toLocalDatetimeInputValue,
 } from "@/utils/date"
-import type {
-	SectionEventCreate,
-	SectionEventVisibility,
-} from "@/shared/types/section-event/sectionEvent.dto"
 import { VISIBILITY_OPTIONS } from "@/features/section/utils/eventVisibility"
-import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import SectionEventType from "../../../../../shared/types/section-event/sectionEventType"
-
-export type EventEditorDraft = SectionEventDto | SectionEventCreate
+import SectionDto from "@/shared/types/section/section.dto"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
+import { SectionEventVisibility } from "@/shared/types/section-event/sectionEvent.dto"
+import EventDraft from "../types"
 
 type FormProps = {
-	draft: EventEditorDraft
-	sectionId: number
-	buildingId?: number
-	onClose: () => void
-	onCreate: (payload: SectionEventCreate) => void
-	onUpdate: (event: SectionEventDto) => void
-	onDelete: (id: number) => void
+	draft: EventDraft
+	section: SectionDto
+	currentUser: SectionUserDto
+	// sectionId: number
+	onCloseDraftEditor: () => void
+	// onCreate: (payload: SectionEventCreate) => void
+	// onUpdate: (event: SectionEventDto) => void
+	// onDelete: (id: number) => void
 }
 
 type OverlayProps = Omit<FormProps, "draft"> & {
 	open: boolean
-	draft: EventEditorDraft | null
+	draft: EventDraft | null
 }
 
 const fieldStyle = {
@@ -46,27 +44,27 @@ const fieldStyle = {
 	background: "white",
 } as const
 
-function isExistingEvent(draft: EventEditorDraft): draft is SectionEventDto {
-	return "id" in draft && typeof draft.id === "number"
+function isExistingEvent() {
+	return true
+	// return "id" in draft && typeof draft.id === "number"
 }
 
-function draftFormKey(draft: EventEditorDraft) {
-	return isExistingEvent(draft) ? `edit-${draft.id}` : "new"
+function draftFormKey(draft: EventDraft) {
+	return isExistingEvent() ? `edit-${draft.id}` : "new"
 }
 
 function EventEditorForm({
 	draft,
-	sectionId,
-	buildingId,
-	onClose,
-	onCreate,
-	onUpdate,
-	onDelete,
+	section,
+	// sectionId,
+	onCloseDraftEditor,
+	// onCreate,
+	// onUpdate,
+	// onDelete,
 }: FormProps) {
-	const [title, setTitle] = useState(draft.title)
-	const [visibility, setVisibility] = useState<SectionEventVisibility>(
-		draft.sectionId ? "section" : "building",
-	)
+	const [title, setTitle] = useState(draft.dto.title)
+	const [visibility, setVisibility] = useState<SectionEventVisibility>()
+	// draft.sectionId ? "section" : "building",
 	const [startAt, setStartAt] = useState<Date | null>(
 		() => new Date(draft.startTime),
 	)
@@ -76,7 +74,7 @@ function EventEditorForm({
 	const [description, setDescription] = useState(draft.description ?? "")
 	const [error, setError] = useState<string | null>(null)
 
-	const editing = isExistingEvent(draft)
+	const editing = isExistingEvent()
 
 	function handleSave() {
 		const trimmed = title.trim()
@@ -110,10 +108,10 @@ function EventEditorForm({
 		} else {
 			onCreate({
 				...base,
-				sectionId: sectionId,
+				sectionId: section.id,
 			})
 		}
-		onClose()
+		onCloseDraftEditor()
 	}
 
 	return (
@@ -233,7 +231,7 @@ function EventEditorForm({
 							_hover={{ bg: "#fff5f5" }}
 							onClick={() => {
 								onDelete(draft.id)
-								onClose()
+								onCloseDraftEditor()
 							}}
 						>
 							Delete
@@ -247,7 +245,7 @@ function EventEditorForm({
 							color="#7a2323"
 							_hover={{ bg: "#fff5f5" }}
 							variant="outline"
-							onClick={onClose}
+							onClick={onCloseDraftEditor}
 						>
 							Cancel
 						</Button>
@@ -269,12 +267,8 @@ function EventEditorForm({
 export default function EventEditorOverlay({
 	open,
 	draft,
-	sectionId,
-	buildingId = 1,
-	onClose,
-	onCreate,
-	onUpdate,
-	onDelete,
+	section,
+	onCloseDraftEditor,
 }: OverlayProps) {
 	if (!open || !draft) return null
 
@@ -288,17 +282,13 @@ export default function EventEditorOverlay({
 			alignItems="center"
 			justifyContent="center"
 			p={4}
-			onClick={onClose}
+			onClick={onCloseDraftEditor}
 		>
 			<EventEditorForm
 				key={draftFormKey(draft)}
 				draft={draft}
-				sectionId={sectionId}
-				buildingId={buildingId}
-				onClose={onClose}
-				onCreate={onCreate}
-				onUpdate={onUpdate}
-				onDelete={onDelete}
+				section={section}
+				onCloseDraftEditor={onCloseDraftEditor}
 			/>
 		</Box>
 	)

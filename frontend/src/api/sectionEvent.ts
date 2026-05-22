@@ -3,14 +3,14 @@ import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import axiosInstance from "@/config/axios"
 import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update"
 
-class SectionApi {
+class SectionEventApi {
 	path = "section_event"
 	async create(
-		sectionId: number,
 		dto: SectionEventCreate,
+		sectionId?: number,
 	): Promise<SectionEventDto> {
 		const { data } = await axiosInstance.post<SectionEventDto>(
-			`${this.path}/section_id/${sectionId}`,
+			`${this.path}/section_id/${sectionId ?? ""}`,
 			dto,
 		)
 		return data
@@ -32,4 +32,4 @@ class SectionApi {
 	}
 }
 
-export default new SectionApi()
+export default new SectionEventApi()
