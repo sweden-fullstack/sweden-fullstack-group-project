@@ -1,9 +1,9 @@
-import db from "backend/src/config/database"
-import HouseRuleCategoryMapEntity from "backend/src/modules/house-rule-category/types/houseRuleCategoryMap.entity"
+import db from "@/config/database"
+import HouseRuleCategoryMapEntity from "@/modules/house-rule-category/types/houseRuleCategoryMap.entity"
 import {
 	houseRoleCategoryTableName,
 	houseRuleCategoryMapTableName,
-} from "backend/src/utils/tableNames"
+} from "@/utils/tableNames"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
 
 class HouseRuleCategoryMapRepository {

@@ -1,10 +1,10 @@
-import { Transaction } from "backend/src/utils/transaction"
+import { Transaction } from "@/utils/transaction"
 import HouseRuleCategoryMapDto from "../../../../../shared/types/house-rule-category-map/houseRuleCategoryMap.dto"
-import HouseRuleCategoryMapMapper from "backend/src/modules/house-rule-category/types/houseRuleCategoryMap.mapper"
-import HouseRuleCategoryMapEntity from "backend/src/modules/house-rule-category/types/houseRuleCategoryMap.entity"
+import HouseRuleCategoryMapMapper from "@/modules/house-rule-category/types/houseRuleCategoryMap.mapper"
+import HouseRuleCategoryMapEntity from "@/modules/house-rule-category/types/houseRuleCategoryMap.entity"
 import houseRuleCategoryRepository from "./houseRuleCategoryMap.repository"
-import BadRequestError from "backend/src/errors/BadRequestError"
-import NotFoundError from "backend/src/errors/NotFoundError"
+import BadRequestError from "@/errors/BadRequestError"
+import NotFoundError from "@/errors/NotFoundError"
 
 class HouseRuleCategoryMapService {
 	async create(
@@ -23,12 +23,6 @@ class HouseRuleCategoryMapService {
 
 			return HouseRuleCategoryMapMapper.toDto(houseRuleCategory)
 		})
-	}
-
-	async getById(houseRuleId: number) {
-		return (await houseRuleCategoryRepository.getById(houseRuleId)).map(
-			(o) => HouseRuleCategoryMapMapper.toDto(o),
-		)
 	}
 
 	async overrideCategory(

@@ -13,6 +13,7 @@ import sectionUserRouter from "./modules/section-user/sectionUser.routes"
 import sectionRouter from "./modules/section/section.routes"
 import sectionEventRouter from "./modules/section-event/sectionEvent.routes"
 import sectionEventAssigneeRouter from "./modules/section-event-assignee/sectionEventAssignee.routes"
+import houseRuleCategoryRouter from "./modules/house-rule/houseRule.routes"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
@@ -71,7 +72,7 @@ app.use("/section_event", sectionEventRouter)
 app.use("/section_event_assignee", sectionEventAssigneeRouter)
 app.use("/section_user", sectionUserRouter)
 app.use("/house_rule", houseRuleRouter)
-app.use("/house_rule_category")
+app.use("/house_rule_category", houseRuleCategoryRouter)
 
 app.use(ErrorHandler.handle)
 
