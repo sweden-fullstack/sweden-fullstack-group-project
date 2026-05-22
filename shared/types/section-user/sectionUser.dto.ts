@@ -16,6 +16,9 @@ type SectionUserDto = {
 	stayPeriodStart: Date
 	stayPeriodEnd: Date
 	profilePictureUrl: string
+
+	// Must be manually added
+	interests?: string[]
 }
 
 export default SectionUserDto

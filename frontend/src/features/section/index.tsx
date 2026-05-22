@@ -1,49 +1,30 @@
-import SectionApi, { type SectionDetails } from "@/api/section"
 import AppShell from "@/components/AppShell"
 import SectionEventCalendar from "@/features/section/components/SectionEventCalendar"
 import SectionResidents from "@/features/section/components/SectionResidents"
-import useSectionCalendarStore from "@/features/section/stores/sectionCalendarStore"
 import { formatTimeRange } from "@/features/section/utils/formatTimes"
 import { pickNearestSectionOnlyEvent } from "@/features/section/utils/pickNearestSectionOnlyEvent"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import { Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 import SectionUserApi from "@/api/sectionUser"
+import SectionApi from "@/api/section"
+import SectionDto from "@/shared/types/section/section.dto"
 
 export default function SectionPage() {
-	const [section, setSection] = useState<SectionDetails | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [currentUser, setCurrentUser] = useState<SectionUserDto | null>(null)
-
-	const { events, init, create, update, remove } = useSectionCalendarStore()
-
-	useEffect(() => {
-		async function loadSection() {
-			// Don't load until the user finishes loading!
-			if (currentUser === null) {
-				return
-			}
-
-			try {
-				const data = await SectionApi.getCurrentSection()
-				setSection(data)
-				init(data.id, data.calendarEvents)
-			} catch {
-				setError("Could not load section information.")
-			} finally {
-				setIsLoading(false)
-			}
-		}
-
-		void loadSection()
-	}, [init, currentUser])
+	const [section, setSection] = useState<SectionDto | null>(null)
+	// const { events, init, create, update, remove } = useSectionCalendarStore()
 
 	useEffect(() => {
 		void (async () => {
 			try {
 				const self = await SectionUserApi.getSelfAuthenticated()
 				setCurrentUser(self)
+
+				const section = await SectionApi.getById()
+				setSection(section)
 			} catch {
 				setError("Could not load user info")
 			} finally {
@@ -53,8 +34,8 @@ export default function SectionPage() {
 	}, [])
 
 	const spotlight = useMemo(
-		() => pickNearestSectionOnlyEvent(events),
-		[events],
+		() => pickNearestSectionOnlyEvent(section.events),
+		[section.events],
 	)
 
 	const spotlightIsPast = spotlight
@@ -82,12 +63,12 @@ export default function SectionPage() {
 							{section.name}
 						</Heading>
 						<Text color="#506057">
-							{section.building} · {section.description}
+							{section.buildingName} · {section.description}
 						</Text>
 					</Box>
 
 					<SectionResidents
-						buildingName={section.building}
+						buildingName={section.buildingName}
 						defaultSectionId={currentUser.sectionId}
 						currentUserId={currentUser.userId}
 					/>
@@ -134,13 +115,7 @@ export default function SectionPage() {
 						<Heading size="md" mb={4}>
 							Section calendar
 						</Heading>
-						<SectionEventCalendar
-							sectionId={section.id}
-							events={events}
-							onCreate={(payload) => create(section.id, payload)}
-							onUpdate={update}
-							onRemove={remove}
-						/>
+						<SectionEventCalendar sectionId={section.id} />
 					</Box>
 				</VStack>
 			) : null}

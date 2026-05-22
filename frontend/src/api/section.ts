@@ -1,8 +1,8 @@
 import axiosInstance from "@/config/axios"
-import type {
-	SectionEventDto,
+import SectionEventDto, {
 	SectionEventCreate,
-} from "../features/section/types"
+} from "@/shared/types/section-event/sectionEvent.dto"
+import SectionDto from "@/shared/types/section/section.dto"
 
 export type ResidentProfile = {
 	id: number
@@ -47,8 +47,6 @@ export function normalizeSectionEvent(raw: SectionEventRaw): SectionEventDto {
 				: new Date(raw.startTime),
 		endTime:
 			raw.endTime instanceof Date ? raw.endTime : new Date(raw.endTime),
-		visibility:
-			raw.visibility ?? (raw.sectionId != null ? "section" : "building"),
 	}
 }
 
@@ -253,6 +251,16 @@ const section: SectionDetails = {
 
 class SectionApi {
 	path = "section"
+
+	/**
+	 * @param sectionId if undefined gets from jwt token
+	 */
+	async getById(sectionId?: number): Promise<SectionDto> {
+		const { data } = await axiosInstance.get<SectionDto>(
+			`${this.path}/${sectionId ?? ""}`,
+		)
+		return data
+	}
 
 	async getCurrentSection(): Promise<SectionDetails> {
 		// Later: return axios.get<SectionDetails>("/api/sections/me").then((res) => res.data)
