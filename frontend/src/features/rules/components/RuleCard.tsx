@@ -47,16 +47,25 @@ export default function RuleCard({
 					gap={2}
 					flexWrap="wrap"
 				>
-					<Text
-						fontSize="sm"
-						color="#4b6177"
-						flex="1"
-						{...wrapTextProps}
-					>
-						{rule.categoryMap
-							.map((category) => category.name)
-							.join(", ")}
-					</Text>
+					{rule.categoryMap.length > 0 ? (
+						<HStack gap={2} flexWrap="wrap" flex="1" minW={0}>
+							{rule.categoryMap.map((category) => (
+								<Text
+									key={category.id}
+									fontSize="sm"
+									bg="#e8f3ff"
+									color="#274d72"
+									borderRadius="999px"
+									px={3}
+									py={1}
+								>
+									{category.name}
+								</Text>
+							))}
+						</HStack>
+					) : (
+						<Box flex="1" />
+					)}
 					{canManage ? (
 						<HStack gap={1} flexShrink={0} alignSelf="flex-start">
 							<Button

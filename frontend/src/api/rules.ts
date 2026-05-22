@@ -11,10 +11,13 @@ const categories: HouseRuleCategoryDto[] = [
 	{ id: 4, name: "Cleaning" },
 ]
 
-function resolveCategoryNames(categoryIds: number[]): string[] {
+function resolveCategoryMap(categoryIds: number[]): HouseRuleCategoryDto[] {
 	return categoryIds
-		.map((id) => categories.find((c) => c.id === id)?.name)
-		.filter((name): name is string => Boolean(name))
+		.map((id) => categories.find((c) => c.id === id))
+		.filter((category): category is HouseRuleCategoryDto =>
+			Boolean(category),
+		)
+		.map((category) => ({ ...category }))
 }
 
 let rules: HouseRuleDto[] = [
@@ -25,8 +28,7 @@ let rules: HouseRuleDto[] = [
 		body: "Smoking is not allowed indoors.",
 		sortOrder: 1,
 		updatedAt: "2026-05-01",
-		categoryIds: [1, 3],
-		categoryNames: ["General", "Safety"],
+		categoryMap: resolveCategoryMap([1, 3]),
 	},
 	{
 		id: 2,
@@ -35,8 +37,7 @@ let rules: HouseRuleDto[] = [
 		body: "Keep noise down at night.",
 		sortOrder: 2,
 		updatedAt: "2026-05-01",
-		categoryIds: [2],
-		categoryNames: ["Noise"],
+		categoryMap: resolveCategoryMap([2]),
 	},
 	{
 		id: 3,
@@ -45,8 +46,7 @@ let rules: HouseRuleDto[] = [
 		body: "Leave the kitchen as you found it.",
 		sortOrder: 3,
 		updatedAt: "2026-05-01",
-		categoryIds: [4],
-		categoryNames: ["Cleaning"],
+		categoryMap: resolveCategoryMap([4]),
 	},
 	{
 		id: 4,
@@ -55,8 +55,7 @@ let rules: HouseRuleDto[] = [
 		body: "Use the correct bins for recycling.",
 		sortOrder: 1,
 		updatedAt: "2026-05-01",
-		categoryIds: [1],
-		categoryNames: ["General"],
+		categoryMap: resolveCategoryMap([1]),
 	},
 ]
 
@@ -77,16 +76,24 @@ class RulesApi {
 		return rules
 			.filter((rule) => rule.buildingId === buildingId)
 			.sort((a, b) => a.sortOrder - b.sortOrder)
-			.map((rule) => ({ categoryMap: [], ...rule }))
+			.map((rule) => ({
+				...rule,
+				categoryMap: rule.categoryMap.map((category) => ({
+					...category,
+				})),
+			}))
 	}
 
 	async create(payload: HouseRuleCreate) {
 		// Later: return axios.post<HouseRuleDto>("/house-rule", payload).then((res) => res.data)
 		const rule: HouseRuleDto = {
 			id: nextRuleId++,
-			...payload,
+			buildingId: payload.buildingId,
+			title: payload.title,
+			body: payload.body,
+			sortOrder: payload.sortOrder,
 			updatedAt: todayIsoDate(),
-			categoryNames: resolveCategoryNames(payload.categoryIds),
+			categoryMap: resolveCategoryMap(payload.categoryIds),
 		}
 		rules.push(rule)
 		return { ...rule }
@@ -100,9 +107,11 @@ class RulesApi {
 		}
 		const updated: HouseRuleDto = {
 			...rules[index],
-			...payload,
+			title: payload.title,
+			body: payload.body,
+			sortOrder: payload.sortOrder,
 			updatedAt: todayIsoDate(),
-			categoryNames: resolveCategoryNames(payload.categoryIds),
+			categoryMap: resolveCategoryMap(payload.categoryIds),
 		}
 		rules[index] = updated
 		return { ...updated }
