@@ -62,42 +62,36 @@ export default function SectionPage() {
 			) : error ? (
 				<Text color="#9b2c2c">{error}</Text>
 			) : section ? (
-				<VStack align="stretch" gap={8}>
+				<VStack align="stretch" gap={6}>
 					<Box
-						bg="#f8fbff"
-						border="1px solid #deefff"
+						bg="linear-gradient(180deg, #f7fbff 0%, #edf5ff 100%)"
+						border="1px solid #d7e7fb"
 						borderRadius="22px"
 						p={5}
 					>
-						<Heading size="md" mb={2}>
+						<Heading size="sm" mb={2}>
 							{section.name}
 						</Heading>
-						<Text color="#506057">
+						<Text color="#3c5975">
 							{section.building} · {section.description}
 						</Text>
 					</Box>
 
-					<SectionResidents
-						buildingName={section.building}
-						defaultSectionId={userSectionId}
-						currentUserId={currentUserId}
-					/>
-
-					<Box>
-						<Heading size="md" mb={4}>
+					<Box
+						bg="linear-gradient(180deg, #f7fbff 0%, #edf5ff 100%)"
+						border="1px solid #d7e7fb"
+						borderRadius="22px"
+						p={5}
+					>
+						<Heading size="sm" mb={2}>
 							Latest section-only event
 						</Heading>
 						{spotlight ? (
-							<Box
-								bg="white"
-								border="1px solid #dce5df"
-								borderRadius="22px"
-								p={6}
-							>
-								<Heading size="md" mb={2}>
+							<VStack align="stretch" gap={1}>
+								<Text color="#234567" fontWeight="semibold">
 									{spotlight.title}
-								</Heading>
-								<Text color="#718176" fontSize="sm" mb={2}>
+								</Text>
+								<Text color="#3c5975" fontSize="sm">
 									{formatTimeRange(
 										new Date(spotlight.startTime),
 										new Date(spotlight.endTime),
@@ -109,30 +103,52 @@ export default function SectionPage() {
 									· this section only
 								</Text>
 								{spotlight.description ? (
-									<Text color="#506057">
+									<Text color="#4b6177">
 										{spotlight.description}
 									</Text>
 								) : null}
-							</Box>
+							</VStack>
 						) : (
-							<Text color="#718176">
+							<Text color="#4b6177">
 								No section-only events on the calendar yet.
 							</Text>
 						)}
 					</Box>
 
-					<Box>
-						<Heading size="md" mb={4}>
-							Section calendar
-						</Heading>
-						<SectionEventCalendar
-							sectionId={section.id}
-							events={events}
-							onCreate={(payload) => create(section.id, payload)}
-							onUpdate={update}
-							onRemove={remove}
-						/>
-					</Box>
+					<VStack
+						align="stretch"
+						gap={5}
+						bg="linear-gradient(180deg, #f7fbff 0%, #f0f6ff 100%)"
+						border="1px solid #dce8f6"
+						borderRadius="24px"
+						p={{ base: 3, md: 4 }}
+					>
+						<Box
+							bg="rgba(255,255,255,0.92)"
+							border="1px solid #dce8f6"
+							borderRadius="22px"
+							p={5}
+							boxShadow="0 8px 24px rgba(43, 107, 176, 0.08)"
+						>
+							<SectionResidents
+								buildingName={section.building}
+								defaultSectionId={userSectionId}
+								currentUserId={currentUserId}
+							/>
+						</Box>
+
+						<Box w="full">
+							<SectionEventCalendar
+								sectionId={section.id}
+								events={events}
+								onCreate={(payload) =>
+									create(section.id, payload)
+								}
+								onUpdate={update}
+								onRemove={remove}
+							/>
+						</Box>
+					</VStack>
 				</VStack>
 			) : null}
 		</AppShell>

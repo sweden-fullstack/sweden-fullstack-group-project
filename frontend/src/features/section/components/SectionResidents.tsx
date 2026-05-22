@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react"
 const fieldStyle = {
 	width: "100%",
 	borderRadius: "12px",
-	border: "1px solid #cad6cf",
+	border: "1px solid #d2deea",
 	padding: "8px 12px",
 	fontSize: "1rem",
 	background: "white",
@@ -62,13 +62,16 @@ export default function SectionResidents({
 
 	return (
 		<Box>
-			<Heading size="md" mb={4}>
+			<Heading size="sm" mb={2}>
 				Student residents
 			</Heading>
+			<Text color="#506057" mb={4}>
+				Residents in your building, filtered by section or name.
+			</Text>
 
 			<VStack align="stretch" gap={3} mb={4}>
 				<Box>
-					<Text fontSize="sm" color="#718176" mb={1}>
+					<Text fontSize="sm" color="#4b6177" mb={1}>
 						Section
 					</Text>
 					<select
@@ -88,7 +91,7 @@ export default function SectionResidents({
 				</Box>
 
 				<Box>
-					<Text fontSize="sm" color="#718176" mb={1}>
+					<Text fontSize="sm" color="#4b6177" mb={1}>
 						Search by name ({buildingName})
 					</Text>
 					<Input
@@ -96,13 +99,13 @@ export default function SectionResidents({
 						value={nameQuery}
 						onChange={(e) => setNameQuery(e.target.value)}
 						borderRadius="12px"
-						border="1px solid #cad6cf"
+						border="1px solid #d2deea"
 						bg="white"
 					/>
 				</Box>
 			</VStack>
 
-			<Text fontSize="sm" color="#718176" mb={3}>
+			<Text fontSize="sm" color="#4b6177" mb={3}>
 				{isSearching
 					? `${displayedResidents.length} match${displayedResidents.length === 1 ? "" : "es"} in ${buildingName}`
 					: selectedSection
@@ -111,7 +114,7 @@ export default function SectionResidents({
 			</Text>
 
 			{displayedResidents.length === 0 ? (
-				<Text color="#718176">No residents found.</Text>
+				<Text color="#4b6177">No residents found.</Text>
 			) : (
 				<Grid
 					templateColumns={{

@@ -40,14 +40,17 @@ export default function CalendarHeader({
 				<HStack flexWrap="wrap" gap={2} align="center">
 					<Button
 						size="sm"
-						variant="ghost"
+						bg="white"
+						color="#123a5f"
+						border="1px solid"
+						borderColor="#d2deea"
+						fontWeight="normal"
 						minW="8"
 						px={2}
-						color="#506057"
 						fontSize="lg"
 						lineHeight="1"
-						_hover={{ bg: "transparent", color: "#506057" }}
-						_active={{ bg: "transparent" }}
+						_hover={{ bg: "white", borderColor: "#d2deea" }}
+						_active={{ bg: "white", borderColor: "#d2deea" }}
 						onClick={onPrev}
 					>
 						‹
@@ -56,38 +59,48 @@ export default function CalendarHeader({
 						size="sm"
 						bg="#d8ebff"
 						color="#123a5f"
-						border="1px solid #a9cff5"
-						_hover={{ bg: "#c8e2ff" }}
+						border="1px solid"
+						borderColor="#a9cff5"
+						fontWeight="normal"
+						_hover={{ bg: "#d8ebff", borderColor: "#a9cff5" }}
+						_active={{ bg: "#d8ebff", borderColor: "#a9cff5" }}
 						onClick={onToday}
 					>
 						Today
 					</Button>
 					<Button
 						size="sm"
-						variant="ghost"
+						bg="white"
+						color="#123a5f"
+						border="1px solid"
+						borderColor="#d2deea"
+						fontWeight="normal"
 						minW="8"
 						px={2}
-						color="#506057"
 						fontSize="lg"
 						lineHeight="1"
-						_hover={{ bg: "transparent", color: "#506057" }}
-						_active={{ bg: "transparent" }}
+						_hover={{ bg: "white", borderColor: "#d2deea" }}
+						_active={{ bg: "white", borderColor: "#d2deea" }}
 						onClick={onNext}
 					>
 						›
 					</Button>
 					<Button
 						size="sm"
-						bg="#90d5ff"
-						color="#163447"
-						_hover={{ bg: "#78c9fb" }}
+						bg="#d8ebff"
+						color="#123a5f"
+						border="1px solid"
+						borderColor="#a9cff5"
+						fontWeight="normal"
+						_hover={{ bg: "#d8ebff", borderColor: "#a9cff5" }}
+						_active={{ bg: "#d8ebff", borderColor: "#a9cff5" }}
 						onClick={onAdd}
 					>
 						+ Add event
 					</Button>
 				</HStack>
 			</HStack>
-			<Text fontSize="sm" color="#506057">
+			<Text fontSize="sm" color="#4b6177">
 				{formatDayRangeInMonth(month)}
 			</Text>
 			<HStack gap={2} flexWrap="wrap">
@@ -104,17 +117,17 @@ export default function CalendarHeader({
 				<CalendarFilterButton
 					active={filter === "section"}
 					onClick={() => onFilter("section")}
-					label="This section"
+					label="My section"
 				/>
 			</HStack>
-			<HStack gap={3} flexWrap="wrap" fontSize="xs" color="#506057">
+			<HStack gap={3} flexWrap="wrap" fontSize="xs" color="#4b6177">
 				<HStack gap={1.5} align="center">
 					<Box w="14px" h="14px" borderRadius="4px" bg="#3b82f6" />
 					<Text>Building-wide</Text>
 				</HStack>
 				<HStack gap={1.5} align="center">
 					<Box w="14px" h="14px" borderRadius="4px" bg="#10b981" />
-					<Text>This section only</Text>
+					<Text>My section only</Text>
 				</HStack>
 			</HStack>
 		</VStack>

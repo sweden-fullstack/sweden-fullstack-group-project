@@ -5,7 +5,7 @@ export const VISIBILITY_OPTIONS: {
 	label: string
 }[] = [
 	{ value: "building", label: "Everyone in the building" },
-	{ value: "section", label: "Only this section" },
+	{ value: "section", label: "Only my section" },
 ]
 
 export function applyVisibilityToSectionId(

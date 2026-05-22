@@ -90,11 +90,11 @@ export default function SectionEventCalendar({
 	return (
 		<>
 			<Box
-				bg="linear-gradient(180deg, #f4f9ff 0%, #eef6f1 100%)"
+				bg="linear-gradient(180deg, #f4f9ff 0%, #e8f2ff 100%)"
 				border="1px solid #cfe1f7"
 				borderRadius="22px"
 				p={{ base: 4, md: 5 }}
-				boxShadow="0 10px 28px rgba(83, 130, 182, 0.12)"
+				boxShadow="0 10px 28px rgba(83, 130, 182, 0.14)"
 			>
 				<VStack align="stretch" gap={4}>
 					<CalendarHeader
@@ -113,7 +113,7 @@ export default function SectionEventCalendar({
 								key={d}
 								fontSize="xs"
 								fontWeight="semibold"
-								color="#5d6d63"
+								color="#6684a3"
 								textAlign="center"
 								py={1}
 							>
@@ -151,10 +151,10 @@ export default function SectionEventCalendar({
 											minH="108px"
 											bg={
 												cell.inCurrentMonth
-													? "rgba(255,255,255,0.88)"
-													: "rgba(255,255,255,0.35)"
+													? "#f9fcff"
+													: "rgba(249, 252, 255, 0.45)"
 											}
-											border="1px solid rgba(30, 42, 36, 0.08)"
+											border="1px solid #d5e3f3"
 											borderRadius="14px"
 											p={1.5}
 										>
@@ -165,12 +165,12 @@ export default function SectionEventCalendar({
 												}
 												color={
 													cell.inCurrentMonth
-														? "#1e2a24"
-														: "#9aa89f"
+														? "#3d6288"
+														: "#b4c3d2"
 												}
 												bg={
 													isToday
-														? "#90d5ff"
+														? "#dcecff"
 														: "transparent"
 												}
 												borderRadius="full"

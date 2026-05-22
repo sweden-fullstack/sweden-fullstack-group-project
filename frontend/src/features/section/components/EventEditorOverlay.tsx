@@ -41,7 +41,7 @@ type OverlayProps = Omit<FormProps, "draft"> & {
 const fieldStyle = {
 	width: "100%",
 	borderRadius: "12px",
-	border: "1px solid #cad6cf",
+	border: "1px solid #d2deea",
 	padding: "8px 12px",
 	fontSize: "1rem",
 	background: "white",
@@ -122,13 +122,13 @@ function EventEditorForm({
 
 	return (
 		<Box
-			bg="white"
+			bg="rgba(255,255,255,0.98)"
 			borderRadius="22px"
-			border="1px solid #dce5df"
+			border="1px solid #dce8f6"
 			p={6}
 			maxW="520px"
 			w="full"
-			boxShadow="0 24px 60px rgba(54, 74, 62, 0.18)"
+			boxShadow="0 24px 60px rgba(43, 107, 176, 0.18)"
 			onClick={(e) => e.stopPropagation()}
 		>
 			<Heading size="md" mb={4}>
@@ -136,7 +136,7 @@ function EventEditorForm({
 			</Heading>
 			<VStack align="stretch" gap={3}>
 				<Box>
-					<Text fontSize="sm" color="#506057" mb={1}>
+					<Text fontSize="sm" color="#4b6177" mb={1}>
 						Title
 					</Text>
 					<Input
@@ -146,7 +146,7 @@ function EventEditorForm({
 					/>
 				</Box>
 				<Box>
-					<Text fontSize="sm" color="#506057" mb={1}>
+					<Text fontSize="sm" color="#4b6177" mb={1}>
 						Who can see it
 					</Text>
 					<select
@@ -167,7 +167,7 @@ function EventEditorForm({
 				</Box>
 				<HStack gap={4} flexWrap="wrap" align="flex-start">
 					<Box flex="1" minW="200px">
-						<Text fontSize="sm" color="#506057" mb={1}>
+						<Text fontSize="sm" color="#4b6177" mb={1}>
 							Starts
 						</Text>
 						<Input
@@ -187,7 +187,7 @@ function EventEditorForm({
 						/>
 					</Box>
 					<Box flex="1" minW="200px">
-						<Text fontSize="sm" color="#506057" mb={1}>
+						<Text fontSize="sm" color="#4b6177" mb={1}>
 							Ends
 						</Text>
 						<Input
@@ -206,7 +206,7 @@ function EventEditorForm({
 					</Box>
 				</HStack>
 				<Box>
-					<Text fontSize="sm" color="#506057" mb={1}>
+					<Text fontSize="sm" color="#4b6177" mb={1}>
 						Details
 					</Text>
 					<textarea
@@ -231,10 +231,13 @@ function EventEditorForm({
 				<HStack justify="space-between" flexWrap="wrap" gap={3} pt={2}>
 					{editing ? (
 						<Button
-							variant="outline"
-							borderColor="#d9a3a3"
-							color="#7a2323"
-							_hover={{ bg: "#fff5f5" }}
+							bg="#ffecee"
+							color="#8a2d3b"
+							border="1px solid"
+							borderColor="#f5c2c7"
+							fontWeight="normal"
+							_hover={{ bg: "#ffecee", borderColor: "#f5c2c7" }}
+							_active={{ bg: "#ffecee", borderColor: "#f5c2c7" }}
 							onClick={() => {
 								onDelete(draft.id)
 								onClose()
@@ -246,13 +249,24 @@ function EventEditorForm({
 						<Box />
 					)}
 					<HStack gap={2}>
-						<Button variant="outline" onClick={onClose}>
+						<Button
+							bg="white"
+							color="#123a5f"
+							border="1px solid"
+							borderColor="#d2deea"
+							fontWeight="normal"
+							_hover={{ bg: "white", borderColor: "#d2deea" }}
+							_active={{ bg: "white", borderColor: "#d2deea" }}
+							onClick={onClose}
+						>
 							Cancel
 						</Button>
 						<Button
-							bg="#90d5ff"
-							color="#163447"
-							_hover={{ bg: "#78c9fb" }}
+							bg="#d8ebff"
+							color="#123a5f"
+							fontWeight="normal"
+							_hover={{ bg: "#d8ebff" }}
+							_active={{ bg: "#d8ebff" }}
 							onClick={handleSave}
 						>
 							Save

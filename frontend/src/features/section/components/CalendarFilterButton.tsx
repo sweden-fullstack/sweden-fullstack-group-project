@@ -18,7 +18,15 @@ export default function CalendarFilterButton({
 			color="#123a5f"
 			border="1px solid"
 			borderColor={active ? "#a9cff5" : "#d2deea"}
-			_hover={{ bg: active ? "#d8ebff" : "#f4f9ff" }}
+			fontWeight="normal"
+			_hover={{
+				bg: active ? "#d8ebff" : "white",
+				borderColor: active ? "#a9cff5" : "#d2deea",
+			}}
+			_active={{
+				bg: active ? "#d8ebff" : "white",
+				borderColor: active ? "#a9cff5" : "#d2deea",
+			}}
 			onClick={onClick}
 		>
 			{label}
