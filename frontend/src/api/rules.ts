@@ -77,7 +77,7 @@ class RulesApi {
 		return rules
 			.filter((rule) => rule.buildingId === buildingId)
 			.sort((a, b) => a.sortOrder - b.sortOrder)
-			.map((rule) => ({ ...rule }))
+			.map((rule) => ({ categoryMap: [], ...rule }))
 	}
 
 	async create(payload: HouseRuleCreate) {
