@@ -3,7 +3,7 @@ type HouseRuleCreate = {
 	title: string
 	body: string
 	sortOrder: number
-	categoryNames: string[]
+	categoryIds: number[]
 }
 
 export default HouseRuleCreate

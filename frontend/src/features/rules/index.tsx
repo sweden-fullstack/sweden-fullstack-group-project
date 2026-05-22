@@ -1,6 +1,7 @@
 import RulesApi from "@/api/rules"
 import AppShell from "@/components/AppShell"
 import RuleCard from "@/features/rules/components/RuleCard"
+import HouseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
 import RuleEditorOverlay, {
 	type RuleCreateDraft,
 	type RuleDraft,
@@ -20,6 +21,7 @@ export default function RulesPage() {
 		undefined,
 	)
 	const [rules, setRules] = useState<HouseRuleDto[]>([])
+	const [categories, setCategories] = useState<HouseRuleCategoryDto[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [editorDraft, setEditorDraft] = useState<RuleDraft | null>(null)
@@ -38,9 +40,12 @@ export default function RulesPage() {
 				const self = await getUserSelf()
 				setCurrentUser(self)
 				const resolvedBuildingId = self?.buildingId ?? 1
-				const rulesData =
-					await RulesApi.getByBuilding(resolvedBuildingId)
+				const [rulesData, categoriesData] = await Promise.all([
+					RulesApi.getByBuilding(resolvedBuildingId),
+					RulesApi.getCategories(),
+				])
 				setRules(rulesData)
+				setCategories(categoriesData)
 			} catch {
 				setError("Could not load house rules.")
 			} finally {
@@ -59,7 +64,7 @@ export default function RulesPage() {
 			title: "",
 			body: "",
 			sortOrder: nextSortOrder || 1,
-			categoryNames: [],
+			categoryIds: [],
 		}
 		setEditorDraft(draft)
 	}
@@ -160,6 +165,7 @@ export default function RulesPage() {
 				<RuleEditorOverlay
 					open={editorDraft !== null}
 					draft={editorDraft}
+					categories={categories}
 					onClose={closeEditor}
 					onCreate={handleCreate}
 					onUpdate={handleUpdate}

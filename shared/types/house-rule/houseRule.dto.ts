@@ -1,3 +1,5 @@
+import houseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
+
 type HouseRuleDto = {
 	id: number
 	buildingId: number
@@ -5,7 +7,7 @@ type HouseRuleDto = {
 	body: string
 	sortOrder: number
 	updatedAt: string
-	categoryNames: string[]
+	categoryMap: houseRuleCategoryDto[]
 }
 
 export default HouseRuleDto

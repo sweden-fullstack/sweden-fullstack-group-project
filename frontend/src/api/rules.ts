@@ -2,6 +2,21 @@ import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
 import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
 import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
 
+import HouseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
+
+const categories: HouseRuleCategoryDto[] = [
+	{ id: 1, name: "General" },
+	{ id: 2, name: "Noise" },
+	{ id: 3, name: "Safety" },
+	{ id: 4, name: "Cleaning" },
+]
+
+function resolveCategoryNames(categoryIds: number[]): string[] {
+	return categoryIds
+		.map((id) => categories.find((c) => c.id === id)?.name)
+		.filter((name): name is string => Boolean(name))
+}
+
 let rules: HouseRuleDto[] = [
 	{
 		id: 1,
@@ -10,6 +25,7 @@ let rules: HouseRuleDto[] = [
 		body: "Smoking is not allowed indoors.",
 		sortOrder: 1,
 		updatedAt: "2026-05-01",
+		categoryIds: [1, 3],
 		categoryNames: ["General", "Safety"],
 	},
 	{
@@ -19,6 +35,7 @@ let rules: HouseRuleDto[] = [
 		body: "Keep noise down at night.",
 		sortOrder: 2,
 		updatedAt: "2026-05-01",
+		categoryIds: [2],
 		categoryNames: ["Noise"],
 	},
 	{
@@ -28,6 +45,7 @@ let rules: HouseRuleDto[] = [
 		body: "Leave the kitchen as you found it.",
 		sortOrder: 3,
 		updatedAt: "2026-05-01",
+		categoryIds: [4],
 		categoryNames: ["Cleaning"],
 	},
 	{
@@ -37,6 +55,7 @@ let rules: HouseRuleDto[] = [
 		body: "Use the correct bins for recycling.",
 		sortOrder: 1,
 		updatedAt: "2026-05-01",
+		categoryIds: [1],
 		categoryNames: ["General"],
 	},
 ]
@@ -48,6 +67,11 @@ function todayIsoDate(): string {
 }
 
 class RulesApi {
+	async getCategories() {
+		// Later: return axios.get<HouseRuleCategoryDto[]>("/house-rule/categories").then((res) => res.data)
+		return categories.map((c) => ({ ...c }))
+	}
+
 	async getByBuilding(buildingId: number) {
 		// Later: return axios.get<HouseRuleDto[]>(`/house-rule?buildingId=${buildingId}`).then((res) => res.data)
 		return rules
@@ -62,6 +86,7 @@ class RulesApi {
 			id: nextRuleId++,
 			...payload,
 			updatedAt: todayIsoDate(),
+			categoryNames: resolveCategoryNames(payload.categoryIds),
 		}
 		rules.push(rule)
 		return { ...rule }
@@ -77,6 +102,7 @@ class RulesApi {
 			...rules[index],
 			...payload,
 			updatedAt: todayIsoDate(),
+			categoryNames: resolveCategoryNames(payload.categoryIds),
 		}
 		rules[index] = updated
 		return { ...updated }

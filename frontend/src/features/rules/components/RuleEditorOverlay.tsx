@@ -1,6 +1,7 @@
 import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
 import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
 import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
+import HouseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
 import {
 	Box,
 	Button,
@@ -21,11 +22,12 @@ export type RuleCreateDraft = {
 	title: string
 	body: string
 	sortOrder: number
-	categoryNames: string[]
+	categoryMap: HouseRuleCategoryDto[]
 }
 
 type FormProps = {
 	draft: RuleDraft
+	categories: HouseRuleCategoryDto[]
 	onClose: () => void
 	onCreate: (payload: HouseRuleCreate) => void
 	onUpdate: (id: number, payload: HouseRuleUpdate) => void
@@ -55,19 +57,9 @@ function draftFormKey(draft: RuleDraft) {
 	return isExistingRule(draft) ? `edit-${draft.id}` : "new"
 }
 
-function formatCategories(names: string[]): string {
-	return names.join(", ")
-}
-
-function parseCategories(input: string): string[] {
-	return input
-		.split(",")
-		.map((name) => name.trim())
-		.filter(Boolean)
-}
-
 function RuleEditorForm({
 	draft,
+	categories,
 	onClose,
 	onCreate,
 	onUpdate,
@@ -76,17 +68,22 @@ function RuleEditorForm({
 	const [title, setTitle] = useState(draft.title)
 	const [body, setBody] = useState(draft.body)
 	const [sortOrder, setSortOrder] = useState(draft.sortOrder)
-	const [categoriesInput, setCategoriesInput] = useState(
-		formatCategories(draft.categoryNames),
+	const [categoryIds, setCategoryIds] = useState<number[]>(
+		draft.categoryMap.map((category) => category.id),
 	)
 	const [error, setError] = useState<string | null>(null)
 
 	const editing = isExistingRule(draft)
 
+	function toggleCategory(id: number) {
+		setCategoryIds((prev) =>
+			prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
+		)
+	}
+
 	function handleSave() {
 		const trimmedTitle = title.trim()
 		const trimmedBody = body.trim()
-		const categoryNames = parseCategories(categoriesInput)
 		if (!trimmedTitle) {
 			setError("Add a title.")
 			return
@@ -95,8 +92,8 @@ function RuleEditorForm({
 			setError("Add a description.")
 			return
 		}
-		if (categoryNames.length === 0) {
-			setError("Add at least one category.")
+		if (categoryIds.length === 0) {
+			setError("Select at least one category.")
 			return
 		}
 
@@ -104,7 +101,7 @@ function RuleEditorForm({
 			title: trimmedTitle,
 			body: trimmedBody,
 			sortOrder,
-			categoryNames,
+			categoryIds,
 		}
 
 		if (editing) {
@@ -192,13 +189,27 @@ function RuleEditorForm({
 					<Text fontSize="sm" color="#4b6177" mb={1}>
 						Categories
 					</Text>
-					<Input
-						value={categoriesInput}
-						onChange={(e) => setCategoriesInput(e.target.value)}
-						placeholder="e.g. General, Safety"
-						borderColor="#d5e3f3"
-						_focusVisible={{ borderColor: "#a9cff5" }}
-					/>
+					<VStack align="stretch" gap={2}>
+						{categories.map((category) => (
+							<label
+								key={category.id}
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: "8px",
+									cursor: "pointer",
+									color: "#506057",
+								}}
+							>
+								<input
+									type="checkbox"
+									checked={categoryIds.includes(category.id)}
+									onChange={() => toggleCategory(category.id)}
+								/>
+								{category.name}
+							</label>
+						))}
+					</VStack>
 					<Text fontSize="xs" color="#4b6177" mt={1}>
 						Separate multiple categories with commas.
 					</Text>
@@ -259,6 +270,7 @@ function RuleEditorForm({
 export default function RuleEditorOverlay({
 	open,
 	draft,
+	categories,
 	onClose,
 	onCreate,
 	onUpdate,
@@ -281,6 +293,7 @@ export default function RuleEditorOverlay({
 			<RuleEditorForm
 				key={draftFormKey(draft)}
 				draft={draft}
+				categories={categories}
 				onClose={onClose}
 				onCreate={onCreate}
 				onUpdate={onUpdate}
