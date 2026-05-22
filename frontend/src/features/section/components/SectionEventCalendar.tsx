@@ -13,6 +13,7 @@ import EventDraft from "../types"
 
 type Props = {
 	section: SectionDto
+	refreshSectionData: () => Promise<void>
 }
 
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -43,7 +44,10 @@ function toEditorDraft(event: SectionEventDto): EventDraft {
 	}
 }
 
-export default function SectionEventCalendar({ section }: Props) {
+export default function SectionEventCalendar({
+	section,
+	refreshSectionData,
+}: Props) {
 	const [month, setMonth] = useState(() => new Date())
 	const [filter, setFilter] = useState<CalendarFilter>("all")
 	const [editorOpen, setEditorOpen] = useState(false)
@@ -223,6 +227,7 @@ export default function SectionEventCalendar({ section }: Props) {
 			</Box>
 
 			<EventEditorOverlay
+				refreshSectionData={refreshSectionData}
 				open={editorOpen}
 				draft={draft}
 				section={section}

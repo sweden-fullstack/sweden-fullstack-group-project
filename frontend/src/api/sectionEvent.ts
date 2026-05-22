@@ -17,11 +17,11 @@ class SectionEventApi {
 	}
 
 	async update(
-		id: number,
 		dto: SectionEventUpdate,
+		id?: number,
 	): Promise<SectionEventDto> {
 		const { data } = await axiosInstance.put<SectionEventDto>(
-			`${this.path}/${id}`,
+			`${this.path}/${id ?? ""}`,
 			dto,
 		)
 		return data

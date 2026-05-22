@@ -17,11 +17,15 @@ import SectionEventType from "../../../../../shared/types/section-event/sectionE
 import SectionDto from "@/shared/types/section/section.dto"
 import { SectionEventVisibility } from "@/shared/types/section-event/sectionEvent.dto"
 import EventDraft from "../types"
+import SectionEventApi from "@/api/sectionEvent"
+import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
+import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update"
 
 type FormProps = {
 	draft: EventDraft
 	section: SectionDto
 	// sectionId: number
+	refreshSectionData: () => Promise<void>
 	onCloseDraftEditor: () => void
 	// onCreate: (payload: SectionEventCreate) => void
 	// onUpdate: (event: SectionEventDto) => void
@@ -56,6 +60,7 @@ function EventEditorForm({
 	section,
 	// sectionId,
 	onCloseDraftEditor,
+	refreshSectionData,
 	// onCreate,
 	// onUpdate,
 	// onDelete,
@@ -73,6 +78,20 @@ function EventEditorForm({
 	const [error, setError] = useState<string | null>(null)
 
 	const editing = isExistingEvent()
+
+	async function onDelete(id: number) {
+		await SectionEventApi.delete(id)
+		await refreshSectionData()
+	}
+
+	async function onCreate(dto: SectionEventCreate) {
+		await SectionEventApi.create(dto)
+		await refreshSectionData()
+	}
+
+	async function onUpdate(dto: SectionEventUpdate, sectionId?: number) {
+		await SectionEventApi.update(dto, sectionId)
+	}
 
 	function handleSave() {
 		const trimmed = title.trim()
@@ -99,10 +118,13 @@ function EventEditorForm({
 		}
 
 		if (editing) {
-			onUpdate({
-				...draft,
-				...base,
-			})
+			onUpdate(
+				{
+					...draft,
+					...base,
+				},
+				draft.id,
+			)
 		} else {
 			onCreate({
 				...base,
@@ -267,6 +289,7 @@ export default function EventEditorOverlay({
 	draft,
 	section,
 	onCloseDraftEditor,
+	refreshSectionData,
 }: OverlayProps) {
 	if (!open || !draft) return null
 
@@ -287,6 +310,7 @@ export default function EventEditorOverlay({
 				draft={draft}
 				section={section}
 				onCloseDraftEditor={onCloseDraftEditor}
+				refreshSectionData={refreshSectionData}
 			/>
 		</Box>
 	)

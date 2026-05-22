@@ -16,14 +16,18 @@ export default function SectionPage() {
 	const [currentUser, setCurrentUser] = useState<SectionUserDto | null>(null)
 	const [section, setSection] = useState<SectionDto | null>(null)
 
+	async function refreshSectionData() {
+		const section = await SectionApi.getById()
+		setSection(section)
+	}
+
 	useEffect(() => {
 		void (async () => {
 			try {
 				const self = await SectionUserApi.getSelfAuthenticated()
 				setCurrentUser(self)
 
-				const section = await SectionApi.getById()
-				setSection(section)
+				await refreshSectionData()
 			} catch {
 				setError("Could not load user info")
 			} finally {
@@ -112,7 +116,10 @@ export default function SectionPage() {
 						<Heading size="md" mb={4}>
 							Section calendar
 						</Heading>
-						<SectionEventCalendar section={section!} />
+						<SectionEventCalendar
+							section={section!}
+							refreshSectionData={refreshSectionData}
+						/>
 					</Box>
 				</VStack>
 			) : null}
