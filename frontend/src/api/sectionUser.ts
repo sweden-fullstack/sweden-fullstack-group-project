@@ -1,14 +1,32 @@
-import envConfig from "@/config/env"
+import axiosInstance from "@/config/axios"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
-import axios from "axios"
 
 class SectionUserApi {
-	path = `${envConfig.backend}section_user/`
+	path = `section_user`
+
+	/**
+	 * @param buildingId If undefined gets from token
+	 */
+	async getUsersByBuilding(buildingId?: number) {
+		const { data } = await axiosInstance.get(
+			`${this.path}/building/${buildingId ?? ""}`,
+		)
+
+		return data as SectionUserDto[]
+	}
+
+	async getUsersBySecion(sectionId?: number) {
+		const { data } = await axiosInstance.get(
+			`${this.path}/section/${sectionId ?? ""}`,
+		)
+
+		return data as SectionUserDto[]
+	}
 
 	async getSelfAuthenticated() {
-		const { data } = await axios.get(`${this.path}self_authenticated`, {
-			withCredentials: true,
-		})
+		const { data } = await axiosInstance.get(
+			`${this.path}/self_authenticated`,
+		)
 
 		return data as SectionUserDto
 	}

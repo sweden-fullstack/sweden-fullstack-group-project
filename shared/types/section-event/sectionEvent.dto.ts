@@ -1,13 +1,17 @@
+import SectionUserDto from "../section-user/sectionUser.dto"
+
 type SectionEventDto = {
 	id: number
-	buildingId: number
+	title: string
+	buidingId: number
 	sectionId?: number
-	eventType: string
+	eventTypeId: number
 	startTime: Date
 	endTime: Date
 	title: string
 	description?: string
-	visibility?: SectionEventVisibility
+
+	users?: SectionUserDto[]
 }
 
 export type SectionEventVisibility = "building" | "section"

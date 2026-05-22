@@ -28,6 +28,14 @@ class SectionUserService {
 		)
 	}
 
+	async getAllBySectionEventId(
+		sectionEventId: number,
+	): Promise<SectionUserDto[]> {
+		return (
+			await sectionUserRepository.findAllBySectionEventId(sectionEventId)
+		).map((o) => SectionUserMapper.toDto(o))
+	}
+
 	async getBySectionIdAndUserId(
 		sectionId: number,
 		userId: number,

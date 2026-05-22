@@ -10,6 +10,8 @@ import ErrorHandler from "./middlewares/errorHandler"
 import cookieParser from "cookie-parser"
 import sectionUserRouter from "./modules/section-user/sectionUser.routes"
 import sectionRouter from "./modules/section/section.routes"
+import sectionEventRouter from "./modules/section-event/sectionEvent.routes"
+import sectionEventAssigneeRouter from "./modules/section-event-assignee/sectionEventAssignee.routes"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
@@ -65,6 +67,8 @@ app.use("/announcement", announcementRouter)
 app.use("/auth", authRouter)
 app.use("/section", sectionRouter)
 app.use("/section_user", sectionUserRouter)
+app.use("/section_event", sectionEventRouter)
+app.use("/section_event_assignee", sectionEventAssigneeRouter)
 
 app.use(ErrorHandler.handle)
 

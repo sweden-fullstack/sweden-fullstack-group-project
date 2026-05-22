@@ -2,11 +2,12 @@ import { useEffect, useState } from "react"
 import type { Resident, SelectedDayRow } from "../types"
 import { formatDate } from "@/utils/date"
 import styles from "./SectionDutyTable.module.css"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
 type Props = {
 	selectedDateKey: string
 	selectedDayRows: SelectedDayRow[]
-	residents: Resident[]
+	residents: SectionUserDto[]
 	onAssigneeChange: (row: SelectedDayRow, assigneeIds: number[]) => void
 	onDeleteTask: (dutyName: string) => void
 }
@@ -87,11 +88,11 @@ export default function SectionDutyTable({
 													{residents.map((r) => {
 														const on =
 															row.assigneeIds.includes(
-																r.id,
+																r.userId,
 															)
 														return (
 															<button
-																key={r.id}
+																key={r.userId}
 																type="button"
 																className={
 																	on
@@ -103,12 +104,12 @@ export default function SectionDutyTable({
 																		row,
 																		toggleAssigneeId(
 																			row.assigneeIds,
-																			r.id,
+																			r.userId,
 																		),
 																	)
 																}
 															>
-																{r.name}
+																{`${r.firstName} ${r.lastName}`}
 															</button>
 														)
 													})}

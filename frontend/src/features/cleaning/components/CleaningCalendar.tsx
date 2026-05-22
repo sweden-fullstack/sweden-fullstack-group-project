@@ -21,7 +21,6 @@ export default function CleaningCalendar({
 			bg="linear-gradient(180deg, #f4f9ff 0%, #e8f2ff 100%)"
 			border="1px solid #cfe1f7"
 			borderRadius="22px"
-			p={5}
 			boxShadow="0 10px 28px rgba(83, 130, 182, 0.14)"
 		>
 			<Calendar
