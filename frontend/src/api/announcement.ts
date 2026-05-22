@@ -9,9 +9,9 @@ class AnnouncementApi {
 		return data as AnnouncementDto[]
 	}
 
-	async getByBuildingId(buildingId: number) {
+	async getByBuildingId(buildingId?: number) {
 		const { data } = await axiosInstance.get(
-			`${this.path}building/${buildingId}`,
+			`${this.path}building/${buildingId ?? ""}`,
 		)
 		return data as AnnouncementDto[]
 	}

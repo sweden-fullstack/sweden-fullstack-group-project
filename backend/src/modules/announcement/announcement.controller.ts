@@ -3,6 +3,7 @@ import announcementService from "./announcement.service"
 import AnnouncementUpdate from "@/shared/types/announcement/announcement.update"
 import AnnouncementCreate from "@/shared/types/announcement/announcement.create"
 import typia from "typia"
+import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 
 class AnnouncementController {
 	async getAll(_req: Request, res: Response) {
@@ -18,7 +19,11 @@ class AnnouncementController {
 	}
 
 	async getByBuildingId(req: Request, res: Response) {
-		const buildingId = parseInt(req.params.buildingId as string)
+		const jwt = req.user as JwtPayloadExtended
+		const buildingIdString = req.params.buildingId
+			? req.params.buildingId
+			: jwt.buildingId
+		const buildingId = parseInt(buildingIdString as string)
 
 		const announcements =
 			await announcementService.getByBuildingId(buildingId)
