@@ -1,19 +1,20 @@
 import db from "@/config/database"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
 import SectionEntity from "./types/section.entity"
-import { sectionTableName } from "@/utils/tableNames"
+import { buildingTableName, sectionTableName } from "@/utils/tableNames"
 
 class SectionRepository {
+	selectQueryBase = `SELECT s.*, b.name as building_name FROM ${sectionTableName} s
+      INNER JOIN ${buildingTableName} b ON s.building_id = b.id
+`
 	async findAll(): Promise<SectionEntity[]> {
-		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${sectionTableName}`,
-		)
-		return rows.map((o) => o as unknown as SectionEntity)
+		const [rows] = await db.query<RowDataPacket[]>(this.selectQueryBase)
+		return rows.map((o) => o as SectionEntity)
 	}
 
 	async findById(id: number): Promise<SectionEntity | null> {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${sectionTableName} WHERE id = ?`,
+			`${this.selectQueryBase} WHERE s.id = ?`,
 			[id],
 		)
 

@@ -3,6 +3,7 @@ import SectionService from "./section.service"
 import SectionUpdate from "@/shared/types/section/section.update"
 import SectionCreate from "@/shared/types/section/section.create"
 import typia from "typia"
+import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 
 class SectionController {
 	async getAll(_req: Request, res: Response) {
@@ -11,7 +12,9 @@ class SectionController {
 	}
 
 	async getById(req: Request, res: Response) {
-		const id = parseInt(req.params.id as string)
+		const jwt = req.user as JwtPayloadExtended
+		const idString = req.params.id ? req.params.id : jwt.sectionId
+		const id = parseInt(idString as string)
 
 		const section = await SectionService.getById(id)
 		res.json(section)

@@ -18,6 +18,7 @@ export default class SectionMapper {
 			buildingId: entity.building_id,
 			name: entity.name,
 			description: entity.description,
+			buildingName: entity.building_name!,
 		}
 	}
 }

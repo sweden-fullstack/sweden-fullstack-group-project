@@ -32,11 +32,7 @@ export const useSectionCalendarStore = create<SectionCalendarState>(
 		init(sectionId, seed) {
 			set({
 				sectionId,
-				events: seed.map((e) => ({
-					...e,
-					startTime: new Date(e.startTime),
-					endTime: new Date(e.endTime),
-				})),
+				events: seed,
 			})
 		},
 

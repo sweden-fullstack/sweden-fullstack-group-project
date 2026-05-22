@@ -1,3 +1,4 @@
+import axiosInstance from "@/config/axios"
 import type {
 	SectionEventDto,
 	SectionEventCreate,
@@ -251,6 +252,8 @@ const section: SectionDetails = {
 }
 
 class SectionApi {
+	path = "section"
+
 	async getCurrentSection(): Promise<SectionDetails> {
 		// Later: return axios.get<SectionDetails>("/api/sections/me").then((res) => res.data)
 		return {
