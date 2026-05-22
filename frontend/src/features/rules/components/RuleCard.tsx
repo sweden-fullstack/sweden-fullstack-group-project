@@ -54,7 +54,7 @@ export default function RuleCard({
 						{...wrapTextProps}
 					>
 						{rule.categoryMap
-							.map((category) => category.name)
+							?.map((category) => category.name)
 							.join(", ")}
 					</Text>
 					{canManage ? (

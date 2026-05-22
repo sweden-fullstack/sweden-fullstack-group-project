@@ -64,7 +64,7 @@ export default function RulesPage() {
 			title: "",
 			body: "",
 			sortOrder: nextSortOrder || 1,
-			categoryIds: [],
+			categoryMap: [],
 		}
 		setEditorDraft(draft)
 	}
