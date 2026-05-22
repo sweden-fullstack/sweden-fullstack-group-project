@@ -15,7 +15,9 @@ import {
 import { VISIBILITY_OPTIONS } from "@/features/section/utils/eventVisibility"
 import SectionEventType from "../../../../../shared/types/section-event/sectionEventType"
 import SectionDto from "@/shared/types/section/section.dto"
-import { SectionEventVisibility } from "@/shared/types/section-event/sectionEvent.dto"
+import SectionEventDto, {
+	SectionEventVisibility,
+} from "@/shared/types/section-event/sectionEvent.dto"
 import EventDraft from "../types"
 import SectionEventApi from "@/api/sectionEvent"
 import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
@@ -251,7 +253,7 @@ function EventEditorForm({
 							color="#7a2323"
 							_hover={{ bg: "#fff5f5" }}
 							onClick={() => {
-								onDelete(draft.id)
+								onDelete((draft.dto as SectionEventDto).id)
 								onCloseDraftEditor()
 							}}
 						>
