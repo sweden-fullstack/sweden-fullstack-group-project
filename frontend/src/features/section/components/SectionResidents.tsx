@@ -32,10 +32,6 @@ export default function SectionResidents({
 	const [nameQuery, setNameQuery] = useState("")
 
 	useEffect(() => {
-		setSelectedSectionId(defaultSectionId)
-	}, [defaultSectionId])
-
-	useEffect(() => {
 		void (async () => {
 			const [sectionList, allResidents] = await Promise.all([
 				SectionApi.getSectionsInBuilding(buildingName),
