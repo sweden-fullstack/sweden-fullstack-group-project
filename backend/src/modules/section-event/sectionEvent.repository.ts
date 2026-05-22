@@ -36,6 +36,15 @@ class SectionEventRepository {
 		return result.insertId
 	}
 
+	async update(id: number, section: Partial<SectionEventEntity>) {
+		const [result] = await db.query<ResultSetHeader>(
+			`UPDATE ${sectionEventTableName} SET ? WHERE id = ?`,
+			[section, id],
+		)
+
+		return result.affectedRows > 0
+	}
+
 	async delete(id: number) {
 		const [result] = await db.query<ResultSetHeader>(
 			`DELETE FROM ${sectionEventTableName} WHERE id = ?`,

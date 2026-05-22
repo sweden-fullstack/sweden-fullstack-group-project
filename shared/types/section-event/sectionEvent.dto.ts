@@ -15,6 +15,4 @@ type SectionEventDto = {
 
 export type SectionEventVisibility = "building" | "section"
 
-export type SectionEventCreate = Omit<SectionEventDto, "id">
-
 export default SectionEventDto

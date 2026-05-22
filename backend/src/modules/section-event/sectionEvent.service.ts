@@ -5,6 +5,7 @@ import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create
 import SectionEventMapper from "@/modules/section-event/types/sectionEvent.mapper"
 import SectionEventEntity from "@/modules/section-event/types/sectionEvent.entity"
 import sectionUserService from "../section-user/sectionUser.service"
+import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update"
 
 class SectionEventService {
 	async getAllBySectionId(sectionId: number) {
@@ -43,6 +44,14 @@ class SectionEventService {
 			)
 
 			return await this.getById(eventId)
+		})
+	}
+
+	async update(id: number, section: SectionEventUpdate) {
+		return await Transaction.run(async () => {
+			const entity = SectionEventMapper.toEntity(section)
+			await sectionEventRepository.update(id, entity)
+			return await this.getById(id)
 		})
 	}
 

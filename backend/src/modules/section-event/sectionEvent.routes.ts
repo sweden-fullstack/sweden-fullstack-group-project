@@ -16,6 +16,8 @@ router.post(
 	sectionEventController.create,
 )
 
+router.put("/:id", authHandler(), sectionEventController.update)
+
 router.delete("/:id", authHandler(), sectionEventController.delete)
 
 export default router

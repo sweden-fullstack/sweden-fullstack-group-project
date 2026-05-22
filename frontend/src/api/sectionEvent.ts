@@ -1,0 +1,35 @@
+import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
+import axiosInstance from "@/config/axios"
+import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update"
+
+class SectionApi {
+	path = "section_event"
+	async create(
+		sectionId: number,
+		dto: SectionEventCreate,
+	): Promise<SectionEventDto> {
+		const { data } = await axiosInstance.post<SectionEventDto>(
+			`${this.path}/section_id/${sectionId}`,
+			dto,
+		)
+		return data
+	}
+
+	async update(
+		id: number,
+		dto: SectionEventUpdate,
+	): Promise<SectionEventDto> {
+		const { data } = await axiosInstance.put<SectionEventDto>(
+			`${this.path}/${id}`,
+			dto,
+		)
+		return data
+	}
+
+	async delete(id: number): Promise<void> {
+		await axiosInstance.delete(`${this.path}/${id}`)
+	}
+}
+
+export default new SectionApi()

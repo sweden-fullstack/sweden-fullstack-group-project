@@ -262,53 +262,6 @@ class SectionApi {
 		return data
 	}
 
-	async getCurrentSection(): Promise<SectionDetails> {
-		// Later: return axios.get<SectionDetails>("/api/sections/me").then((res) => res.data)
-		return {
-			...section,
-			calendarEvents: calendarEvents.map((e) => ({
-				...e,
-				startTime: new Date(e.startTime),
-				endTime: new Date(e.endTime),
-			})),
-		}
-	}
-
-	async createEvent(
-		_sectionId: number,
-		payload: SectionEventCreate,
-	): Promise<SectionEventDto> {
-		// Later: return axios.post<SectionCalendarEvent>(`/api/sections/${sectionId}/events`, payload).then((res) => normalizeSectionEvent(res.data))
-		const event = normalizeSectionEvent({
-			...payload,
-			id: nextEventId(),
-		})
-		calendarEvents = [...calendarEvents, event]
-		return {
-			...event,
-			startTime: new Date(event.startTime),
-			endTime: new Date(event.endTime),
-		}
-	}
-
-	async updateEvent(event: SectionEventDto): Promise<SectionEventDto> {
-		// Later: return axios.put(`/api/section-events/${event.id}`, event).then((res) => normalizeSectionEvent(res.data))
-		const normalized = normalizeSectionEvent(event)
-		calendarEvents = calendarEvents.map((e) =>
-			e.id === normalized.id ? normalized : e,
-		)
-		return {
-			...normalized,
-			startTime: new Date(normalized.startTime),
-			endTime: new Date(normalized.endTime),
-		}
-	}
-
-	async deleteEvent(id: number): Promise<void> {
-		// Later: return axios.delete(`/api/section-events/${id}`)
-		calendarEvents = calendarEvents.filter((e) => e.id !== id)
-	}
-
 	async getSectionsInBuilding(building: string) {
 		// Later: return axios.get<SectionSummary[]>(`/api/buildings/${buildingId}/sections`).then((res) => res.data)
 		return sectionsInBuilding.filter((s) => s.building === building)

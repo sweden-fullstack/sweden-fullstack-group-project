@@ -3,6 +3,7 @@ import sectionEventService from "@/modules/section-event/sectionEvent.service"
 import typia from "typia"
 import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
 import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
+import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update"
 
 class SectionEventController {
 	async getAllBySectionId(req: Request, res: Response): Promise<Response> {
@@ -27,6 +28,14 @@ class SectionEventController {
 		)
 
 		return res.status(201).json(sectionEvent)
+	}
+
+	async update(req: Request, res: Response) {
+		const id = parseInt(req.params.id as string)
+		const body = typia.assertEquals<SectionEventUpdate>(req.body)
+
+		const newSection = await sectionEventService.update(id, body)
+		return res.status(200).json(newSection)
 	}
 
 	async delete(req: Request, res: Response) {
