@@ -1,8 +1,8 @@
-import type { ResidentProfile } from "@/api/section"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import { Box, Heading, HStack, Text } from "@chakra-ui/react"
 
 type Props = {
-	resident: ResidentProfile
+	resident: SectionUserDto
 	isYou?: boolean
 }
 
@@ -38,15 +38,17 @@ export default function ResidentCard({ resident, isYou }: Props) {
 				) : null}
 			</HStack>
 			<Heading size="md" mb={2}>
-				{resident.fullName}
+				{`${resident.firstName} ${resident.lastName}`}
 			</Heading>
 			<Text color="#506057" fontSize="sm" mb={1}>
 				{resident.email}
 			</Text>
 			<Text color="#506057">{resident.major}</Text>
-			<Text color="#506057">{resident.stayPeriod}</Text>
+			<Text color="#506057">
+				{resident.stayPeriodEnd as unknown as string}
+			</Text>
 			<HStack mt={3} gap={2} flexWrap="wrap">
-				{resident.interests.map((interest) => (
+				{resident?.interests?.map((interest) => (
 					<Text
 						key={interest}
 						fontSize="sm"

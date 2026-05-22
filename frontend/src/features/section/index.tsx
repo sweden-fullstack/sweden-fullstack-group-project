@@ -67,8 +67,7 @@ export default function SectionPage() {
 
 					<SectionResidents
 						buildingName={section.buildingName}
-						defaultSectionId={currentUser.sectionId}
-						currentUserId={currentUser.userId}
+						currentUser={currentUser}
 					/>
 
 					<Box>

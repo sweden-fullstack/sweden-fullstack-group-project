@@ -6,6 +6,11 @@ const router = Router()
 
 // router.get("/", authHandler(), sectionController.getAll) Depricated
 router.get("/{:id}", authHandler(), sectionController.getById)
+router.get(
+	"/{:buildingId}",
+	authHandler([], undefined, undefined, "params.buildingId?"),
+	sectionController.getAllByBuildingId,
+)
 router.post("/", authHandler(), sectionController.create)
 router.put("/:id", authHandler(), sectionController.update)
 router.delete("/:id", authHandler(), sectionController.delete)

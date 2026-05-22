@@ -12,6 +12,14 @@ class SectionRepository {
 		return rows.map((o) => o as SectionEntity)
 	}
 
+	async findAllByBuildingId(buildingId: number) {
+		const [rows] = await db.query<RowDataPacket[]>(
+			`${this.selectQueryBase} WHERE building_id = ?`,
+			[buildingId],
+		)
+		return rows.map((o) => o as SectionEntity)
+	}
+
 	async findById(id: number): Promise<SectionEntity | null> {
 		const [rows] = await db.query<RowDataPacket[]>(
 			`${this.selectQueryBase} WHERE s.id = ?`,

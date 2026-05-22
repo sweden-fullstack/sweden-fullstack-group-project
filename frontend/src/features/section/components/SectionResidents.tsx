@@ -2,7 +2,9 @@ import SectionApi, {
 	type ResidentProfile,
 	type SectionSummary,
 } from "@/api/section"
+import SectionUserApi from "@/api/sectionUser"
 import ResidentCard from "@/features/section/components/ResidentCard"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import { Box, Grid, Heading, Input, Text, VStack } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 
@@ -17,25 +19,22 @@ const fieldStyle = {
 
 type Props = {
 	buildingName: string
-	defaultSectionId: number
-	currentUserId: number | null
+	currentUser: SectionUserDto
 }
 
-export default function SectionResidents({
-	buildingName,
-	defaultSectionId,
-	currentUserId,
-}: Props) {
+export default function SectionResidents({ buildingName, currentUser }: Props) {
 	const [sections, setSections] = useState<SectionSummary[]>([])
-	const [residents, setResidents] = useState<ResidentProfile[]>([])
-	const [selectedSectionId, setSelectedSectionId] = useState(defaultSectionId)
+	const [residents, setResidents] = useState<SectionUserDto[]>([])
+	const [selectedSectionId, setSelectedSectionId] = useState(
+		currentUser.sectionId,
+	)
 	const [nameQuery, setNameQuery] = useState("")
 
 	useEffect(() => {
 		void (async () => {
 			const [sectionList, allResidents] = await Promise.all([
 				SectionApi.getSectionsInBuilding(buildingName),
-				SectionApi.getBuildingResidents(buildingName),
+				SectionUserApi.getUsersByBuilding(),
 			])
 			setSections(sectionList)
 			setResidents(allResidents)
@@ -47,9 +46,10 @@ export default function SectionResidents({
 	const displayedResidents = useMemo(() => {
 		const query = nameQuery.trim().toLowerCase()
 		if (query) {
-			return residents.filter((r) =>
-				r.fullName.toLowerCase().includes(query),
-			)
+			return residents.filter((r) => {
+				const fullName = `${r.firstName} ${r.lastName}`
+				fullName.toLowerCase().includes(query)
+			})
 		}
 		return residents.filter((r) => r.sectionId === selectedSectionId)
 	}, [residents, nameQuery, selectedSectionId])
@@ -118,9 +118,9 @@ export default function SectionResidents({
 				>
 					{displayedResidents.map((resident) => (
 						<ResidentCard
-							key={resident.id}
+							key={resident.userId}
 							resident={resident}
-							isYou={currentUserId === resident.id}
+							isYou={currentUser.userId === resident.userId}
 						/>
 					))}
 				</Grid>

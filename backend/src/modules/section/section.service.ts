@@ -15,6 +15,12 @@ class SectionService {
 		)
 	}
 
+	async getAllByBuildingId(buildingId: number): Promise<SectionDto[]> {
+		return (await sectionRepository.findAllByBuildingId(buildingId)).map(
+			(o) => SectionMapper.toDto(o),
+		)
+	}
+
 	async getById(id: number): Promise<SectionDto> {
 		return await Transaction.run(async () => {
 			const section = await sectionRepository.findById(id)

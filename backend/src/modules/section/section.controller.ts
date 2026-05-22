@@ -20,6 +20,17 @@ class SectionController {
 		res.json(section)
 	}
 
+	async getAllByBuildingId(req: Request, res: Response) {
+		const jwt = req.user as JwtPayloadExtended
+		const buildingIdString = req.params.buildingId
+			? req.params.buildingId
+			: jwt.buildingId
+		const buildingId = parseInt(buildingIdString as string)
+
+		const section = await SectionService.getAllByBuildingId(buildingId)
+		res.json(section)
+	}
+
 	async create(req: Request, res: Response) {
 		const body = typia.assertEquals<SectionCreate>(req.body)
 		const newSection = await SectionService.create(body)
