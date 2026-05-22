@@ -8,7 +8,9 @@ class UserApi {
 	path = `${envConfig.backend}user/`
 
 	async getAll() {
-		const { data } = await axios.get(this.path)
+		const { data } = await axios.get(this.path, {
+			withCredentials: true,
+		})
 		return data as UserDto[]
 	}
 

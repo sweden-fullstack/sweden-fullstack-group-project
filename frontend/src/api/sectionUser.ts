@@ -12,6 +12,22 @@ class SectionUserApi {
 
 		return data as SectionUserDto
 	}
+
+	async getByBuildingId(buildingId: number) {
+		const { data } = await axios.get(`${this.path}building/${buildingId}`, {
+			withCredentials: true,
+		})
+
+		return data as SectionUserDto[]
+	}
+
+	async getBySectionId(sectionId: number) {
+		const { data } = await axios.get(`${this.path}section/${sectionId}`, {
+			withCredentials: true,
+		})
+
+		return data as SectionUserDto[]
+	}
 }
 
 export default new SectionUserApi()

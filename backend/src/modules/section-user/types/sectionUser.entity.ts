@@ -4,6 +4,7 @@ type SectionUserEntity = {
 	user_id: number
 	section_id: number
 	role_id: number
+	building_id?: number
 
 	// From joins
 	role?: UserRole

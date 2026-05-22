@@ -4,6 +4,7 @@ type SectionUserDto = {
 	userId: number
 	sectionId: number
 	roleId: number
+	buildingId?: number
 
 	// Alternative representation (still join)
 	role?: UserRole
