@@ -1,6 +1,5 @@
 import { Box, Button, Grid, Text, VStack } from "@chakra-ui/react"
 import { useMemo, useState } from "react"
-import useWindowSize from "@/hooks/useWindowSize"
 import { indexEventsByDay } from "@/features/section/utils/eventsByDay"
 import { addMonths, buildMonthGrid } from "./calendar/monthGrid"
 import { sameCalendarDay, toDateKey } from "@/utils/date"
@@ -182,9 +181,6 @@ export default function SectionEventCalendar({
 													<CalendarEventMarker
 														key={ev.id}
 														event={ev}
-														titleMaxChars={
-															titleMaxChars
-														}
 														onSelect={() =>
 															openEditor(
 																toEditorDraft(

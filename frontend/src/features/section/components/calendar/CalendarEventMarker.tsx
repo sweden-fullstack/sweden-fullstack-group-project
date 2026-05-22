@@ -1,24 +1,17 @@
 import { Box, chakra } from "@chakra-ui/react"
 import { formatTimeShort } from "../../utils/formatTimes"
 import { eventPillColors } from "./eventColors"
-import { truncateEventTitle } from "./truncateEventTitle"
 import type { SectionCalendarEvent } from "../../types"
 
 type Props = {
 	event: SectionCalendarEvent
-	titleMaxChars: number | null
 	onSelect: () => void
 }
 
-export default function CalendarEventMarker({
-	event,
-	titleMaxChars,
-	onSelect,
-}: Props) {
+export default function CalendarEventMarker({ event, onSelect }: Props) {
 	const start = new Date(event.startTime)
 	const colors = eventPillColors(event)
 	const label = `${event.title} ${formatTimeShort(start)}`
-	const fullTitle = titleMaxChars === null
 
 	return (
 		<chakra.button
@@ -29,9 +22,9 @@ export default function CalendarEventMarker({
 			boxSizing="border-box"
 			h="auto"
 			minH="22px"
-			py={1.5}
-			px={2}
+			maxH="100px"
 			fontWeight="semibold"
+			overflow="hidden"
 			textAlign="left"
 			display="block"
 			cursor="pointer"
@@ -42,36 +35,25 @@ export default function CalendarEventMarker({
 			borderRadius="8px"
 			lineHeight="1.35"
 			fontSize="11px"
+			py={1.5}
+			px={2}
 			letterSpacing="0.01em"
 			_hover={{ filter: "brightness(0.97)" }}
 			onClick={onSelect}
 		>
+			{event.title}
 			<Box
 				as="span"
 				display="block"
-				w="100%"
+				h="100%"
+				fontSize="10px"
+				fontWeight="normal"
 				overflow="hidden"
-				whiteSpace={fullTitle ? "normal" : "nowrap"}
-				wordBreak={fullTitle ? "break-word" : "normal"}
+				opacity={0.92}
+				mt={0.5}
+				lineHeight="1.3"
 			>
-				{fullTitle ? (
-					<>
-						{event.title}
-						<Box
-							as="span"
-							display="block"
-							fontSize="10px"
-							fontWeight="normal"
-							opacity={0.92}
-							mt={0.5}
-							lineHeight="1.3"
-						>
-							{formatTimeShort(start)}
-						</Box>
-					</>
-				) : (
-					truncateEventTitle(event.title, titleMaxChars)
-				)}
+				{formatTimeShort(start)}
 			</Box>
 		</chakra.button>
 	)

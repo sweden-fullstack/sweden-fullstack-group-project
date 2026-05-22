@@ -49,7 +49,7 @@ export default function SectionPage() {
 	)
 
 	const spotlightIsPast = spotlight
-		? new Date(spotlight.endTime).getTime() < Date.now()
+		? new Date(spotlight.endTime) < new Date()
 		: false
 
 	return (
