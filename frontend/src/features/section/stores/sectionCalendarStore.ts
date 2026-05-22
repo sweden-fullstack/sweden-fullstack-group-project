@@ -1,32 +1,26 @@
 import SectionApi from "@/api/section"
-import { create } from "zustand"
-import type {
-	SectionCalendarEvent,
+import SectionEventDto, {
 	SectionEventCreate,
-} from "@/features/section/types"
-import { applyVisibilityToSectionId } from "@/features/section/utils/eventVisibility"
+} from "@/shared/types/section-event/sectionEvent.dto"
+import { create } from "zustand"
 
 type SectionCalendarState = {
 	sectionId: number | null
-	events: SectionCalendarEvent[]
-	init: (sectionId: number, seed: SectionCalendarEvent[]) => void
+	events: SectionEventDto[]
+	init: (sectionId: number, seed: SectionEventDto[]) => void
 	create: (
 		sectionId: number,
 		payload: SectionEventCreate,
-	) => Promise<SectionCalendarEvent>
-	update: (event: SectionCalendarEvent) => Promise<void>
+	) => Promise<SectionEventDto>
+	update: (event: SectionEventDto) => Promise<void>
 	remove: (id: number) => Promise<void>
 }
 
 function withVisibilitySectionId(
-	event: SectionEventCreate | SectionCalendarEvent,
-	sectionId: number,
-): SectionEventCreate | SectionCalendarEvent {
-	const visibility = event.visibility ?? "section"
+	event: SectionEventCreate | SectionEventDto,
+): SectionEventCreate | SectionEventDto {
 	return {
 		...event,
-		visibility,
-		sectionId: applyVisibilityToSectionId(visibility, sectionId),
 	}
 }
 
@@ -47,7 +41,7 @@ export const useSectionCalendarStore = create<SectionCalendarState>(
 		},
 
 		async create(sectionId, payload) {
-			const body = withVisibilitySectionId(payload, sectionId)
+			const body = withVisibilitySectionId(payload)
 			const created = await SectionApi.createEvent(sectionId, body)
 			set((state) => ({ events: [...state.events, created] }))
 			return created
@@ -56,10 +50,7 @@ export const useSectionCalendarStore = create<SectionCalendarState>(
 		async update(event) {
 			const sectionId = get().sectionId
 			if (sectionId == null) return
-			const body = withVisibilitySectionId(
-				event,
-				sectionId,
-			) as SectionCalendarEvent
+			const body = withVisibilitySectionId(event) as SectionEventDto
 			const updated = await SectionApi.updateEvent(body)
 			set((state) => ({
 				events: state.events.map((e) =>

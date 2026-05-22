@@ -1,26 +1,30 @@
 import SectionApi, { type SectionDetails } from "@/api/section"
 import AppShell from "@/components/AppShell"
-import { Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react"
-import SectionResidents from "@/features/section/components/SectionResidents"
-import { useEffect, useMemo, useState } from "react"
 import SectionEventCalendar from "@/features/section/components/SectionEventCalendar"
-import { pickNearestSectionOnlyEvent } from "@/features/section/utils/pickNearestSectionOnlyEvent"
-import useUserStore from "@/stores/userStore"
-import { formatTimeRange } from "@/features/section/utils/formatTimes"
+import SectionResidents from "@/features/section/components/SectionResidents"
 import useSectionCalendarStore from "@/features/section/stores/sectionCalendarStore"
+import { formatTimeRange } from "@/features/section/utils/formatTimes"
+import { pickNearestSectionOnlyEvent } from "@/features/section/utils/pickNearestSectionOnlyEvent"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
+import { Box, Heading, Spinner, Text, VStack } from "@chakra-ui/react"
+import { useEffect, useMemo, useState } from "react"
+import SectionUserApi from "@/api/sectionUser"
 
 export default function SectionPage() {
 	const [section, setSection] = useState<SectionDetails | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
-	const { getUserSelf } = useUserStore()
-	const [currentUserId, setCurrentUserId] = useState<number | null>(null)
-	const [userSectionId, setUserSectionId] = useState(1)
+	const [currentUser, setCurrentUser] = useState<SectionUserDto | null>(null)
 
 	const { events, init, create, update, remove } = useSectionCalendarStore()
 
 	useEffect(() => {
 		async function loadSection() {
+			// Don't load until the user finishes loading!
+			if (currentUser === null) {
+				return
+			}
+
 			try {
 				const data = await SectionApi.getCurrentSection()
 				setSection(data)
@@ -33,15 +37,20 @@ export default function SectionPage() {
 		}
 
 		void loadSection()
-	}, [init])
+	}, [init, currentUser])
 
 	useEffect(() => {
 		void (async () => {
-			const self = await getUserSelf()
-			setCurrentUserId(self?.id ?? null)
-			if (self?.sectionId) setUserSectionId(self.sectionId)
+			try {
+				const self = await SectionUserApi.getSelfAuthenticated()
+				setCurrentUser(self)
+			} catch {
+				setError("Could not load user info")
+			} finally {
+				setIsLoading(false)
+			}
 		})()
-	}, [getUserSelf])
+	}, [])
 
 	const spotlight = useMemo(
 		() => pickNearestSectionOnlyEvent(events),
@@ -79,8 +88,8 @@ export default function SectionPage() {
 
 					<SectionResidents
 						buildingName={section.building}
-						defaultSectionId={userSectionId}
-						currentUserId={currentUserId}
+						defaultSectionId={currentUser.sectionId}
+						currentUserId={currentUser.userId}
 					/>
 
 					<Box>

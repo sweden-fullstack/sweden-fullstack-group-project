@@ -3,12 +3,11 @@ import SectionUserDto from "../section-user/sectionUser.dto"
 type SectionEventDto = {
 	id: number
 	title: string
-	buidingId: number
+	buildingId: number
 	sectionId?: number
 	eventTypeId: number
 	startTime: Date
 	endTime: Date
-	title: string
 	description?: string
 
 	users?: SectionUserDto[]

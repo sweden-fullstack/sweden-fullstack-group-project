@@ -1,10 +1,10 @@
-import type { SectionCalendarEvent } from "../types"
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 
 export function pickNearestSectionOnlyEvent(
-	events: SectionCalendarEvent[],
+	events: SectionEventDto[],
 	now = new Date(),
-): SectionCalendarEvent | null {
-	const sectionOnly = events.filter((e) => e.visibility === "section")
+): SectionEventDto | null {
+	const sectionOnly = events.filter((e) => e.sectionId)
 	if (!sectionOnly.length) return null
 
 	const t = now.getTime()

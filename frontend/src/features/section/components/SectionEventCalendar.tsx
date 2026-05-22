@@ -3,24 +3,27 @@ import { useMemo, useState } from "react"
 import { indexEventsByDay } from "@/features/section/utils/eventsByDay"
 import { addMonths, buildMonthGrid } from "./calendar/monthGrid"
 import { sameCalendarDay, toDateKey } from "@/utils/date"
-import type { SectionCalendarEvent, SectionEventDraft } from "../types"
 import type { EventEditorDraft } from "./EventEditorOverlay"
 import EventEditorOverlay from "./EventEditorOverlay"
 import CalendarHeader, { type CalendarFilter } from "./CalendarHeader"
 import CalendarEventMarker from "./calendar/CalendarEventMarker"
+import SectionEventDto, {
+	SectionEventCreate,
+} from "@/shared/types/section-event/sectionEvent.dto"
+import SectionEventType from "../../../../../shared/types/section-event/sectionEventType"
 
 type Props = {
 	sectionId: number
-	events: SectionCalendarEvent[]
-	onCreate: (payload: SectionEventDraft) => void | Promise<unknown>
-	onUpdate: (event: SectionCalendarEvent) => void | Promise<unknown>
+	events: SectionEventDto[]
+	onCreate: (payload: SectionEventCreate) => void | Promise<unknown>
+	onUpdate: (event: SectionEventDto) => void | Promise<unknown>
 	onRemove: (id: number) => void | Promise<unknown>
 }
 
 const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 const maxPills = 3
 
-function blankDraft(sectionId: number): SectionEventDraft {
+function blankDraft(sectionId: number): SectionEventCreate {
 	const start = new Date()
 	start.setMinutes(0, 0, 0)
 	start.setHours(start.getHours() + 1)
@@ -29,16 +32,15 @@ function blankDraft(sectionId: number): SectionEventDraft {
 	return {
 		sectionId,
 		buildingId: 1,
-		eventType: "section",
+		eventTypeId: SectionEventType.CleaningDay,
 		title: "",
 		startTime: start,
 		endTime: end,
 		description: "",
-		visibility: "section",
 	}
 }
 
-function toEditorDraft(event: SectionCalendarEvent): EventEditorDraft {
+function toEditorDraft(event: SectionEventDto): EventEditorDraft {
 	return {
 		...event,
 		startTime: new Date(event.startTime),
@@ -61,9 +63,8 @@ export default function SectionEventCalendar({
 
 	const filtered = useMemo(() => {
 		if (filter === "all") return events
-		if (filter === "building")
-			return events.filter((e) => e.visibility === "building")
-		return events.filter((e) => e.visibility === "section")
+		if (filter === "building") return events.filter((e) => !e.sectionId)
+		return events.filter((e) => e.sectionId)
 	}, [events, filter])
 
 	const eventsByDay = useMemo(() => indexEventsByDay(filtered), [filtered])

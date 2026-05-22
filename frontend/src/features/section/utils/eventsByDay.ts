@@ -1,10 +1,10 @@
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import { toDateKey } from "@/utils/date"
-import type { SectionCalendarEvent } from "../types"
 
 export function indexEventsByDay(
-	events: SectionCalendarEvent[],
-): Map<string, SectionCalendarEvent[]> {
-	const map = new Map<string, SectionCalendarEvent[]>()
+	events: SectionEventDto[],
+): Map<string, SectionEventDto[]> {
+	const map = new Map<string, SectionEventDto[]>()
 
 	for (const ev of events) {
 		const start = new Date(ev.startTime)

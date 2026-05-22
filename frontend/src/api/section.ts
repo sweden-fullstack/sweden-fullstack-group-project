@@ -1,5 +1,5 @@
 import type {
-	SectionCalendarEvent,
+	SectionEventDto,
 	SectionEventCreate,
 } from "../features/section/types"
 
@@ -26,19 +26,17 @@ export type SectionDetails = {
 	name: string
 	building: string
 	description: string
-	calendarEvents: SectionCalendarEvent[]
+	calendarEvents: SectionEventDto[]
 }
 
-type SectionEventRaw = Omit<SectionCalendarEvent, "startTime" | "endTime"> & {
+type SectionEventRaw = Omit<SectionEventDto, "startTime" | "endTime"> & {
 	startTime: string | Date
 	endTime: string | Date
 }
 
 const DEFAULT_BUILDING_ID = 1
 
-export function normalizeSectionEvent(
-	raw: SectionEventRaw,
-): SectionCalendarEvent {
+export function normalizeSectionEvent(raw: SectionEventRaw): SectionEventDto {
 	return {
 		...raw,
 		buildingId: raw.buildingId ?? DEFAULT_BUILDING_ID,
@@ -233,7 +231,7 @@ const calendarSeedRaw: SectionEventRaw[] = [
 	},
 ]
 
-let calendarEvents: SectionCalendarEvent[] = calendarSeedRaw.map(
+let calendarEvents: SectionEventDto[] = calendarSeedRaw.map(
 	normalizeSectionEvent,
 )
 
@@ -268,7 +266,7 @@ class SectionApi {
 	async createEvent(
 		_sectionId: number,
 		payload: SectionEventCreate,
-	): Promise<SectionCalendarEvent> {
+	): Promise<SectionEventDto> {
 		// Later: return axios.post<SectionCalendarEvent>(`/api/sections/${sectionId}/events`, payload).then((res) => normalizeSectionEvent(res.data))
 		const event = normalizeSectionEvent({
 			...payload,
@@ -282,9 +280,7 @@ class SectionApi {
 		}
 	}
 
-	async updateEvent(
-		event: SectionCalendarEvent,
-	): Promise<SectionCalendarEvent> {
+	async updateEvent(event: SectionEventDto): Promise<SectionEventDto> {
 		// Later: return axios.put(`/api/section-events/${event.id}`, event).then((res) => normalizeSectionEvent(res.data))
 		const normalized = normalizeSectionEvent(event)
 		calendarEvents = calendarEvents.map((e) =>

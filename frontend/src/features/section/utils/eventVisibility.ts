@@ -7,10 +7,3 @@ export const VISIBILITY_OPTIONS: {
 	{ value: "building", label: "Everyone in the building" },
 	{ value: "section", label: "Only this section" },
 ]
-
-export function applyVisibilityToSectionId(
-	visibility: SectionEventVisibility,
-	sectionId: number,
-): number | undefined {
-	return visibility === "section" ? sectionId : undefined
-}

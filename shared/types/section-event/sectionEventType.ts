@@ -3,6 +3,6 @@ const SectionEventType = {
 	CleaningDay: 2,
 	Maintenance: 3,
 	FireDrill: 4,
-}
+} as const
 
 export default SectionEventType

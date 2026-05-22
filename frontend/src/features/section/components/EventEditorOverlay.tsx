@@ -12,24 +12,23 @@ import {
 	parseLocalDatetimeInputValue,
 	toLocalDatetimeInputValue,
 } from "@/utils/date"
-import type { SectionEventVisibility } from "@/shared/types/section-event/sectionEvent.dto"
 import type {
-	SectionCalendarEvent,
-	SectionEventDraft,
-} from "@/features/section/types"
+	SectionEventCreate,
+	SectionEventVisibility,
+} from "@/shared/types/section-event/sectionEvent.dto"
 import { VISIBILITY_OPTIONS } from "@/features/section/utils/eventVisibility"
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
+import SectionEventType from "../../../../../shared/types/section-event/sectionEventType"
 
-const STORED_EVENT_TYPE = "section" as const
-
-export type EventEditorDraft = SectionCalendarEvent | SectionEventDraft
+export type EventEditorDraft = SectionEventDto | SectionEventCreate
 
 type FormProps = {
 	draft: EventEditorDraft
 	sectionId: number
 	buildingId?: number
 	onClose: () => void
-	onCreate: (payload: SectionEventDraft) => void
-	onUpdate: (event: SectionCalendarEvent) => void
+	onCreate: (payload: SectionEventCreate) => void
+	onUpdate: (event: SectionEventDto) => void
 	onDelete: (id: number) => void
 }
 
@@ -47,9 +46,7 @@ const fieldStyle = {
 	background: "white",
 } as const
 
-function isExistingEvent(
-	draft: EventEditorDraft,
-): draft is SectionCalendarEvent {
+function isExistingEvent(draft: EventEditorDraft): draft is SectionEventDto {
 	return "id" in draft && typeof draft.id === "number"
 }
 
@@ -68,7 +65,7 @@ function EventEditorForm({
 }: FormProps) {
 	const [title, setTitle] = useState(draft.title)
 	const [visibility, setVisibility] = useState<SectionEventVisibility>(
-		draft.visibility ?? "section",
+		draft.sectionId ? "section" : "building",
 	)
 	const [startAt, setStartAt] = useState<Date | null>(
 		() => new Date(draft.startTime),
@@ -98,8 +95,7 @@ function EventEditorForm({
 
 		const base = {
 			title: trimmed,
-			eventType: STORED_EVENT_TYPE,
-			visibility,
+			eventTypeId: SectionEventType.CleaningDay,
 			startTime: startAt,
 			endTime: endAt,
 			description: description.trim() || undefined,
@@ -114,7 +110,7 @@ function EventEditorForm({
 		} else {
 			onCreate({
 				...base,
-				sectionId,
+				sectionId: sectionId,
 			})
 		}
 		onClose()

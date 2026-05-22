@@ -8,7 +8,7 @@ export default class SectionEventMapper {
 	): Partial<SectionEventEntity> {
 		return removeUndefined({
 			title: dto.title,
-			building_id: dto.buidingId,
+			building_id: dto.buildingId,
 			event_type_id: dto.eventTypeId,
 			description: dto.description,
 			start_time: dto.startTime,
@@ -26,7 +26,7 @@ export default class SectionEventMapper {
 			startTime: entity.start_time,
 			endTime: entity.end_time,
 			sectionId: entity.section_id,
-			buidingId: entity.building_id,
+			buildingId: entity.building_id,
 
 			// Must be mapped manually
 			users: undefined,

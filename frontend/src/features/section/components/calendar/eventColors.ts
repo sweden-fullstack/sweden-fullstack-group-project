@@ -1,14 +1,14 @@
-import type { SectionCalendarEvent } from "../../types"
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 
-export function eventPillColors(event: SectionCalendarEvent) {
-	if (event.visibility === "building") {
+export function eventPillColors(event: SectionEventDto) {
+	if (event.sectionId) {
 		return {
-			bg: "#3b82f6",
+			bg: "#10b981",
 			color: "#ffffff",
 		} as const
 	}
 	return {
-		bg: "#10b981",
+		bg: "#3b82f6",
 		color: "#ffffff",
 	} as const
 }

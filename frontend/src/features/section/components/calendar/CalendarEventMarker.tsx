@@ -1,10 +1,10 @@
 import { Box, chakra } from "@chakra-ui/react"
 import { formatTimeShort } from "../../utils/formatTimes"
 import { eventPillColors } from "./eventColors"
-import type { SectionCalendarEvent } from "../../types"
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 
 type Props = {
-	event: SectionCalendarEvent
+	event: SectionEventDto
 	onSelect: () => void
 }
 
