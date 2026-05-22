@@ -30,17 +30,10 @@ class HouseRuleCategoryMapService {
 		categoryId: number,
 	): Promise<HouseRuleCategoryMapDto> {
 		return await Transaction.run(async () => {
-			const success =
-				await houseRuleCategoryRepository.overrideCategoryMap(
-					houseRuleId,
-					categoryId,
-				)
-
-			if (!success) {
-				throw new BadRequestError(
-					"House rule category not found or update failed",
-				)
-			}
+			await houseRuleCategoryRepository.overrideCategoryMap(
+				houseRuleId,
+				categoryId,
+			)
 
 			const entity: HouseRuleCategoryMapEntity = {
 				house_rule_id: houseRuleId,

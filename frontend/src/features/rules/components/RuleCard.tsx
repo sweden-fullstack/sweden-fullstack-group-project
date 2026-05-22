@@ -54,7 +54,7 @@ export default function RuleCard({
 						{...wrapTextProps}
 					>
 						{rule.categoryMap
-							.map((category) => category.name)
+							.map((category) => category.houseRuleCategoryName)
 							.join(", ")}
 					</Text>
 					{canManage ? (
@@ -104,7 +104,7 @@ export default function RuleCard({
 					{rule.body}
 				</Text>
 				<Text fontSize="sm" color="#4b6177" {...wrapTextProps}>
-					Updated {rule.updatedAt}
+					Updated {new Date(rule.updatedAt).toLocaleDateString()}
 				</Text>
 			</VStack>
 		</Box>

@@ -1,6 +1,6 @@
 type HouseRuleCategoryEntity = {
-	house_rule_category_id: number
-	house_rule_category_name: string
+	id: number
+	name: string
 }
 
 export default HouseRuleCategoryEntity

@@ -5,6 +5,7 @@ import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
 import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
 import ForbiddenError from "@/errors/ForbiddenError"
+import NotFoundError from "@/errors/NotFoundError"
 
 class HouseRuleController {
 	async getAllByBuildingId(req: Request, res: Response) {
@@ -35,12 +36,16 @@ class HouseRuleController {
 		const id = parseInt(req.params.id as string)
 		const body = typia.assertEquals<HouseRuleUpdate>(req.body)
 
+		const rule = await houseRuleService.getById(id)
+		if (!rule) throw new NotFoundError("Rule not found")
+
 		if (
-			user.userRole !== "admin" &&
-			user.userRole !== "landlord" &&
-			user.buildingId !== id
+			user.userRole === "landlord" &&
+			rule.buildingId !== user.buildingId
 		) {
-			throw new ForbiddenError("Missing priviliges")
+			throw new ForbiddenError(
+				"Missing privileges: Cannot update rules of other buildings",
+			)
 		}
 
 		const newDto = await houseRuleService.update(id, body)
@@ -51,12 +56,15 @@ class HouseRuleController {
 		const user = req.user as JwtPayloadExtended
 		const id = parseInt(req.params.id as string)
 
+		const rule = await houseRuleService.getById(id)
+		if (!rule) throw new NotFoundError("Rule not found")
 		if (
-			user.userRole !== "admin" &&
-			user.userRole !== "landlord" &&
-			user.buildingId !== id
+			user.userRole === "landlord" &&
+			rule.buildingId !== user.buildingId
 		) {
-			throw new ForbiddenError("Missing priviliges")
+			throw new ForbiddenError(
+				"You can only delete rules in your own building",
+			)
 		}
 
 		await houseRuleService.delete(id)

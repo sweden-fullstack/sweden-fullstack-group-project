@@ -82,13 +82,10 @@ class HouseRuleService {
 
 	async delete(id: number): Promise<void> {
 		return await Transaction.run(async () => {
+			await houseRuleCategoryRepository.delete(id)
+
 			const deleted = await houseRuleRepository.delete(id)
 			if (!deleted) {
-				throw new NotFoundError("House Rule not found")
-			}
-
-			const categoryDeleted = await houseRuleCategoryRepository.delete(id)
-			if (!categoryDeleted) {
 				throw new NotFoundError("House Rule not found")
 			}
 		})

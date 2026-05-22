@@ -69,7 +69,11 @@ function RuleEditorForm({
 	const [body, setBody] = useState(draft.body)
 	const [sortOrder, setSortOrder] = useState(draft.sortOrder)
 	const [categoryIds, setCategoryIds] = useState<number[]>(
-		draft.categoryMap.map((category) => category.id),
+		draft.categoryMap.map((category) =>
+			"houseRuleCategoryId" in category
+				? category.houseRuleCategoryId
+				: category.id,
+		),
 	)
 	const [error, setError] = useState<string | null>(null)
 

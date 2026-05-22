@@ -7,21 +7,21 @@ import RuleEditorOverlay, {
 	type RuleDraft,
 } from "@/features/rules/components/RuleEditorOverlay"
 import { canManageRules } from "@/features/rules/utils/canManageRules"
-import useUserStore from "@/stores/userStore"
 import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
 import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
 import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
-import UserDto from "@/shared/types/user/user.dto"
 import { Box, Button, Grid, Spinner, Text, VStack } from "@chakra-ui/react"
 import { useCallback, useEffect, useState } from "react"
+import SectionUserApi from "@/api/sectionUser"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
 export default function RulesPage() {
-	const { getUserSelf } = useUserStore()
-	const [currentUser, setCurrentUser] = useState<UserDto | undefined>(
+	const [currentUser, setCurrentUser] = useState<SectionUserDto | undefined>(
 		undefined,
 	)
 	const [rules, setRules] = useState<HouseRuleDto[]>([])
 	const [categories, setCategories] = useState<HouseRuleCategoryDto[]>([])
+	console.log("Kategorien vom Backend:", categories)
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [editorDraft, setEditorDraft] = useState<RuleDraft | null>(null)
@@ -29,19 +29,18 @@ export default function RulesPage() {
 	const buildingId = currentUser?.buildingId ?? 1
 	const canManage = canManageRules(currentUser?.role)
 
-	const refreshRules = useCallback(async (buildingIdValue: number) => {
-		const data = await RulesApi.getByBuilding(buildingIdValue)
+	const refreshRules = useCallback(async () => {
+		const data = await RulesApi.getByBuilding()
 		setRules(data)
 	}, [])
 
 	useEffect(() => {
 		async function loadPageData() {
 			try {
-				const self = await getUserSelf()
+				const self = await SectionUserApi.getSelfAuthenticated()
 				setCurrentUser(self)
-				const resolvedBuildingId = self?.buildingId ?? 1
 				const [rulesData, categoriesData] = await Promise.all([
-					RulesApi.getByBuilding(resolvedBuildingId),
+					RulesApi.getByBuilding(),
 					RulesApi.getCategories(),
 				])
 				setRules(rulesData)
@@ -54,7 +53,7 @@ export default function RulesPage() {
 		}
 
 		void loadPageData()
-	}, [getUserSelf])
+	}, [])
 
 	function openCreateEditor() {
 		const nextSortOrder =
@@ -80,7 +79,7 @@ export default function RulesPage() {
 	async function handleCreate(payload: HouseRuleCreate) {
 		try {
 			await RulesApi.create(payload)
-			await refreshRules(buildingId)
+			await refreshRules()
 		} catch {
 			setError("Could not create rule.")
 		}
@@ -89,7 +88,7 @@ export default function RulesPage() {
 	async function handleUpdate(id: number, payload: HouseRuleUpdate) {
 		try {
 			await RulesApi.update(id, payload)
-			await refreshRules(buildingId)
+			await refreshRules()
 		} catch {
 			setError("Could not update rule.")
 		}
@@ -98,7 +97,7 @@ export default function RulesPage() {
 	async function handleDelete(id: number) {
 		try {
 			await RulesApi.delete(id)
-			await refreshRules(buildingId)
+			await refreshRules()
 		} catch {
 			setError("Could not delete rule.")
 		}

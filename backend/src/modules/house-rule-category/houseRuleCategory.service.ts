@@ -1,4 +1,4 @@
-import HouseRuleCategoryDto from "@/shared/types/house-rule-category-map/houseRuleCategory.dto"
+import HouseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
 import houseRuleCategoryRepository from "./houseRuleCategory.repository"
 import HouseRuleCategoryMapper from "@/modules/house-rule-category/types/houseRuleCategory.mapper"
 
