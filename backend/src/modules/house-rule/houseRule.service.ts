@@ -17,14 +17,10 @@ class HouseRuleService {
 
 			return await Promise.all(
 				entities.map(async (entity) => {
-					const categoryIds = await houseRuleCategoryService.getById(
-						entity.id,
-					)
-					const dto = HouseRuleMapper.toDto(entity)
-					dto.categoryIds = categoryIds.map(
-						(c) => c.houseRuleCategoryId,
-					)
-					return dto
+					entity.category_map =
+						await houseRuleCategoryRepository.getById(entity.id)
+
+					return HouseRuleMapper.toDto(entity)
 				}),
 			)
 		})
@@ -33,16 +29,14 @@ class HouseRuleService {
 	async getById(id: number): Promise<HouseRuleDto> {
 		return await Transaction.run(async () => {
 			const entity = await houseRuleRepository.findById(id)
-			const categoryIds = await houseRuleCategoryService.getById(id)
 
 			if (!entity) {
 				throw new NotFoundError("House Rule not found")
 			}
 
-			const dto = HouseRuleMapper.toDto(entity)
+			entity.category_map = await houseRuleCategoryRepository.getById(id)
 
-			dto.categoryIds = categoryIds.map((c) => c.houseRuleCategoryId)
-			return dto
+			return HouseRuleMapper.toDto(entity)
 		})
 	}
 

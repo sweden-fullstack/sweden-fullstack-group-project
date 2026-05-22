@@ -1,3 +1,5 @@
+import HouseRuleCategoryMapEntity from "@/modules/house-rule-category/types/houseRuleCategoryMap.entity"
+
 type HouseRuleEntity = {
 	id: number
 	building_id: number
@@ -5,7 +7,7 @@ type HouseRuleEntity = {
 	body: string
 	sort_order: number
 	updated_at: Date
-	category_ids: number[]
+	category_map: HouseRuleCategoryMapEntity[]
 }
 
 export default HouseRuleEntity

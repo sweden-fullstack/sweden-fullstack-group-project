@@ -13,6 +13,7 @@ export default class HouseRuleCategoryMapMapper {
 		return {
 			houseRuleId: entity.house_rule_id,
 			houseRuleCategoryId: entity.house_rule_category_id,
+			houseRuleCategoryName: entity.house_rule_category_name,
 		}
 	}
 }

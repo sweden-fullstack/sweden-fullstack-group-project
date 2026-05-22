@@ -1,6 +1,9 @@
 import db from "backend/src/config/database"
 import HouseRuleCategoryMapEntity from "backend/src/modules/house-rule-category/types/houseRuleCategoryMap.entity"
-import { houseRuleCategoryMapTableName } from "backend/src/utils/tableNames"
+import {
+	houseRoleCategoryTableName,
+	houseRuleCategoryMapTableName,
+} from "backend/src/utils/tableNames"
 import { ResultSetHeader, RowDataPacket } from "mysql2"
 
 class HouseRuleCategoryMapRepository {
@@ -16,7 +19,14 @@ class HouseRuleCategoryMapRepository {
 
 	async getById(houseRuleId: number) {
 		const [rows] = await db.query<RowDataPacket[]>(
-			`SELECT * FROM ${houseRuleCategoryMapTableName} WHERE ?`,
+			`SELECT 
+             m.house_rule_id, 
+             m.house_rule_category_id, 
+             c.name
+          FROM ${houseRuleCategoryMapTableName} m
+          JOIN ${houseRoleCategoryTableName} c ON m.house_rule_category_id = c.id
+          WHERE m.house_rule_id = ?
+          `,
 			[houseRuleId],
 		)
 
