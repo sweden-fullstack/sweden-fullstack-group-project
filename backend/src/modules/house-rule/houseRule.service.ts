@@ -6,6 +6,7 @@ import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
 import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
 import HouseRuleEntity from "./types/houseRule.entity"
 import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
+import houseRuleCategoryService from "@/modules/house-rule-category/house-rule-category.service"
 
 class HouseRuleService {
 	async getAllByBuildingId(buildingId: number): Promise<HouseRuleDto[]> {
@@ -16,6 +17,9 @@ class HouseRuleService {
 
 	async getById(id: number): Promise<HouseRuleDto> {
 		const entity = await houseRuleRepository.findById(id)
+		const categoryIds = await houseRuleCategoryService.getById(id)
+
+		entity.category_ids = categoryIds
 
 		if (!entity) {
 			throw new NotFoundError("House Rule not found")

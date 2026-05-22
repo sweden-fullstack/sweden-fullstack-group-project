@@ -5,6 +5,7 @@ type HouseRuleDto = {
 	body: string
 	sortOrder: number //Maybe just sort by name since this is too painful to implement?
 	updatedAt: Date
+	categoryIds: number[]
 }
 
 export default HouseRuleDto

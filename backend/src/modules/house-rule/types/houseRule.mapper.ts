@@ -10,6 +10,7 @@ export default class HouseRuleMapper {
 			title: dto.title,
 			body: dto.body,
 			sort_order: dto.sortOrder,
+			category_ids: dto.categoryIds,
 		})
 	}
 
@@ -21,6 +22,7 @@ export default class HouseRuleMapper {
 			body: entity.body,
 			sortOrder: entity.sort_order,
 			updatedAt: entity.updated_at,
+			categoryIds: entity.category_ids,
 		}
 	}
 }

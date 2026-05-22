@@ -5,6 +5,7 @@ type HouseRuleEntity = {
 	body: string
 	sort_order: number
 	updated_at: Date
+	category_ids: number[]
 }
 
 export default HouseRuleEntity

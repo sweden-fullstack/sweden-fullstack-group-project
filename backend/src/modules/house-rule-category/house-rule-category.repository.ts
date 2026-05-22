@@ -23,10 +23,14 @@ class HouseRuleCategoryRepository {
 		return rows.map((o) => o as HouseRuleCategoryMapEntity)
 	}
 
-	async update(houseRuleId: number, houseRuleCategoryMap: number) {
+	async update(
+		houseRuleId: number,
+		categoryId: number,
+		newCategoryId: number,
+	) {
 		const [result] = await db.query<ResultSetHeader>(
-			`UPDATE ${houseRuleId} SET ?`,
-			[houseRuleCategoryMap],
+			`UPDATE ${houseRuleCategoryMapTableName} SET house_rule_category_id = ? WHERE house_rule_id = ? AND house_rule_category_id = ?`,
+			[newCategoryId, houseRuleId, categoryId],
 		)
 
 		return result.affectedRows > 0
