@@ -246,7 +246,13 @@ function EventEditorForm({
 						<Box />
 					)}
 					<HStack gap={2}>
-						<Button variant="outline" onClick={onClose}>
+						<Button
+							borderColor="#d9a3a3"
+							color="#7a2323"
+							_hover={{ bg: "#fff5f5" }}
+							variant="outline"
+							onClick={onClose}
+						>
 							Cancel
 						</Button>
 						<Button
