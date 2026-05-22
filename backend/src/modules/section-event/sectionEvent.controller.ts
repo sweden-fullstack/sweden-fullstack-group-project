@@ -15,7 +15,7 @@ class SectionEventController {
 
 	async create(req: Request, res: Response): Promise<Response> {
 		const jwt = req.user as JwtPayloadExtended
-		const body = typia.assertEquals<SectionEventCreate>(req.body)
+		const body = typia.misc.assertPrune<SectionEventCreate>(req.body)
 		const sectionId = req.params.sectionId
 			? parseInt(req.params.sectionId as string)
 			: undefined
@@ -31,7 +31,7 @@ class SectionEventController {
 
 	async update(req: Request, res: Response) {
 		const id = parseInt(req.params.id as string)
-		const body = typia.assertEquals<SectionEventUpdate>(req.body)
+		const body = typia.misc.assertPrune<SectionEventUpdate>(req.body)
 
 		const newSection = await sectionEventService.update(id, body)
 		return res.status(200).json(newSection)

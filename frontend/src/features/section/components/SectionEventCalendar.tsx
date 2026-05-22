@@ -26,7 +26,6 @@ function blankDraft(): EventDraft {
 	const end = new Date(start)
 	end.setHours(end.getHours() + 1)
 	return {
-		id: undefined,
 		dto: {
 			title: "",
 			eventTypeId: SectionEventType.CleaningDay,
@@ -39,7 +38,7 @@ function blankDraft(): EventDraft {
 
 function toEditorDraft(event: SectionEventDto): EventDraft {
 	return {
-		id: event.sectionId,
+		id: event.id,
 		dto: event,
 	}
 }

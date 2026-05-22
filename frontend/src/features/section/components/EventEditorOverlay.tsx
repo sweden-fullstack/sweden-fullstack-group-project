@@ -15,9 +15,7 @@ import {
 import { VISIBILITY_OPTIONS } from "@/features/section/utils/eventVisibility"
 import SectionEventType from "../../../../../shared/types/section-event/sectionEventType"
 import SectionDto from "@/shared/types/section/section.dto"
-import SectionEventDto, {
-	SectionEventVisibility,
-} from "@/shared/types/section-event/sectionEvent.dto"
+import { SectionEventVisibility } from "@/shared/types/section-event/sectionEvent.dto"
 import EventDraft from "../types"
 import SectionEventApi from "@/api/sectionEvent"
 import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
@@ -48,13 +46,12 @@ const fieldStyle = {
 	background: "white",
 } as const
 
-function isExistingEvent() {
-	return true
-	// return "id" in draft && typeof draft.id === "number"
+function isExistingEvent(draft: EventDraft) {
+	return draft && draft.id
 }
 
 function draftFormKey(draft: EventDraft) {
-	return isExistingEvent() ? `edit-${draft.id}` : "new"
+	return isExistingEvent(draft) ? `edit-${draft.id}` : "new"
 }
 
 function EventEditorForm({
@@ -69,7 +66,6 @@ function EventEditorForm({
 }: FormProps) {
 	const [title, setTitle] = useState(draft.dto.title)
 	const [visibility, setVisibility] = useState<SectionEventVisibility>()
-	// draft.sectionId ? "section" : "building",
 	const [startAt, setStartAt] = useState<Date | null>(
 		() => new Date(draft.dto.startTime),
 	)
@@ -79,7 +75,7 @@ function EventEditorForm({
 	const [description, setDescription] = useState(draft.dto.description ?? "")
 	const [error, setError] = useState<string | null>(null)
 
-	const editing = isExistingEvent()
+	const editing = isExistingEvent(draft)
 
 	async function onDelete(id: number) {
 		await SectionEventApi.delete(id)
@@ -253,7 +249,7 @@ function EventEditorForm({
 							color="#7a2323"
 							_hover={{ bg: "#fff5f5" }}
 							onClick={() => {
-								onDelete((draft.dto as SectionEventDto).id)
+								onDelete(draft.id!)
 								onCloseDraftEditor()
 							}}
 						>
