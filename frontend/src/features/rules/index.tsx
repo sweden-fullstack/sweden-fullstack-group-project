@@ -21,7 +21,6 @@ export default function RulesPage() {
 	)
 	const [rules, setRules] = useState<HouseRuleDto[]>([])
 	const [categories, setCategories] = useState<HouseRuleCategoryDto[]>([])
-	console.log("Kategorien vom Backend:", categories)
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 	const [editorDraft, setEditorDraft] = useState<RuleDraft | null>(null)

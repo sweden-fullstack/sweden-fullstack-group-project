@@ -65,14 +65,10 @@ class HouseRuleService {
 			const entity = HouseRuleMapper.toEntity(dto)
 			await houseRuleRepository.update(id, entity)
 
-			if (dto.categoryIds.length > 0) {
-				await Promise.all(
-					dto.categoryIds.map((categoryId) =>
-						houseRuleCategoryService.overrideCategory(
-							id,
-							categoryId,
-						),
-					),
+			if (dto.categoryIds !== undefined) {
+				await houseRuleCategoryService.replaceCategories(
+					id,
+					dto.categoryIds,
 				)
 			}
 

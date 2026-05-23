@@ -5,14 +5,14 @@ export default class HouseRuleCategoryMapper {
 	static toEntity(dto: HouseRuleCategoryDto): HouseRuleCategoryEntity {
 		return {
 			id: dto.id,
-			name: dto.name,
+			name: dto.categoryName,
 		}
 	}
 
 	static toDto(entity: HouseRuleCategoryEntity): HouseRuleCategoryDto {
 		return {
 			id: entity.id,
-			name: entity.name,
+			categoryName: entity.name,
 		}
 	}
 }

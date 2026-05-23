@@ -25,22 +25,24 @@ class HouseRuleCategoryMapService {
 		})
 	}
 
-	async overrideCategory(
+	async replaceCategories(
 		houseRuleId: number,
-		categoryId: number,
-	): Promise<HouseRuleCategoryMapDto> {
+		categoryIds: number[],
+	): Promise<void> {
 		return await Transaction.run(async () => {
-			await houseRuleCategoryRepository.overrideCategoryMap(
-				houseRuleId,
-				categoryId,
-			)
+			await houseRuleCategoryRepository.delete(houseRuleId)
 
-			const entity: HouseRuleCategoryMapEntity = {
-				house_rule_id: houseRuleId,
-				house_rule_category_id: categoryId,
+			if (categoryIds.length > 0) {
+				await Promise.all(
+					categoryIds.map((categoryId) => {
+						const entity: HouseRuleCategoryMapEntity = {
+							house_rule_id: houseRuleId,
+							house_rule_category_id: categoryId,
+						}
+						return houseRuleCategoryRepository.create(entity)
+					}),
+				)
 			}
-
-			return HouseRuleCategoryMapMapper.toDto(entity)
 		})
 	}
 

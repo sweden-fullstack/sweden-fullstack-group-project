@@ -33,19 +33,9 @@ class HouseRuleCategoryMapRepository {
 		return rows.map((o) => o as HouseRuleCategoryMapEntity)
 	}
 
-	async overrideCategoryMap(id: number, categoryId: number) {
-		const deleted = await this.delete(id)
-		if (!deleted) return null
-
-		return await this.create({
-			house_rule_id: id,
-			house_rule_category_id: categoryId,
-		} as HouseRuleCategoryMapEntity)
-	}
-
 	async delete(houseRuleId: number) {
 		const [result] = await db.query<ResultSetHeader>(
-			`DELETE FROM ${houseRuleCategoryMapTableName} WHERE ?`,
+			`DELETE FROM ${houseRuleCategoryMapTableName} WHERE house_rule_id = ?`,
 			[houseRuleId],
 		)
 

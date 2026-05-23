@@ -1,6 +1,6 @@
 type HouseRuleCategoryDto = {
 	id: number
-	name: string
+	categoryName: string
 }
 
 export default HouseRuleCategoryDto

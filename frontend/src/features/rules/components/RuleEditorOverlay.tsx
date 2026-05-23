@@ -210,7 +210,7 @@ function RuleEditorForm({
 									checked={categoryIds.includes(category.id)}
 									onChange={() => toggleCategory(category.id)}
 								/>
-								{category.name}
+								{category.categoryName}
 							</label>
 						))}
 					</VStack>
