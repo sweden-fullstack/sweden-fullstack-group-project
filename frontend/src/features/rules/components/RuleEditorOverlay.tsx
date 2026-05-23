@@ -11,9 +11,33 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react"
-import { type ChangeEvent, useState } from "react"
+import { type ChangeEvent, type CSSProperties, useState } from "react"
 
 const MAX_RULE_DESCRIPTION_LENGTH = 500
+
+const CHECKMARK_SVG =
+	"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%23123a5f' d='M10.2 2.4 4.5 8.1 1.8 5.4l-.9.9 3.6 3.6 6.6-6.6z'/%3E%3C/svg%3E\")"
+
+function categoryCheckboxStyle(checked: boolean): CSSProperties {
+	return {
+		width: 16,
+		height: 16,
+		margin: 0,
+		flexShrink: 0,
+		appearance: "none",
+		WebkitAppearance: "none",
+		colorScheme: "light",
+		backgroundColor: checked ? "#d8ebff" : "#ffffff",
+		border: "1px solid",
+		borderColor: checked ? "#a9cff5" : "#d2deea",
+		borderRadius: 4,
+		cursor: "pointer",
+		backgroundImage: checked ? CHECKMARK_SVG : "none",
+		backgroundRepeat: "no-repeat",
+		backgroundPosition: "center",
+		backgroundSize: "12px 12px",
+	}
+}
 
 export type RuleDraft = HouseRuleDto | RuleCreateDraft
 
@@ -194,25 +218,31 @@ function RuleEditorForm({
 						Categories
 					</Text>
 					<VStack align="stretch" gap={2}>
-						{categories.map((category) => (
-							<label
-								key={category.id}
-								style={{
-									display: "flex",
-									alignItems: "center",
-									gap: "8px",
-									cursor: "pointer",
-									color: "#506057",
-								}}
-							>
-								<input
-									type="checkbox"
-									checked={categoryIds.includes(category.id)}
-									onChange={() => toggleCategory(category.id)}
-								/>
-								{category.categoryName}
-							</label>
-						))}
+						{categories.map((category) => {
+							const checked = categoryIds.includes(category.id)
+							return (
+								<label
+									key={category.id}
+									style={{
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
+										cursor: "pointer",
+										color: "#506057",
+									}}
+								>
+									<input
+										type="checkbox"
+										checked={checked}
+										onChange={() =>
+											toggleCategory(category.id)
+										}
+										style={categoryCheckboxStyle(checked)}
+									/>
+									{category.categoryName}
+								</label>
+							)
+						})}
 					</VStack>
 					<Text fontSize="xs" color="#4b6177" mt={1}>
 						Separate multiple categories with commas.
