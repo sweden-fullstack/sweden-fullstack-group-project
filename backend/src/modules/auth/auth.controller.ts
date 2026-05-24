@@ -17,6 +17,7 @@ class AuthController {
 				clientID: envConfig.oauthClientId,
 				clientSecret: envConfig.oauthClientSecret,
 				callbackURL: "/auth/callback", // sometimes I wonder what kind of drugs google developers were on when developing oauth, if this is removed everything breaks
+				proxy: true,
 			},
 			this.googleStrategy,
 		),
@@ -58,19 +59,17 @@ class AuthController {
 			)
 
 			res.cookie("token", token, {
-				domain: "localhost",
-				httpOnly: false, // Should be changed if this becomes real app, but easier to debug like this
-				secure: false,
-				sameSite: "lax",
+				httpOnly: true, // Should be changed if this becomes real app, but easier to debug like this
+				secure: true,
+				sameSite: "none",
 			})
 
 			res.redirect(envConfig.oauthSuccessRedirect)
 		} catch {
 			res.cookie("oauthUser", JSON.stringify(oauthUser), {
-				domain: "localhost",
-				httpOnly: false,
-				secure: false,
-				sameSite: "lax",
+				httpOnly: true,
+				secure: true,
+				sameSite: "none",
 			})
 
 			res.redirect(envConfig.oauthFailureRedirect)

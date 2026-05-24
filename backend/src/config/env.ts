@@ -1,10 +1,15 @@
 import { configDotenv } from "dotenv"
 import path from "path"
+import fs from "fs"
 
 function init() {
-	configDotenv({
-		path: path.resolve(process.cwd(), "../.env"),
-	})
+	const envPath = path.resolve(process.cwd(), "../.env")
+
+	if (fs.existsSync(envPath)) {
+		configDotenv({
+			path: envPath,
+		})
+	}
 }
 
 init()
@@ -21,6 +26,7 @@ const envConfig = {
 	password: process.env.DB_PASSWORD
 		? process.env.DB_PASSWORD
 		: "sweden-backend",
+	databasePort: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
 	oauthClientId: process.env.OAUTH_CLIENT_ID!,
 	oauthClientSecret: process.env.OAUTH_CLIENT_SECRET!,
 	oauthSuccessRedirect: process.env.OAUTH_SUCCESS_REDIRECT!,
