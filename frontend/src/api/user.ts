@@ -36,9 +36,8 @@ class UserApi {
 		return data as UserDto
 	}
 
-	async update(user: UserUpdate) {
-		const { data } = await axiosInstance.put(this.path, user)
-
+	async update(userId: number, user: UserUpdate) {
+		const { data } = await axiosInstance.put(`${this.path}${userId}`, user)
 		return data as UserDto
 	}
 
