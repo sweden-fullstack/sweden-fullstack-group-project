@@ -16,7 +16,6 @@ export default class SectionUserMapper {
 			roleId: entity.role_id,
 			sectionId: entity.section_id,
 			userId: entity.user_id,
-			buildingId: entity.building_id,
 
 			// From joins
 			buildingId: entity.building_id!,
