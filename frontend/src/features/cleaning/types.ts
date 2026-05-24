@@ -1,8 +1,3 @@
-export type Resident = {
-	id: number
-	name: string
-}
-
 export type ViewMode = "section" | "mine"
 
 export type NextMyDuty = {

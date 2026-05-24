@@ -43,6 +43,7 @@ root
 - Setup the [mysql](https://mysql.com) database with the settings from the
   `.env` file
 - Run `npm ci` to install dependencies
+- Go to the backend folder and run `npm run seed`
 - Run `npm run dev` to run both frontend and backend or `npm run dev:frontend` just
   for frontend or `npm run dev:backend`, you can see the other available commands
   in `package.json`

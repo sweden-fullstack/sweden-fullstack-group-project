@@ -1,6 +1,7 @@
  SET FOREIGN_KEY_CHECKS = 0;
 
 TRUNCATE TABLE house_rule_category_map;
+TRUNCATE TABLE section_event_assignee;
 TRUNCATE TABLE section_event;
 TRUNCATE TABLE section_user;
 TRUNCATE TABLE user_interest;
@@ -51,14 +52,22 @@ INSERT INTO user (
       (2, 'bob@example.com',   'Bob',   'Berg',      202, 'Electrical Eng',  '2026-02-01', '2026-07-31', NULL),
       (3, 'carol@example.com', 'Carol', 'Carlsson',  305, 'Design',          '2026-01-15', '2026-12-15', NULL),
       (4, 'dan@example.com',   'Dan',   'Dahl',      110, 'Business',        '2026-03-01', '2026-08-31', NULL),
-      (5, 'admin@example.com', 'Admin', 'User',      999, 'Administration',  '2026-01-01', '2026-12-31', NULL);
+      (5, 'dimitar.najdovskiw@gmail.com', 'Dimitar', 'Admin', 100, 'Coffee Expert', '2026-01-01', '2026-02-02', NULL),
+      (6, 'dimitar.najdovskip@gmail.com', 'Dimitar', 'Landlord', 100, 'Rakija Expert', '2026-01-01', '2026-02-02', NULL),
+      (7, 'bi.chen4403@gmail.com', 'Bi', 'Chen', 100, 'Becoming morning person', '2026-01-01', '2026-02-02', NULL),
+      (8, 'ellenviira03@gmail.com', 'Ellen', 'Viira', 100, 'I.C.A secret police', '2026-01-01', '2026-02-02', NULL),
+      (9, 'davidbadenk05@gmail.com', 'David', 'Baden', 100, 'Wakey Wakey', '2026-01-01', '2026-02-02', NULL);
 
 INSERT INTO section_user (user_id, section_id, role_id) VALUES
     (1, 1, 1),
     (2, 2, 1),
     (3, 3, 1),
     (4, 1, 4),
-    (5, 1, 3);
+    (5, 1, 3),
+    (6, 1, 2),
+    (7, 1, 3),
+    (8, 1, 3),
+    (9, 1, 3);
 
 INSERT INTO user_interest (user_id, interest) VALUES
     (1, 'cooking'),
@@ -87,8 +96,15 @@ INSERT INTO house_rule_category_map (house_rule_id, house_rule_category_id) VALU
     (4, 1);
 
 INSERT INTO section_event (
-    id, section_id, event_type_id, description, start_time, end_time
+    id, section_id, event_type_id, description, start_time, end_time, title, building_id
 ) VALUES
-      (1, 1, 1, 'Bring snacks and a movie suggestion!', '2026-05-10 19:00:00', '2026-05-10 22:00:00'),
-      (2, 2, 2, 'Help clean common areas.',           '2026-05-11 10:00:00', '2026-05-11 12:00:00'),
-      (3, 3, 3, NULL,                                 '2026-05-12 09:00:00', '2026-05-12 11:00:00');
+      (1, 1, 1, 'Bring snacks and a movie suggestion!', '2026-05-10 19:00:00', '2026-05-10 22:00:00', 'SNACKS!!', 1),
+      (2, 2, 2, 'Help clean common areas.',           '2026-05-11 10:00:00', '2026-05-11 12:00:00', 'Cleaning', 1),
+      (3, null, 3, NULL,                                 '2026-05-12 09:00:00', '2026-05-12 11:00:00', 'First', 2);
+
+INSERT INTO section_event_assignee (user_id, section_event_id) VALUES
+    (1, 1),
+    (4, 1),
+    (2, 2),
+    (3, 3),
+    (4, 3);

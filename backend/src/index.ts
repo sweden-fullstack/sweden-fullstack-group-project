@@ -1,5 +1,6 @@
 import express from "express"
 import usersRouter from "@/modules/user/user.routes"
+import announcementRouter from "@/modules/announcement/announcement.routes"
 import authRouter from "@/modules/auth/auth.routes"
 import db from "@/config/database"
 import umzug from "./lib/umzugMigrations"
@@ -9,6 +10,8 @@ import ErrorHandler from "./middlewares/errorHandler"
 import cookieParser from "cookie-parser"
 import sectionUserRouter from "./modules/section-user/sectionUser.routes"
 import sectionRouter from "./modules/section/section.routes"
+import sectionEventRouter from "./modules/section-event/sectionEvent.routes"
+import sectionEventAssigneeRouter from "./modules/section-event-assignee/sectionEventAssignee.routes"
 
 // Ping the db to check if it can connect
 await db.execute("SELECT 1")
@@ -60,9 +63,12 @@ app.get("/health", (_req, res) => {
 })
 
 app.use("/user", usersRouter)
+app.use("/announcement", announcementRouter)
 app.use("/auth", authRouter)
 app.use("/section", sectionRouter)
 app.use("/section_user", sectionUserRouter)
+app.use("/section_event", sectionEventRouter)
+app.use("/section_event_assignee", sectionEventAssigneeRouter)
 
 app.use(ErrorHandler.handle)
 

@@ -29,6 +29,7 @@ const navItems: NavItem[] = [
 	{ label: "Section", path: "/section" },
 	{ label: "Profile", path: "/profile" },
 	{ label: "Admin", path: "/admin" },
+	{ label: "About", path: "/about" },
 ]
 
 export default function AppShell({

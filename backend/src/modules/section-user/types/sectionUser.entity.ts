@@ -7,6 +7,7 @@ type SectionUserEntity = {
 	building_id?: number
 
 	// From joins
+	building_id?: number
 	role?: UserRole
 	email?: string
 	first_name?: string
