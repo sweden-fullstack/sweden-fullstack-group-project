@@ -111,7 +111,9 @@ export default function AppShell({
 									if (
 										item.label === "Admin" &&
 										(!currentUser ||
-											currentUser.role !== "admin")
+											(currentUser.role !== "admin" &&
+												currentUser.role !==
+													"landlord"))
 									) {
 										return <></>
 									}

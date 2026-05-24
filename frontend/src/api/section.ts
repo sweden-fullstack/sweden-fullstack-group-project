@@ -1,6 +1,6 @@
+import axiosInstance from "@/config/axios"
 import envConfig from "@/config/env"
 import SectionDto from "@/shared/types/section/section.dto"
-import axios from "axios"
 
 export type ResidentProfile = {
 	id: number
@@ -68,12 +68,12 @@ class SectionApi {
 	path = `${envConfig.backend}section/`
 
 	async getAll() {
-		const { data } = await axios.get(this.path)
+		const { data } = await axiosInstance.get(this.path)
 		return data as SectionDto[]
 	}
 
 	async getById(id: number) {
-		const { data } = await axios.get(`${this.path}${id}`)
+		const { data } = await axiosInstance.get(`${this.path}${id}`)
 		return data as SectionDto
 	}
 

@@ -102,9 +102,11 @@ export default function AdminDashboardPage() {
 				}
 
 				const currentSection = await SectionApi.getById(self.sectionId)
-				const buildingResidents = await SectionUserApi.getByBuildingId(
-					currentSection.buildingId,
-				)
+
+				const buildingResidents =
+					await SectionUserApi.getUsersByBuilding(
+						currentSection.buildingId,
+					)
 
 				setResidents(buildingResidents.map(sectionUserToResident))
 			} catch (error) {
