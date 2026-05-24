@@ -9,15 +9,27 @@ import type UserDto from "@/shared/types/user/user.dto"
 import {
 	Badge,
 	Box,
+	Button,
 	Grid,
 	Heading,
 	HStack,
+	Input,
 	Spinner,
 	Table,
 	Text,
 	VStack,
 } from "@chakra-ui/react"
-import { useEffect, useMemo, useState } from "react"
+import {
+	type ChangeEvent,
+	type CSSProperties,
+	type FormEvent,
+	type ReactNode,
+	useEffect,
+	useMemo,
+	useState,
+} from "react"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 type Resident = {
 	userId: number
@@ -35,13 +47,39 @@ type Resident = {
 
 const managedRoles: UserRole[] = ["student", "section_admin"]
 const privilegedRoles: UserRole[] = ["landlord", "admin"]
+const defaultAddUserForm = {
+	email: "",
+	firstName: "",
+	lastName: "",
+	roomNumber: "",
+	major: "",
+	stayPeriodStart: "",
+	stayPeriodEnd: "",
+	role: "student" as UserRole,
+	sectionId: "",
+}
+const inputBorderColor = "rgba(118, 139, 127, 0.22)"
+const selectStyle: CSSProperties = {
+	background: "white",
+	border: `1px solid ${inputBorderColor}`,
+	borderRadius: "8px",
+	height: "40px",
+	paddingInline: "12px",
+}
 
 export default function AdminDashboardPage() {
+	const navigate = useNavigate()
 	const [currentUser, setCurrentUser] = useState<SectionUserDto | null>(null)
 	const [residents, setResidents] = useState<Resident[]>([])
 	const [sections, setSections] = useState<SectionDto[]>([])
 	const [isLoading, setIsLoading] = useState(true)
+	const [isCreatingUser, setIsCreatingUser] = useState(false)
 	const [error, setError] = useState<string | null>(null)
+	const [createUserError, setCreateUserError] = useState<string | null>(null)
+	const [createUserSuccess, setCreateUserSuccess] = useState<string | null>(
+		null,
+	)
+	const [addUserForm, setAddUserForm] = useState(defaultAddUserForm)
 
 	useEffect(() => {
 		async function loadDashboard() {
@@ -69,7 +107,15 @@ export default function AdminDashboardPage() {
 				)
 
 				setResidents(buildingResidents.map(sectionUserToResident))
-			} catch {
+			} catch (error) {
+				if (
+					axios.isAxiosError(error) &&
+					error.response?.status === 401
+				) {
+					setError("Log in before opening the admin dashboard.")
+					return
+				}
+
 				setError("Could not load the admin dashboard.")
 			} finally {
 				setIsLoading(false)
@@ -91,6 +137,30 @@ export default function AdminDashboardPage() {
 
 		return sections.filter((section) => sectionIds.has(section.id))
 	}, [residents, sections])
+
+	const assignableSections = useMemo(() => {
+		if (currentUser?.role === "admin") return sections
+		return sections.filter(
+			(section) => section.buildingId === currentUser?.buildingId,
+		)
+	}, [currentUser, sections])
+
+	const assignableRoles = useMemo<UserRole[]>(() => {
+		if (currentUser?.role === "admin") {
+			return ["student", "section_admin", "landlord", "admin"]
+		}
+
+		return ["student", "section_admin"]
+	}, [currentUser])
+
+	useEffect(() => {
+		if (addUserForm.sectionId || assignableSections.length === 0) return
+
+		setAddUserForm((current) => ({
+			...current,
+			sectionId: String(assignableSections[0].id),
+		}))
+	}, [addUserForm.sectionId, assignableSections])
 
 	const sectionCounts = useMemo(() => {
 		return visibleSections.map((section) => ({
@@ -120,6 +190,54 @@ export default function AdminDashboardPage() {
 		1,
 	)
 
+	function updateAddUserForm(
+		event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+	) {
+		const { name, value } = event.target
+		setAddUserForm((current) => ({ ...current, [name]: value }))
+	}
+
+	async function handleCreateUser(event: FormEvent<HTMLFormElement>) {
+		event.preventDefault()
+		setCreateUserError(null)
+		setCreateUserSuccess(null)
+
+		const sectionId = Number(addUserForm.sectionId)
+		if (!sectionId) {
+			setCreateUserError("Choose a section before adding a user.")
+			return
+		}
+
+		setIsCreatingUser(true)
+
+		try {
+			const createdUser = await SectionUserApi.create(sectionId, {
+				email: addUserForm.email,
+				firstName: addUserForm.firstName,
+				lastName: addUserForm.lastName,
+				roomNumber: Number(addUserForm.roomNumber),
+				major: addUserForm.major,
+				stayPeriodStart: new Date(addUserForm.stayPeriodStart),
+				stayPeriodEnd: new Date(addUserForm.stayPeriodEnd),
+				role: addUserForm.role,
+			})
+
+			setResidents((current) => [
+				...current,
+				sectionUserToResident(createdUser),
+			])
+			setCreateUserSuccess("User added.")
+			setAddUserForm({
+				...defaultAddUserForm,
+				sectionId: addUserForm.sectionId,
+			})
+		} catch {
+			setCreateUserError("Could not add that user.")
+		} finally {
+			setIsCreatingUser(false)
+		}
+	}
+
 	if (isLoading) {
 		return (
 			<AppShell
@@ -137,7 +255,20 @@ export default function AdminDashboardPage() {
 				title="Admin Dashboard"
 				description="Overview for landlords and admins."
 			>
-				<Text color="#9b2c2c">{error}</Text>
+				<VStack align="start" gap={4}>
+					<Text color="#9b2c2c">{error}</Text>
+					{error.includes("Log in") ? (
+						<Button
+							bg="#90d5ff"
+							color="#163447"
+							borderRadius="12px"
+							onClick={() => navigate("/login")}
+							_hover={{ bg: "#78c9fb" }}
+						>
+							Go to login
+						</Button>
+					) : null}
+				</VStack>
 			</AppShell>
 		)
 	}
@@ -163,6 +294,162 @@ export default function AdminDashboardPage() {
 			}
 		>
 			<VStack align="stretch" gap={6}>
+				<Box
+					asChild
+					bg="white"
+					border="1px solid #dce5df"
+					borderRadius="16px"
+					p={5}
+				>
+					<form onSubmit={handleCreateUser}>
+						<VStack align="stretch" gap={4}>
+							<Heading size="md">Add user</Heading>
+							<Grid
+								templateColumns={{
+									base: "1fr",
+									md: "repeat(2, 1fr)",
+									xl: "repeat(4, 1fr)",
+								}}
+								gap={4}
+							>
+								<Field label="Email">
+									<Input
+										name="email"
+										type="email"
+										value={addUserForm.email}
+										onChange={updateAddUserForm}
+										bg="white"
+										borderColor={inputBorderColor}
+										required
+									/>
+								</Field>
+								<Field label="First name">
+									<Input
+										name="firstName"
+										value={addUserForm.firstName}
+										onChange={updateAddUserForm}
+										bg="white"
+										borderColor={inputBorderColor}
+										required
+									/>
+								</Field>
+								<Field label="Last name">
+									<Input
+										name="lastName"
+										value={addUserForm.lastName}
+										onChange={updateAddUserForm}
+										bg="white"
+										borderColor={inputBorderColor}
+										required
+									/>
+								</Field>
+								<Field label="Room">
+									<Input
+										name="roomNumber"
+										type="number"
+										min={1}
+										value={addUserForm.roomNumber}
+										onChange={updateAddUserForm}
+										bg="white"
+										borderColor={inputBorderColor}
+										required
+									/>
+								</Field>
+								<Field label="Major">
+									<Input
+										name="major"
+										value={addUserForm.major}
+										onChange={updateAddUserForm}
+										bg="white"
+										borderColor={inputBorderColor}
+										required
+									/>
+								</Field>
+								<Field label="Section">
+									<select
+										name="sectionId"
+										value={addUserForm.sectionId}
+										onChange={updateAddUserForm}
+										style={selectStyle}
+										required
+									>
+										{assignableSections.map((section) => (
+											<option
+												key={section.id}
+												value={section.id}
+											>
+												{section.name}
+											</option>
+										))}
+									</select>
+								</Field>
+								<Field label="Role">
+									<select
+										name="role"
+										value={addUserForm.role}
+										onChange={updateAddUserForm}
+										style={selectStyle}
+										required
+									>
+										{assignableRoles.map((role) => (
+											<option key={role} value={role}>
+												{formatRole(role)}
+											</option>
+										))}
+									</select>
+								</Field>
+								<Field label="Stay starts">
+									<Input
+										name="stayPeriodStart"
+										type="date"
+										value={addUserForm.stayPeriodStart}
+										onChange={updateAddUserForm}
+										bg="white"
+										borderColor={inputBorderColor}
+										required
+									/>
+								</Field>
+								<Field label="Stay ends">
+									<Input
+										name="stayPeriodEnd"
+										type="date"
+										value={addUserForm.stayPeriodEnd}
+										onChange={updateAddUserForm}
+										bg="white"
+										borderColor={inputBorderColor}
+										required
+									/>
+								</Field>
+							</Grid>
+							<HStack justify="space-between" gap={3}>
+								<Box>
+									{createUserError ? (
+										<Text color="#9b2c2c">
+											{createUserError}
+										</Text>
+									) : null}
+									{createUserSuccess ? (
+										<Text color="#246b45">
+											{createUserSuccess}
+										</Text>
+									) : null}
+								</Box>
+								<Button
+									type="submit"
+									bg="#90d5ff"
+									color="#163447"
+									borderRadius="12px"
+									loading={isCreatingUser}
+									disabled={assignableSections.length === 0}
+									_hover={{ bg: "#78c9fb" }}
+								>
+									Add user
+								</Button>
+							</HStack>
+						</VStack>
+					</form>
+				</Box>
+
 				<Grid
 					templateColumns={{
 						base: "1fr",
@@ -332,6 +619,23 @@ export default function AdminDashboardPage() {
 				</Box>
 			</VStack>
 		</AppShell>
+	)
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+	return (
+		<Box>
+			<Text
+				as="label"
+				fontSize="sm"
+				color="#65746b"
+				mb={1}
+				display="block"
+			>
+				{label}
+			</Text>
+			{children}
+		</Box>
 	)
 }
 

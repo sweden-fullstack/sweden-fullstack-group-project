@@ -1,4 +1,5 @@
 import envConfig from "@/config/env"
+import SectionUserCreate from "@/shared/types/section-user/sectionUser.create"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 import axios from "axios"
 
@@ -27,6 +28,18 @@ class SectionUserApi {
 		})
 
 		return data as SectionUserDto[]
+	}
+
+	async create(sectionId: number, user: SectionUserCreate) {
+		const { data } = await axios.post(
+			`${this.path}user_to_section/section_id/${sectionId}`,
+			user,
+			{
+				withCredentials: true,
+			},
+		)
+
+		return data as SectionUserDto
 	}
 }
 
