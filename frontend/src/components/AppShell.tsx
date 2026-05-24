@@ -8,7 +8,9 @@ import {
 	VStack,
 } from "@chakra-ui/react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { type ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
+import SectionUserApi from "@/api/sectionUser"
 
 type NavItem = {
 	label: string
@@ -39,6 +41,21 @@ export default function AppShell({
 }: AppShellProps) {
 	const navigate = useNavigate()
 	const location = useLocation()
+
+	const [currentUser, setCurrentUser] = useState<SectionUserDto | null>(null)
+
+	useEffect(() => {
+		async function loadPageData() {
+			try {
+				const self = await SectionUserApi.getSelfAuthenticated()
+				setCurrentUser(self)
+			} catch (e) {
+				console.log(e)
+			}
+		}
+
+		void loadPageData()
+	}, [])
 
 	return (
 		<Box
@@ -90,6 +107,14 @@ export default function AppShell({
 								{navItems.map((item) => {
 									const isActive =
 										location.pathname === item.path
+
+									if (
+										item.label === "Admin" &&
+										(!currentUser ||
+											currentUser.role !== "admin")
+									) {
+										return <></>
+									}
 
 									return (
 										<Button
