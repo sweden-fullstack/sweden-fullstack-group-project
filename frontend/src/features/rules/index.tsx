@@ -149,6 +149,7 @@ export default function RulesPage() {
 							{rules.map((rule) => (
 								<RuleCard
 									key={rule.id}
+									categories={categories}
 									rule={rule}
 									canManage={canManage}
 									onEdit={openEditEditor}
