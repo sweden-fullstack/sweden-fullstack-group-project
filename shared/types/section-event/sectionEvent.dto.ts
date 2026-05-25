@@ -4,7 +4,7 @@ type SectionEventDto = {
 	id: number
 	title: string
 	buildingId: number
-	sectionId?: number
+	sectionId?: number | null
 	eventTypeId: number
 	startTime: Date
 	endTime: Date

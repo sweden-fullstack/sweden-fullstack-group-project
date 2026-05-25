@@ -22,7 +22,11 @@ router.post(
 	sectionEventController.create,
 )
 
-router.put("/:id", authHandler(), sectionEventController.update)
+router.put(
+	"/:id",
+	authHandler([], undefined, "body.sectionId?"),
+	sectionEventController.update,
+)
 
 router.delete("/:id", authHandler(), sectionEventController.delete)
 

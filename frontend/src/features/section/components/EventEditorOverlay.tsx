@@ -65,7 +65,8 @@ function EventEditorForm({
 	// onDelete,
 }: FormProps) {
 	const [title, setTitle] = useState(draft.dto.title)
-	const [visibility, setVisibility] = useState<SectionEventVisibility>()
+	const [visibility, setVisibility] =
+		useState<SectionEventVisibility>("building")
 	const [startAt, setStartAt] = useState<Date | null>(
 		() => new Date(draft.dto.startTime),
 	)
@@ -82,13 +83,13 @@ function EventEditorForm({
 		await refreshSectionData()
 	}
 
-	async function onCreate(dto: SectionEventCreate) {
-		await SectionEventApi.create(dto)
+	async function onCreate(dto: SectionEventCreate, sectionId?: number) {
+		await SectionEventApi.create(dto, sectionId)
 		await refreshSectionData()
 	}
 
-	async function onUpdate(dto: SectionEventUpdate, sectionId?: number) {
-		await SectionEventApi.update(dto, sectionId)
+	async function onUpdate(dto: SectionEventUpdate, id?: number) {
+		await SectionEventApi.update(dto, id)
 		await refreshSectionData()
 	}
 
@@ -116,19 +117,25 @@ function EventEditorForm({
 			buildingId: section.buildingId,
 		}
 
+		const sectionIdValue = visibility === "section" ? section.id : undefined
+
 		if (editing) {
 			onUpdate(
 				{
-					...draft,
+					...draft.dto,
 					...base,
+					sectionId: sectionIdValue ?? null,
 				},
 				draft.id,
 			)
 		} else {
-			onCreate({
-				...base,
-				sectionId: section.id,
-			})
+			onCreate(
+				{
+					...base,
+					sectionId: sectionIdValue,
+				},
+				sectionIdValue,
+			)
 		}
 		onCloseDraftEditor()
 	}
