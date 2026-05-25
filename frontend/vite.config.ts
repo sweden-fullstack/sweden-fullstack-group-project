@@ -2,8 +2,13 @@ import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 import path from "path"
 import dotenv from "dotenv"
+import fs from "fs"
 
 const envPath = path.resolve(__dirname, "../.env")
+
+if (fs.existsSync(envPath)) {
+	dotenv.config({ path: envPath, override: true, quiet: true })
+}
 dotenv.config({ path: envPath, override: true, quiet: true })
 
 const frontendPort = process.env.FRONTEND_PORT
@@ -19,6 +24,7 @@ export default defineConfig({
 	server: {
 		host: true,
 		port: frontendPort,
+		allowedHosts: ["sweden-frontend-latest.onrender.com", ".onrender.com"],
 		proxy: {
 			"/api": {
 				target: `http://${backendServer}`,

@@ -1,43 +1,49 @@
-export type HouseRule = {
-	id: number
-	title: string
-	body: string
-	category: string
-	sortOrder: number
-	updatedAt: string
-}
+import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
+import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
+import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
 
-const rules: HouseRule[] = [
-	{
-		id: 1,
-		title: "Quiet hours",
-		body: "Keep noise low between 22:00 and 07:00, especially in corridors and shared kitchens.",
-		category: "Shared living",
-		sortOrder: 1,
-		updatedAt: "2026-04-20",
-	},
-	{
-		id: 2,
-		title: "Kitchen reset",
-		body: "Wash dishes, wipe counters, and remove old food from shared surfaces after cooking.",
-		category: "Kitchen",
-		sortOrder: 2,
-		updatedAt: "2026-04-20",
-	},
-	{
-		id: 3,
-		title: "Maintenance issues",
-		body: "Report leaks, broken appliances, or safety concerns to the landlord as soon as possible.",
-		category: "Important info",
-		sortOrder: 3,
-		updatedAt: "2026-04-20",
-	},
-]
+import HouseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
+import axiosInstance from "@/config/axios"
 
 class RulesApi {
-	async getAll() {
-		// Later: return axios.get<HouseRule[]>("/api/rules").then((res) => res.data)
-		return rules.sort((a, b) => a.sortOrder - b.sortOrder)
+	houseRuleCategorypath = `house_rule_category/`
+	houseRulePath = `house_rule/`
+
+	async getCategories() {
+		const { data } = await axiosInstance.get(this.houseRuleCategorypath)
+		return data as HouseRuleCategoryDto[]
+	}
+
+	async getByBuilding() {
+		const { data } = await axiosInstance.get(
+			`${this.houseRulePath}by_building`,
+		)
+		return data as HouseRuleDto[]
+	}
+
+	async create(payload: HouseRuleCreate) {
+		const { data } = await axiosInstance.post(`${this.houseRulePath}`, {
+			buildingId: payload.buildingId,
+			title: payload.title,
+			body: payload.body,
+			sortOrder: payload.sortOrder,
+			categoryIds: payload.categoryIds,
+		})
+		return data
+	}
+
+	async update(id: number, payload: HouseRuleUpdate) {
+		const { data } = await axiosInstance.put(`${this.houseRulePath}${id}`, {
+			title: payload.title,
+			body: payload.body,
+			sortOrder: payload.sortOrder,
+			categoryIds: payload.categoryIds,
+		})
+		return data
+	}
+
+	async delete(id: number) {
+		await axiosInstance.delete(`${this.houseRulePath}${id}`)
 	}
 }
 

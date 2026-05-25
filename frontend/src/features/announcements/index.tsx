@@ -12,7 +12,7 @@ export default function AnnouncementsPage() {
 	useEffect(() => {
 		async function loadAnnouncements() {
 			try {
-				const data = await AnnouncementApi.getAll()
+				const data = await AnnouncementApi.getByBuildingId()
 				setAnnouncements(data)
 			} catch {
 				setError("Could not load announcements.")

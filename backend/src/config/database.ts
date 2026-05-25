@@ -7,7 +7,14 @@ export const config: PoolOptions = {
 	user: envConfig.username,
 	password: envConfig.password,
 	database: envConfig.database,
+	port: envConfig.databasePort,
 	dateStrings: true,
+	ssl:
+		process.env.DB_SSL === "true"
+			? {
+					rejectUnauthorized: false,
+				}
+			: undefined,
 }
 
 const pool = mysql.createPool(config)
