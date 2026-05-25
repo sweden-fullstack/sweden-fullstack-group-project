@@ -1,0 +1,12 @@
+### 
+
+@SECTION = {{API_URL}}/section
+
+### Get all by sectionId
+
+GET {{SECTION}}/2 HTTP/1.1
+
+
+### Get by buildingId
+
+GET {{SECTION}}/building_id/ HTTP/1.1
