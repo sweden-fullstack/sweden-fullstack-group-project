@@ -1,0 +1,34 @@
+### 
+
+@HOUSE_RULE = {{API_URL}}/house_rule
+
+### Get all by building
+
+GET {{HOUSE_RULE}}/by_building HTTP/1.1
+
+### Add categories
+
+POST {{HOUSE_RULE}}
+
+{
+   "buildingId": 1,
+   "title": "Test",
+   "body": "Test",
+   "sortOrder": 1,
+   "categoryIds": []
+}
+
+### Update house rule
+
+PUT {{HOUSE_RULE}}/3
+
+{
+   "title": "Test",
+   "body": "Test",
+   "sortOrder": 1,
+   "categoryIds": [2, 3]
+}
+
+### Update house rule
+
+DELETE {{HOUSE_RULE}}/6

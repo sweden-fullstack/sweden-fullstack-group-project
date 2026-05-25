@@ -1,0 +1,7 @@
+### 
+
+@HOUSE_RULE_CATEGORY = {{API_URL}}/house_rule_category
+
+### Get all
+
+GET {{HOUSE_RULE_CATEGORY}}/ HTTP/1.1
