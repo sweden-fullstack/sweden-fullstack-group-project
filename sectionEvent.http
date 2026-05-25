@@ -2,6 +2,10 @@
 
 @SECTION_EVENT = {{API_URL}}/section_event
 
+### Get all by buildingId
+
+GET {{SECTION_EVENT}}/building_id/1 HTTP/1.1
+
 ### Get all by sectionId
 
 GET {{SECTION_EVENT}}/section_id/2 HTTP/1.1
