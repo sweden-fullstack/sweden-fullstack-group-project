@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react"
 
-/**
- * Gets the size of the current window
- */
 export default function useWindowSize() {
 	const [size, setSize] = useState({
 		width: window.innerWidth,
@@ -17,7 +14,7 @@ export default function useWindowSize() {
 			})
 		}
 
-		handleResize() // initial measurement
+		handleResize()
 
 		window.addEventListener("resize", handleResize)
 		return () => window.removeEventListener("resize", handleResize)

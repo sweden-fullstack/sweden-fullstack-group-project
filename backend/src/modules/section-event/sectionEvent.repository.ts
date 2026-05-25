@@ -5,6 +5,18 @@ import SectionEventEntity from "@/modules/section-event/types/sectionEvent.entit
 import NotFoundError from "@/errors/NotFoundError"
 
 class SectionEventRepository {
+	async getAllByBuildingId(
+		buildingId: number,
+	): Promise<SectionEventEntity[]> {
+		const [rows] = await db.query(
+			`SELECT *
+               FROM ${sectionEventTableName} 
+               WHERE building_id = ?`,
+			[buildingId],
+		)
+		return rows as SectionEventEntity[]
+	}
+
 	async getAllBySectionId(sectionId: number): Promise<SectionEventEntity[]> {
 		const [rows] = await db.query(
 			`SELECT *
@@ -34,6 +46,15 @@ class SectionEventRepository {
 		)
 
 		return result.insertId
+	}
+
+	async update(id: number, section: Partial<SectionEventEntity>) {
+		const [result] = await db.query<ResultSetHeader>(
+			`UPDATE ${sectionEventTableName} SET ? WHERE id = ?`,
+			[section, id],
+		)
+
+		return result.affectedRows > 0
 	}
 
 	async delete(id: number) {

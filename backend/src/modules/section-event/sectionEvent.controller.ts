@@ -3,30 +3,53 @@ import sectionEventService from "@/modules/section-event/sectionEvent.service"
 import typia from "typia"
 import SectionEventCreate from "@/shared/types/section-event/sectionEvent.create"
 import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
+import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update"
 
 class SectionEventController {
-	async getAllBySectionId(req: Request, res: Response): Promise<Response> {
-		const sectionId = parseInt(req.params.sectionId as string)
-		const result = await sectionEventService.getAllBySectionId(sectionId)
+	async getAllByBuildingId(req: Request, res: Response): Promise<Response> {
+		const jwt = req.user as JwtPayloadExtended
+		const buildingIdString = req.params.buildingId
+			? req.params.buildingId
+			: jwt.buildingId
+		const buildingId = parseInt(buildingIdString as string)
 
-		return res.status(200).json(result)
+		const result = await sectionEventService.getAllByBuildingId(buildingId)
+		return res.json(result)
 	}
 
-	async create(req: Request, res: Response): Promise<Response> {
+	async getAllBySectionId(req: Request, res: Response): Promise<Response> {
 		const jwt = req.user as JwtPayloadExtended
-		const body = typia.assertEquals<SectionEventCreate>(req.body)
 		const sectionIdString = req.params.sectionId
 			? req.params.sectionId
 			: jwt.sectionId
 		const sectionId = parseInt(sectionIdString as string)
 
+		const result = await sectionEventService.getAllBySectionId(sectionId)
+		return res.json(result)
+	}
+
+	async create(req: Request, res: Response): Promise<Response> {
+		const jwt = req.user as JwtPayloadExtended
+		const body = typia.misc.assertPrune<SectionEventCreate>(req.body)
+		const sectionId = req.params.sectionId
+			? parseInt(req.params.sectionId as string)
+			: undefined
+
 		const sectionEvent = await sectionEventService.create(
-			sectionId,
 			jwt.buildingId,
 			body,
+			sectionId,
 		)
 
 		return res.status(201).json(sectionEvent)
+	}
+
+	async update(req: Request, res: Response) {
+		const id = parseInt(req.params.id as string)
+		const body = typia.misc.assertPrune<SectionEventUpdate>(req.body)
+
+		const newSection = await sectionEventService.update(id, body)
+		return res.status(200).json(newSection)
 	}
 
 	async delete(req: Request, res: Response) {

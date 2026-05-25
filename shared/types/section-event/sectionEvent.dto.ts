@@ -3,8 +3,8 @@ import SectionUserDto from "../section-user/sectionUser.dto"
 type SectionEventDto = {
 	id: number
 	title: string
-	buidingId: number
-	sectionId?: number
+	buildingId: number
+	sectionId?: number | null
 	eventTypeId: number
 	startTime: Date
 	endTime: Date
@@ -12,5 +12,7 @@ type SectionEventDto = {
 
 	users?: SectionUserDto[]
 }
+
+export type SectionEventVisibility = "building" | "section"
 
 export default SectionEventDto

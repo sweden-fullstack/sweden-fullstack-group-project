@@ -6,6 +6,7 @@ import { Transaction } from "@/utils/transaction"
 import SectionCreate from "@/shared/types/section/section.create"
 import SectionEntity from "./types/section.entity"
 import SectionUpdate from "@/shared/types/section/section.update"
+import sectionEventService from "../section-event/sectionEvent.service"
 
 class SectionService {
 	async getAll(): Promise<SectionDto[]> {
@@ -14,14 +15,28 @@ class SectionService {
 		)
 	}
 
+	async getAllByBuildingId(buildingId: number): Promise<SectionDto[]> {
+		return (await sectionRepository.findAllByBuildingId(buildingId)).map(
+			(o) => SectionMapper.toDto(o),
+		)
+	}
+
 	async getById(id: number): Promise<SectionDto> {
-		const section = await sectionRepository.findById(id)
+		return await Transaction.run(async () => {
+			const section = await sectionRepository.findById(id)
 
-		if (!section) {
-			throw new NotFoundError("Section not found")
-		}
+			if (!section) {
+				throw new NotFoundError("Section not found")
+			}
 
-		return SectionMapper.toDto(section)
+			const dto = SectionMapper.toDto(section)
+			const events = await sectionEventService.getAllBySectionId(
+				section.id,
+			)
+			dto.events = events
+
+			return dto
+		})
 	}
 
 	async create(section: SectionCreate): Promise<SectionDto> {

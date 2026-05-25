@@ -1,9 +1,10 @@
 type SectionEventCreate = {
 	title: string
 	eventTypeId: number
-	description?: string
+	sectionId?: number
 	startTime: Date
 	endTime: Date
+	description?: string
 }
 
 export default SectionEventCreate
