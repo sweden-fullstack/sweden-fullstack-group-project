@@ -6,22 +6,40 @@ import SectionEventMapper from "@/modules/section-event/types/sectionEvent.mappe
 import SectionEventEntity from "@/modules/section-event/types/sectionEvent.entity"
 import sectionUserService from "../section-user/sectionUser.service"
 import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update"
+import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 
 class SectionEventService {
+	async getAllByBuildingId(buildingId: number) {
+		return await Transaction.run(async () => {
+			const events =
+				await sectionEventRepository.getAllByBuildingId(buildingId)
+			let dtos = events.map((o) => SectionEventMapper.toDto(o))
+
+			dtos = await this.mapSectionUsersToSectionEvent(dtos)
+
+			return dtos
+		})
+	}
+
 	async getAllBySectionId(sectionId: number) {
 		return await Transaction.run(async () => {
 			const events =
 				await sectionEventRepository.getAllBySectionId(sectionId)
-			const dtos = events.map((o) => SectionEventMapper.toDto(o))
 
-			for (const dto of dtos) {
-				dto.users = await sectionUserService.getAllBySectionEventId(
-					dto.id,
-				)
-			}
+			let dtos = events.map((o) => SectionEventMapper.toDto(o))
+
+			dtos = await this.mapSectionUsersToSectionEvent(dtos)
 
 			return dtos
 		})
+	}
+
+	private async mapSectionUsersToSectionEvent(dtos: SectionEventDto[]) {
+		for (const dto of dtos) {
+			dto.users = await sectionUserService.getAllBySectionEventId(dto.id)
+		}
+
+		return dtos
 	}
 
 	async getById(id: number) {

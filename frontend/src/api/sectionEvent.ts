@@ -5,6 +5,15 @@ import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update
 
 class SectionEventApi {
 	path = "section_event"
+
+	async getAllByBuildingId(buildingId?: number) {
+		const { data } = await axiosInstance.get<SectionEventDto[]>(
+			`${this.path}/building_id/${buildingId ?? ""}`,
+		)
+
+		return data
+	}
+
 	async create(
 		dto: SectionEventCreate,
 		sectionId?: number,

@@ -6,11 +6,26 @@ import JwtPayloadExtended from "@/shared/types/jwt/jwtPayloadExtended"
 import SectionEventUpdate from "@/shared/types/section-event/sectionEvent.update"
 
 class SectionEventController {
-	async getAllBySectionId(req: Request, res: Response): Promise<Response> {
-		const sectionId = parseInt(req.params.sectionId as string)
-		const result = await sectionEventService.getAllBySectionId(sectionId)
+	async getAllByBuildingId(req: Request, res: Response): Promise<Response> {
+		const jwt = req.user as JwtPayloadExtended
+		const buildingIdString = req.params.buildingId
+			? req.params.buildingId
+			: jwt.buildingId
+		const buildingId = parseInt(buildingIdString as string)
 
-		return res.status(200).json(result)
+		const result = await sectionEventService.getAllByBuildingId(buildingId)
+		return res.json(result)
+	}
+
+	async getAllBySectionId(req: Request, res: Response): Promise<Response> {
+		const jwt = req.user as JwtPayloadExtended
+		const sectionIdString = req.params.sectionId
+			? req.params.sectionId
+			: jwt.sectionId
+		const sectionId = parseInt(sectionIdString as string)
+
+		const result = await sectionEventService.getAllBySectionId(sectionId)
+		return res.json(result)
 	}
 
 	async create(req: Request, res: Response): Promise<Response> {

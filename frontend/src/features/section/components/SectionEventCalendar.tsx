@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Text, VStack } from "@chakra-ui/react"
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { indexEventsByDay } from "@/features/section/utils/eventsByDay"
 import { addMonths, buildMonthGrid } from "./calendar/monthGrid"
 import { sameCalendarDay, toDateKey } from "@/utils/date"
@@ -10,6 +10,7 @@ import SectionEventType from "../../../../../shared/types/section-event/sectionE
 import SectionDto from "@/shared/types/section/section.dto"
 import SectionEventDto from "@/shared/types/section-event/sectionEvent.dto"
 import EventDraft from "../types"
+import SectionEventApi from "@/api/sectionEvent"
 
 type Props = {
 	section: SectionDto
@@ -52,13 +53,31 @@ export default function SectionEventCalendar({
 	const [editorOpen, setEditorOpen] = useState(false)
 	const [draft, setDraft] = useState<EventDraft | null>(null)
 	const [expandedKey, setExpandedKey] = useState<string | null>(null)
+	const [events, setEvents] = useState<SectionEventDto[]>([])
+
+	async function fetchEvents() {
+		const result = await SectionEventApi.getAllByBuildingId()
+		setEvents(result)
+	}
+
+	useEffect(() => {
+		void (async () => {
+			await fetchEvents()
+		})()
+	}, [])
 
 	const filtered = useMemo(() => {
-		if (filter === "all") return section.events
-		if (filter === "building")
-			return section.events.filter((e) => !e.sectionId)
-		return section.events.filter((e) => e.sectionId)
-	}, [section.events, filter])
+		if (filter === "all") return events
+		if (filter === "building") return events.filter((e) => !e.sectionId)
+		return events.filter((e) => e.sectionId)
+	}, [events, filter])
+
+	async function refreshSectionDataOverride() {
+		void (async () => {
+			await fetchEvents()
+			await refreshSectionData()
+		})()
+	}
 
 	const eventsByDay = useMemo(() => indexEventsByDay(filtered), [filtered])
 	const weeks = useMemo(() => buildMonthGrid(month), [month])
@@ -226,7 +245,7 @@ export default function SectionEventCalendar({
 			</Box>
 
 			<EventEditorOverlay
-				refreshSectionData={refreshSectionData}
+				refreshSectionData={refreshSectionDataOverride}
 				open={editorOpen}
 				draft={draft}
 				section={section}
