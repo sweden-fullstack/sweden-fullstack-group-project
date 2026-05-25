@@ -155,14 +155,8 @@ export default function AdminDashboardPage() {
 		return ["student", "section_admin"]
 	}, [currentUser])
 
-	useEffect(() => {
-		if (addUserForm.sectionId || assignableSections.length === 0) return
-
-		setAddUserForm((current) => ({
-			...current,
-			sectionId: String(assignableSections[0].id),
-		}))
-	}, [addUserForm.sectionId, assignableSections])
+	const selectedSectionId =
+		addUserForm.sectionId || String(assignableSections[0]?.id ?? "")
 
 	const sectionCounts = useMemo(() => {
 		return visibleSections.map((section) => ({
@@ -204,7 +198,7 @@ export default function AdminDashboardPage() {
 		setCreateUserError(null)
 		setCreateUserSuccess(null)
 
-		const sectionId = Number(addUserForm.sectionId)
+		const sectionId = Number(selectedSectionId)
 		if (!sectionId) {
 			setCreateUserError("Choose a section before adding a user.")
 			return
@@ -231,7 +225,7 @@ export default function AdminDashboardPage() {
 			setCreateUserSuccess("User added.")
 			setAddUserForm({
 				...defaultAddUserForm,
-				sectionId: addUserForm.sectionId,
+				sectionId: selectedSectionId,
 			})
 		} catch {
 			setCreateUserError("Could not add that user.")
@@ -370,7 +364,7 @@ export default function AdminDashboardPage() {
 								<Field label="Section">
 									<select
 										name="sectionId"
-										value={addUserForm.sectionId}
+										value={selectedSectionId}
 										onChange={updateAddUserForm}
 										style={selectStyle}
 										required
