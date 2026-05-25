@@ -8,6 +8,7 @@ import HouseRuleEntity from "./types/houseRule.entity"
 import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
 import houseRuleCategoryService from "../house-rule-category/house-rule-category-map/houseRuleCategoryMap.service"
 import houseRuleCategoryRepository from "../house-rule-category/house-rule-category-map/houseRuleCategoryMap.repository"
+import BadRequestError from "@/errors/BadRequestError"
 
 class HouseRuleService {
 	async getAllByBuildingId(buildingId: number): Promise<HouseRuleDto[]> {
@@ -53,6 +54,10 @@ class HouseRuleService {
 							houseRuleCategoryId: categoryId,
 						}),
 					),
+				)
+			} else {
+				throw new BadRequestError(
+					"A house rule always needs a category",
 				)
 			}
 

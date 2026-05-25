@@ -11,9 +11,6 @@ export default class HouseRuleMapper {
 			title: dto.title,
 			body: dto.body,
 			sort_order: dto.sortOrder,
-			category_map: dto.categoryMap?.map((mapDto) =>
-				HouseRuleCategoryMapMapper.toEntity(mapDto),
-			),
 		})
 	}
 

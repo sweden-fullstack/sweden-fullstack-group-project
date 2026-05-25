@@ -244,9 +244,6 @@ function RuleEditorForm({
 							)
 						})}
 					</VStack>
-					<Text fontSize="xs" color="#4b6177" mt={1}>
-						Separate multiple categories with commas.
-					</Text>
 				</Box>
 				{error ? (
 					<Text fontSize="sm" color="#9b2c2c">
