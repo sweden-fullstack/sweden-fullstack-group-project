@@ -1,10 +1,10 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, redirect, RouterProvider } from "react-router-dom"
 
 const createAppRouter = () =>
 	createBrowserRouter([
 		{
 			path: "/",
-			lazy: () => import("@/features/dashboard"),
+			loader: () => redirect("/announcements"),
 		},
 		{
 			path: "/announcements",
