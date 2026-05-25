@@ -15,9 +15,16 @@ export const config: Options = {
 	username: envConfig.username,
 	password: envConfig.password,
 	database: envConfig.database,
+	port: envConfig.databasePort,
 	dialect: "mysql",
 	dialectOptions: {
 		multipleStatements: true,
+		ssl:
+			process.env.DB_SSL === "true"
+				? {
+						rejectUnauthorized: false,
+					}
+				: undefined,
 	},
 }
 

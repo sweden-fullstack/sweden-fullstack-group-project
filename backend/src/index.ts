@@ -22,6 +22,7 @@ await db.execute("SELECT 1")
 await umzug.up()
 
 const app = express()
+app.set("trust proxy", true)
 
 app.use(
 	cors({
