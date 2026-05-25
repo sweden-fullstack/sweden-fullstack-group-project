@@ -1,3 +1,4 @@
+import HouseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
 import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
 import {
 	Box,
@@ -18,6 +19,7 @@ const wrapTextProps = {
 
 type RuleCardProps = {
 	rule: HouseRuleDto
+	categories: HouseRuleCategoryDto[]
 	canManage: boolean
 	onEdit: (rule: HouseRuleDto) => void
 	onDelete: (rule: HouseRuleDto) => void
@@ -25,6 +27,7 @@ type RuleCardProps = {
 
 export default function RuleCard({
 	rule,
+	categories,
 	canManage,
 	onEdit,
 	onDelete,
@@ -49,19 +52,26 @@ export default function RuleCard({
 				>
 					{rule.categoryMap.length > 0 ? (
 						<HStack gap={2} flexWrap="wrap" flex="1" minW={0}>
-							{rule.categoryMap.map((category) => (
-								<Text
-									key={category.houseRuleCategoryId}
-									fontSize="sm"
-									bg="#e8f3ff"
-									color="#274d72"
-									borderRadius="999px"
-									px={3}
-									py={1}
-								>
-									{category.houseRuleCategoryName}
-								</Text>
-							))}
+							{rule.categoryMap.map((category) => {
+								const categoryName = categories.find(
+									(o) =>
+										o.id === category.houseRuleCategoryId,
+								).categoryName
+
+								return (
+									<Text
+										key={category.houseRuleCategoryId}
+										fontSize="sm"
+										bg="#e8f3ff"
+										color="#274d72"
+										borderRadius="999px"
+										px={3}
+										py={1}
+									>
+										{categoryName}
+									</Text>
+								)
+							})}
 						</HStack>
 					) : (
 						<Box flex="1" />
