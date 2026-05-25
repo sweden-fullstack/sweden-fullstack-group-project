@@ -110,7 +110,7 @@ function EventEditorForm({
 
 		const base = {
 			title: trimmed,
-			eventTypeId: SectionEventType.CleaningDay,
+			eventTypeId: SectionEventType.Maintenance,
 			startTime: startAt,
 			endTime: endAt,
 			description: description.trim() || undefined,

@@ -29,7 +29,7 @@ function blankDraft(): EventDraft {
 	return {
 		dto: {
 			title: "",
-			eventTypeId: SectionEventType.CleaningDay,
+			eventTypeId: SectionEventType.Maintenance,
 			description: "",
 			startTime: start,
 			endTime: end,
