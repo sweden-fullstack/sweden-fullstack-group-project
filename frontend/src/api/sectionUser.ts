@@ -34,7 +34,7 @@ class SectionUserApi {
 
 	async create(sectionId: number, user: SectionUserCreate) {
 		const { data } = await axiosInstance.post(
-			`${this.path}user_to_section/section_id/${sectionId}`,
+			`${this.path}/user_to_section/section_id/${sectionId}`,
 			user,
 		)
 
