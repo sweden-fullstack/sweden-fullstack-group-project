@@ -1,18 +1,49 @@
-import RulesApi, { type HouseRule } from "@/api/rules"
+import RulesApi from "@/api/rules"
 import AppShell from "@/components/AppShell"
-import { Box, Grid, Heading, Spinner, Text, VStack } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
+import RuleCard from "@/features/rules/components/RuleCard"
+import HouseRuleCategoryDto from "@/shared/types/house-rule-category/houseRuleCategory.dto"
+import RuleEditorOverlay, {
+	type RuleCreateDraft,
+	type RuleDraft,
+} from "@/features/rules/components/RuleEditorOverlay"
+import { canManageRules } from "@/features/rules/utils/canManageRules"
+import HouseRuleCreate from "@/shared/types/house-rule/houseRule.create"
+import HouseRuleDto from "@/shared/types/house-rule/houseRule.dto"
+import HouseRuleUpdate from "@/shared/types/house-rule/houseRule.update"
+import { Box, Button, Grid, Spinner, Text, VStack } from "@chakra-ui/react"
+import { useCallback, useEffect, useState } from "react"
+import SectionUserApi from "@/api/sectionUser"
+import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
 export default function RulesPage() {
-	const [rules, setRules] = useState<HouseRule[]>([])
+	const [currentUser, setCurrentUser] = useState<SectionUserDto | undefined>(
+		undefined,
+	)
+	const [rules, setRules] = useState<HouseRuleDto[]>([])
+	const [categories, setCategories] = useState<HouseRuleCategoryDto[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
+	const [editorDraft, setEditorDraft] = useState<RuleDraft | null>(null)
+
+	const buildingId = currentUser?.buildingId ?? 1
+	const canManage = canManageRules(currentUser?.role)
+
+	const refreshRules = useCallback(async () => {
+		const data = await RulesApi.getByBuilding()
+		setRules(data)
+	}, [])
 
 	useEffect(() => {
-		async function loadRules() {
+		async function loadPageData() {
 			try {
-				const data = await RulesApi.getAll()
-				setRules(data)
+				const self = await SectionUserApi.getSelfAuthenticated()
+				setCurrentUser(self)
+				const [rulesData, categoriesData] = await Promise.all([
+					RulesApi.getByBuilding(),
+					RulesApi.getCategories(),
+				])
+				setRules(rulesData)
+				setCategories(categoriesData)
 			} catch {
 				setError("Could not load house rules.")
 			} finally {
@@ -20,8 +51,61 @@ export default function RulesPage() {
 			}
 		}
 
-		void loadRules()
+		void loadPageData()
 	}, [])
+
+	function openCreateEditor() {
+		const nextSortOrder =
+			rules.reduce((max, rule) => Math.max(max, rule.sortOrder), 0) + 1
+		const draft: RuleCreateDraft = {
+			buildingId,
+			title: "",
+			body: "",
+			sortOrder: nextSortOrder || 1,
+			categoryMap: [],
+		}
+		setEditorDraft(draft)
+	}
+
+	function openEditEditor(rule: HouseRuleDto) {
+		setEditorDraft(rule)
+	}
+
+	function closeEditor() {
+		setEditorDraft(null)
+	}
+
+	async function handleCreate(payload: HouseRuleCreate) {
+		try {
+			await RulesApi.create(payload)
+			await refreshRules()
+		} catch {
+			setError("Could not create rule.")
+		}
+	}
+
+	async function handleUpdate(id: number, payload: HouseRuleUpdate) {
+		try {
+			await RulesApi.update(id, payload)
+			await refreshRules()
+		} catch {
+			setError("Could not update rule.")
+		}
+	}
+
+	async function handleDelete(id: number) {
+		try {
+			await RulesApi.delete(id)
+			await refreshRules()
+		} catch {
+			setError("Could not delete rule.")
+		}
+	}
+
+	function handleDeleteFromCard(rule: HouseRuleDto) {
+		if (!window.confirm(`Delete "${rule.title}"?`)) return
+		void handleDelete(rule.id)
+	}
 
 	return (
 		<AppShell
@@ -33,32 +117,59 @@ export default function RulesPage() {
 			) : error ? (
 				<Text color="#9b2c2c">{error}</Text>
 			) : (
-				<Grid
-					templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
-					gap={4}
-				>
-					{rules.map((rule) => (
-						<Box
-							key={rule.id}
-							bg="white"
-							border="1px solid #dce5df"
-							borderRadius="22px"
-							p={5}
-						>
-							<VStack align="stretch" gap={2}>
-								<Text fontSize="sm" color="#718176">
-									{rule.category}
-								</Text>
-								<Heading size="md">{rule.title}</Heading>
-								<Text color="#506057">{rule.body}</Text>
-								<Text fontSize="sm" color="#718176">
-									Updated {rule.updatedAt}
-								</Text>
-							</VStack>
+				<VStack align="stretch" gap={6} minW={0} w="full">
+					{canManage ? (
+						<Box>
+							<Button
+								bg="#d8ebff"
+								color="#123a5f"
+								_hover={{ bg: "#c8e2ff" }}
+								onClick={openCreateEditor}
+							>
+								Add rule
+							</Button>
 						</Box>
-					))}
-				</Grid>
+					) : null}
+					{rules.length === 0 ? (
+						<Text color="#4b6177">
+							No house rules for this building yet.
+						</Text>
+					) : (
+						<Grid
+							minW={0}
+							w="full"
+							templateColumns="minmax(0, 1fr)"
+							gap={5}
+							bg="linear-gradient(180deg, #f7fbff 0%, #f0f6ff 100%)"
+							border="1px solid #dce8f6"
+							borderRadius="24px"
+							p={{ base: 3, md: 4 }}
+							overflow="hidden"
+						>
+							{rules.map((rule) => (
+								<RuleCard
+									key={rule.id}
+									rule={rule}
+									canManage={canManage}
+									onEdit={openEditEditor}
+									onDelete={handleDeleteFromCard}
+								/>
+							))}
+						</Grid>
+					)}
+				</VStack>
 			)}
+			{canManage ? (
+				<RuleEditorOverlay
+					open={editorDraft !== null}
+					draft={editorDraft}
+					categories={categories}
+					onClose={closeEditor}
+					onCreate={handleCreate}
+					onUpdate={handleUpdate}
+					onDelete={handleDelete}
+				/>
+			) : null}
 		</AppShell>
 	)
 }

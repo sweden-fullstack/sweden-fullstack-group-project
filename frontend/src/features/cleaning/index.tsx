@@ -11,7 +11,7 @@ import NextDutyCard from "./components/NextDutyCard"
 import SectionDutyTable from "./components/SectionDutyTable"
 import ViewModeToggle from "./components/ViewModeToggle"
 import type { MyDutyEntry, NextMyDuty, SelectedDayRow, ViewMode } from "./types"
-import { toDateKey } from "./utils/date"
+import { toDateKey } from "@/utils/date"
 import SectionEventAssigneeDto from "@/shared/types/section-event-assignee/sectionEventAssignee.dto"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import type { SelectedDayRow } from "../types"
-import { formatDate } from "../utils/date"
+import { formatDate } from "@/utils/date"
 import styles from "./SectionDutyTable.module.css"
 import SectionUserDto from "@/shared/types/section-user/sectionUser.dto"
 
