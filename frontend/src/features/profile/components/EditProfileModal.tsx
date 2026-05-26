@@ -126,18 +126,6 @@ export default function EditProfileModal({
 								required
 							/>
 						</Box>
-
-						<Box>
-							<Text mb={1} fontSize="sm" fontWeight="500">
-								Profile Picture URL
-							</Text>
-							<Input
-								name="profilePictureUrl"
-								value={formData.profilePictureUrl}
-								onChange={handleChange}
-								placeholder="https://..."
-							/>
-						</Box>
 					</VStack>
 
 					<Flex justify="flex-end" mt={8} gap={3}>

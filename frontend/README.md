@@ -22,14 +22,6 @@
 
 - My arch nemesis
 
-### [Zustand](https://zustand.docs.pmnd.rs/learn/guides/beginner-typescript)
-
-- State management library, belongs in the stores folder and must be in specific
-  format, check the stores in the project for example
-- If used correctly will allow us to cache the data I.E avoid re-fetching data
-  from the backend, try to increase the counter and navigate with the button
-  under it and back to see what I mean, one is with zustand the other with useState
-
 ## How to use?
 
 ```
@@ -77,5 +69,9 @@ src/features/feature
 |
 +-- utils       # utility functions for a specific feature
 ```
+
+## Getting started
+
+- Run `npm run dev` in the frontend folder to start the frontend
 
 [Shared README](../shared/README.md)

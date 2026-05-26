@@ -60,5 +60,9 @@ src/modules/user
 +-- user.service.ts      # gets data from repository and returns it as DTO objects
 ```
 
+# Getting stared
+
+- Run `npm run dev` in the backend folder to start the backend
+
 [Shared README](../shared/README.md)
 [Migrations README](./src/migrations/README.md)

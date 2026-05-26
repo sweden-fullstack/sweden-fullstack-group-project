@@ -1,9 +1,15 @@
 import envConfig from "@/config/env"
 import { Box, Button, Heading, Text, VStack } from "@chakra-ui/react"
+import { useNavigate } from "react-router-dom"
 
 export default function LoginPage() {
+	const navigate = useNavigate()
 	const handleGoogleSignIn = () => {
 		window.location.href = `${envConfig.backend}auth`
+	}
+
+	const handleGoBack = () => {
+		navigate(-1)
 	}
 
 	return (
@@ -16,6 +22,21 @@ export default function LoginPage() {
 			px={5}
 		>
 			<Box w="full" maxW="420px">
+				<Box mb={4}>
+					<Button
+						onClick={handleGoBack}
+						variant="ghost"
+						color="#718176"
+						_hover={{
+							color: "#1e2a24",
+							bg: "rgba(30, 42, 36, 0.08)",
+						}}
+						borderRadius="12px"
+						size="sm"
+					>
+						← Back
+					</Button>
+				</Box>
 				<Box
 					bg="rgba(255,255,255,0.82)"
 					border="1px solid rgba(30, 42, 36, 0.08)"
