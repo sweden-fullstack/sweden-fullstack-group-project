@@ -13,22 +13,22 @@ import {
 const teamMembers = [
 	{
 		name: "Bi Chen",
-		focus: "Frontend Developer & UI/UX",
-		image: "https://via.placeholder.com/150",
+		focus: "Frontend Developer ",
+		image: "/teamMemberPic/bichenpic.jpeg",
 	},
 	{
 		name: "Ellen",
-		focus: "Backend Developer & Database",
+		focus: "Frontend Developer",
 		image: "https://via.placeholder.com/150",
 	},
 	{
-		name: "Taylor Lindberg",
-		focus: "Fullstack Developer & API Design",
-		image: "https://via.placeholder.com/150",
+		name: "Dimitar",
+		focus: "Authentication and backend routing",
+		image: "/teamMemberPic/dimitar.jpeg",
 	},
 	{
-		name: "David Baden",
-		focus: "Backend routes and About page",
+		name: "David",
+		focus: "Backend routes and deployment",
 		image: "/teamMemberPic/davidpic.jpeg",
 	},
 ]
