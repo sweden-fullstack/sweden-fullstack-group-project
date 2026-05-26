@@ -15,7 +15,8 @@
 		"paths": {
 			"@/*": ["./src/*"],
 			"@/shared/*": ["../shared/*"]
-		}
+		},
+		"rootDir": ".."
 	},
 	"include": ["src", "../shared"]
 }

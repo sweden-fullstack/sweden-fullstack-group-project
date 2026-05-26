@@ -38,7 +38,7 @@ export default function CleaningPage() {
 				const self = await SectionUserApi.getSelfAuthenticated()
 				setCurrentUser(self)
 
-				const sectionUsers = await SectionUserApi.getUsersBySecion()
+				const sectionUsers = await SectionUserApi.getUsersBySection()
 				setSectionUsers(sectionUsers)
 
 				await refreshEvents(self.sectionId)
@@ -167,9 +167,12 @@ export default function CleaningPage() {
 		row: SelectedDayRow,
 		assigneeIds: number[],
 	) {
-		const nextUsers = assigneeIds.map((id) =>
-			sectionUsers.find((user) => user.userId === id),
-		)
+		if (!currentUser) return
+
+		const nextUsers = assigneeIds
+			.map((id) => sectionUsers.find((user) => user.userId === id))
+			.filter((user): user is SectionUserDto => Boolean(user))
+
 		try {
 			if (row.eventId !== null) {
 				await CleaningApi.updateAssignees(row.eventId, nextUsers)
@@ -195,6 +198,8 @@ export default function CleaningPage() {
 	}
 
 	async function deleteDuty(dutyName: string) {
+		if (!currentUser) return
+
 		const matchingEventIds = cleaningEvents
 			.filter((event) => event.title === dutyName)
 			.map((event) => event.id)
@@ -209,7 +214,8 @@ export default function CleaningPage() {
 	}
 
 	async function addTask(rawTaskName: string): Promise<boolean> {
-		if (!currentUser.sectionId) return false
+		if (!currentUser?.sectionId) return false
+
 		const taskName = rawTaskName.trim()
 		if (!taskName) return false
 		if (
