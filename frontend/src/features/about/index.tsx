@@ -19,12 +19,12 @@ const teamMembers = [
 	{
 		name: "Ellen",
 		focus: "Frontend Developer",
-		image: "https://via.placeholder.com/150",
+		image: "/teamMemberPic/ellenpic.jpeg",
 	},
 	{
 		name: "Dimitar",
 		focus: "Authentication and backend routing",
-		image: "/teamMemberPic/dimitar.jpeg",
+		image: "/teamMemberPic/dimitarpic.jpeg",
 	},
 	{
 		name: "David",
