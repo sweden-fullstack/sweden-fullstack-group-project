@@ -63,8 +63,11 @@ export default function ProfilePage() {
 
 	if (error || !userData) {
 		return (
-			<AppShell title="Resident profile" description="Error">
-				<Text color="red.500">{error || "User data not found"}</Text>
+			<AppShell
+				title="Resident profile"
+				description="Use this page for room information, contact details, and account-level settings related to student housing."
+			>
+				<Text color="#9b2c2c">{error || "User data not found"}</Text>
 			</AppShell>
 		)
 	}

@@ -1,6 +1,6 @@
-# Jail management system
+# Zona - the central hub for your dormitory
 
-System for managing jails and it's tenants
+Zona is an application for a student dorm. It is a central hub where students can access all the information they need. Central features are the announcement page where the landlord can post announcements and communicate with the students. Furthermore, there is the possibility of creating your digital cleaning schedule. There is also a section page where you can publish other events like a party or a section dinner. Finally there is also your profile page where you can see all the necessary data about you and of course you can also edit this data.
 
 ## Basic structure
 
