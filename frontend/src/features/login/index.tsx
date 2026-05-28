@@ -1,5 +1,6 @@
 import envConfig from "@/config/env"
-import { Box, Button, Heading, Text, VStack } from "@chakra-ui/react"
+import AuthApi from "@/api/auth"
+import { Box, Button, Flex, Text, VStack } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom"
 
 export default function LoginPage() {
@@ -45,12 +46,25 @@ export default function LoginPage() {
 					boxShadow="0 18px 50px rgba(54, 74, 62, 0.08)"
 				>
 					<VStack align="stretch" gap={5}>
-						<Box>
-							<Text fontSize="sm" color="#718176" mb={2}>
+						<Flex justify="space-between" align="center" mb={2}>
+							<Text fontSize="sm" color="#718176">
 								Student housing access
 							</Text>
-							<Heading size="lg">Log in</Heading>
-						</Box>
+							<Button
+								variant="ghost"
+								size="sm"
+								color="#718176"
+								fontWeight="normal"
+								_hover={{ bg: "gray.100" }}
+								onClick={() => {
+									AuthApi.logout().then(() => {
+										navigate("/")
+									})
+								}}
+							>
+								Sign out
+							</Button>
+						</Flex>
 
 						<Button
 							onClick={handleGoogleSignIn}
