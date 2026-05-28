@@ -75,6 +75,17 @@ class AuthController {
 			res.redirect(envConfig.oauthFailureRedirect)
 		}
 	}
+
+	async logout(_req: Request, res: Response) {
+		res.cookie("token", "", {
+			httpOnly: true,
+			secure: true,
+			sameSite: "none",
+			expires: new Date(0),
+		})
+
+		res.status(200).send()
+	}
 }
 
 export default new AuthController()

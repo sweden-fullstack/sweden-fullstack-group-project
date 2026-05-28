@@ -1,3 +1,5 @@
+import axiosInstance from "@/config/axios"
+
 export type AuthenticatedUser = {
 	id: number
 	email: string
@@ -19,6 +21,13 @@ class AuthApi {
 			fullName: "Demo Student",
 			role: "student",
 		} satisfies AuthenticatedUser
+	}
+
+	async logout() {
+		await axiosInstance.get("/auth/logout")
+
+		localStorage.clear()
+		sessionStorage.clear()
 	}
 }
 

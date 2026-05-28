@@ -21,4 +21,6 @@ router.get(
 	authController.callback,
 )
 
+router.get("/logout", authController.logout)
+
 export default router
