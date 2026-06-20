@@ -1,49 +1,78 @@
 # Zona - the central hub for your dormitory
 
-Zona is an application for a student dorm. It is a central hub where students can access all the information they need. Central features are the announcement page where the landlord can post announcements and communicate with the students. Furthermore, there is the possibility of creating your digital cleaning schedule. There is also a section page where you can publish other events like a party or a section dinner. Finally there is also your profile page where you can see all the necessary data about you and of course you can also edit this data.
+Zona is a web application designed to simplify life in student dormitories. It provides a centralized platform where students can stay informed, organize shared responsibilities, and participate in community events.
+
+The application enables landlords and students to communicate efficiently while fostering a stronger dormitory community.
+
+## Features
+
+🔐 Google Authentication - Secure sign-in using your Google account.
+📢 House Rules & Announcements - Access important dormitory information and updates.
+🧹 Cleaning Schedule - Organize and track shared cleaning responsibilities.
+🏠 Section Hub - View residents, upcoming gatherings, and shared calendars.
+👤 Resident Profiles - Manage room details, contact information, and account settings.
+🛠️ Admin Dashboard – Manage residents, sections, and administrative roles.
 
 ## Basic structure
 
 ```
 root
 |
-+-- backend         # Contains the backend stuff
++-- backend         # API, database logic, authentication
 |
-+-- frontend        # Contains the frontend stuff
++-- frontend        # React frontend application
 |
-+-- shared          # Contains code used in both frontend and backend
++-- shared          # Shared types
 ```
-
-## Some info
-
-- Some folders contain `README.md` file which contains explanation and example
-  usage of the folders inside it
-- Work on a single feature, when you are finished with that push the changes
-  and work on something else, if you want to work on multiple features create
-  different branches, I am pretty sure this was requirement from the teacher
-  but correct me if I am wrong
-- Follow [Conventional Commits](https://www.conventionalcommits.org)
-  From what I remember the teacher required and it takes like 5 minutes to
-  learn it!
-
-[Frontend README](/frontend/README.md)
-[Backend README](/backend/README.md)
-[CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## Getting started
 
-- Go to the [github page of the project](https://github.com/d-najd/sweden-fullstack-group-project)
-- Create a fork as shown in the image below
-  ![Fork image](./images/fork.png)
-- Clone the repo using `git clone https://github.com/your-username/your-fork.git`
-- Install [mysql](mysql.com)
-- Setup `.env` - you can use [.env.example](./.env.example), if not setup the
-  values of [.env.example](./.env.example)
-  have been set but I doubt you have the database and user as defined there
-- Setup the [mysql](https://mysql.com) database with the settings from the
-  `.env` file
-- Run `npm ci` to install dependencies
-- Go to the backend folder and run `npm run seed`
-- Run `npm run dev` to run both frontend and backend or `npm run dev:frontend` just
-  for frontend or `npm run dev:backend`, you can see the other available commands
-  in `package.json`
+### Prerequisites
+
+- [mysql](mysql.com)
+- [node](https://nodejs.org/en/download)
+- [docker](https://docs.docker.com/engine/install/) (if running using docker)
+
+### Setup
+
+1. Git clone the project
+
+```bash
+git clone https://github.com/sweden-fullstack/sweden-fullstack-group-project.git
+```
+
+2. Setup `.env` - you can use [.env.example](./.env.example),
+
+#### Local (Recommended)
+
+1. Install dependencies
+
+```bash
+npm ci
+```
+
+2. Start the project
+
+```bash
+npm run dev
+```
+
+#### Docker
+
+1. Build the docker containers and start the project
+
+```
+docker compose up
+```
+
+#### Optional
+
+- You can run `npm run seed -w backend` to seed the database, you must sign-in before being able to use the app.
+
+## Info
+
+Some more info can be found here
+
+[Frontend README](/frontend/README.md)
+[Backend README](/backend/README.md)
+[Shared README](../shared/README.md)
